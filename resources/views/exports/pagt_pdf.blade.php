@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <title>Resume PAGT</title>
     <style>
-        body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 12px; color: #333; line-height: 1.5; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 12px; color: var(--color-primary); line-height: 1.5; }
         .header { text-align: center; border-bottom: 2px solid #1A7A64; padding-bottom: 10px; margin-bottom: 20px; }
-        .header h1 { margin: 0; color: #1A7A64; font-size: 20px; text-transform: uppercase; }
-        .header p { margin: 2px 0; color: #555; }
+        .header h1 { margin: 0; color: var(--color-primary); font-size: 20px; text-transform: uppercase; }
+        .header p { margin: 2px 0; color: var(--color-primary); }
         .section-title { background: #1A7A64; color: white; padding: 5px 10px; font-weight: bold; margin-top: 15px; font-size: 13px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 6px; text-align: left; vertical-align: top; }
-        th { background: #f4f8f7; color: #1A7A64; width: 30%; }
+        th { background: #f4f8f7; color: var(--color-primary); width: 30%; }
         .mb-2 { margin-bottom: 10px; }
     </style>
 </head>

@@ -9,7 +9,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         .preskripsi-banner {
-            background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-light) 100%);
+            background-color: var(--color-primary);
             border-radius: 20px;
             padding: 2.5rem 3rem;
             color: white;
@@ -20,11 +20,11 @@
         }
         .preskripsi-banner::before {
             content: ''; position: absolute; right: -5%; top: -20%; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius: 50%;
+            background-color: rgba(255,255,255,0.05); border-radius: 50%;
         }
         .preskripsi-banner::after {
             content: ''; position: absolute; right: 15%; bottom: -50%; width: 250px; height: 250px;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%;
+            background-color: rgba(255,255,255,0.05); border-radius: 50%;
         }
         .section-divider {
             display: flex; align-items: center; margin: 1.5rem 0 1rem; color: var(--color-primary-dark); font-weight: 700;
@@ -193,7 +193,7 @@
 <div class="ncpms-card mb-0 shadow-sm" data-aos="fade-up" data-aos-delay="400">
     <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
         <h2 class="card-title-custom border-0 mb-0 pb-0">
-            <span class="card-title-icon" style="background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%); color: white;">
+            <span class="card-title-icon" style="background-color: var(--color-primary); color: white;">
                 <i class="fas fa-clipboard-list"></i>
             </span> 
             Log Preskripsi

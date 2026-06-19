@@ -26,7 +26,7 @@
             --color-risiko-rendah: #2f9e44;
             --color-bg-page: #f4f7f6;
             --color-bg-card: #ffffff;
-            --color-bg-sidebar: linear-gradient(180deg, #083c2c 0%, #0d5f46 100%);
+            --color-bg-sidebar: var(--color-primary-dark);
             --color-text-primary: #1a2220;
             --color-text-secondary: #4a5c57;
             --color-text-muted: #849691;
@@ -89,7 +89,7 @@
         }
 
         .brand-name {
-            color: #fff;
+            color: var(--color-primary);
             font-weight: 800;
             font-size: 1.4rem;
             letter-spacing: -0.02em;
@@ -130,13 +130,13 @@
 
         .sidebar-menu-item a:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            color: var(--color-primary);
             transform: translateX(4px);
         }
 
         .sidebar-menu-item a.active {
             background: rgba(255, 255, 255, 0.15);
-            color: #fff;
+            color: var(--color-primary);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
@@ -155,7 +155,7 @@
 
         .sidebar-user-info .fw-bold {
             font-size: 0.95rem;
-            color: #fff;
+            color: var(--color-primary);
         }
 
         .sidebar-user-info .small {
@@ -209,7 +209,7 @@
 
         .sidebar {
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, #063023 0%, #0d5f46 100%);
+            background-color: var(--color-primary);
             position: fixed;
             inset: 0 auto 0 0;
             z-index: 1030;
@@ -224,7 +224,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at top right, rgba(255,255,255,0.05) 0%, transparent 40%);
+            background-color: rgba(0,0,0,0.05);
             pointer-events: none;
         }
 
@@ -240,12 +240,12 @@
         .brand-logo {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, #20a67d, #0d5f46);
+            background-color: var(--color-primary);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
+            color: var(--color-primary);
             font-size: 1.2rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             position: relative;
@@ -256,7 +256,7 @@
             content: '';
             position: absolute;
             top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            background-color: var(--color-primary), transparent);
             transform: rotate(45deg);
             animation: shimmer 3s infinite linear;
         }
@@ -272,7 +272,7 @@
         }
 
         .brand-name {
-            color: #fff;
+            color: var(--color-primary);
             font-weight: 800;
             font-size: 1.5rem;
             letter-spacing: -0.02em;
@@ -317,13 +317,13 @@
 
         .sidebar-menu-item a:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            color: var(--color-primary);
             transform: translateX(4px);
         }
 
         .sidebar-menu-item a.active {
-            background: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
-            color: #fff;
+            background-color: var(--color-primary);
+            color: var(--color-primary);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             border-left: 3px solid var(--color-accent);
         }
@@ -355,13 +355,13 @@
             border-radius: 50%;
             background: var(--color-primary-light);
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-weight: bold; font-size: 1.1rem;
+            color: var(--color-primary); font-weight: bold; font-size: 1.1rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .sidebar-user-info .fw-bold {
             font-size: 0.95rem;
-            color: #fff;
+            color: var(--color-primary);
         }
 
         .sidebar-user-info .small {
@@ -406,7 +406,7 @@
         
         .btn-logout:hover {
             background: var(--color-risiko-tinggi);
-            color: #fff;
+            color: var(--color-primary);
             border-color: var(--color-risiko-tinggi);
             box-shadow: 0 4px 12px rgba(224, 49, 49, 0.2);
             transform: translateY(-1px);
@@ -461,7 +461,7 @@
 
         .btn-primary-ncpms {
             background: var(--color-primary);
-            color: #fff;
+            color: var(--color-primary);
             border: none;
             padding: 10px 20px;
             border-radius: var(--border-radius-md);
@@ -477,7 +477,7 @@
             background: var(--color-primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(18, 130, 96, 0.3);
-            color: #fff;
+            color: var(--color-primary);
         }
 
         .btn-outline-ncpms {
@@ -514,7 +514,7 @@
 
         .btn-danger-ncpms:hover {
             background: var(--color-risiko-tinggi);
-            color: #fff;
+            color: var(--color-primary);
             box-shadow: 0 4px 12px rgba(224, 49, 49, 0.2);
             border-color: var(--color-risiko-tinggi);
         }
@@ -588,10 +588,10 @@
             letter-spacing: 0.05em;
         }
 
-        .risk-risiko_tinggi { background: #fff0f0; color: #e03131; border: 1px solid #ffd8d8; }
-        .risk-risiko_sedang { background: #fff8e6; color: #f08c00; border: 1px solid #ffecb3; }
-        .risk-risiko_rendah { background: #ebfbee; color: #2f9e44; border: 1px solid #d3f9d8; }
-        .risk-belum { background: #f8f9fa; color: #6c757d; border: 1px solid #e9ecef; }
+        .risk-risiko_tinggi { background: #fff0f0; color: var(--color-primary); border: 1px solid #ffd8d8; }
+        .risk-risiko_sedang { background: #fff8e6; color: var(--color-primary); border: 1px solid #ffecb3; }
+        .risk-risiko_rendah { background: #ebfbee; color: var(--color-primary); border: 1px solid #d3f9d8; }
+        .risk-belum { background: #f8f9fa; color: var(--color-primary); border: 1px solid #e9ecef; }
         
         .chart-wrap {
             height: 280px;

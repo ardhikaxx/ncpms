@@ -13,13 +13,13 @@
 
     <!-- Welcome Banner -->
     <div class="welcome-banner mb-5 position-relative overflow-hidden animate__animated animate__fadeInDown"
-        style="background: linear-gradient(135deg, var(--color-primary-darker) 0%, var(--color-primary) 100%); border-radius: 20px; padding: 2.5rem 3rem; color: white; box-shadow: 0 10px 30px rgba(26,122,100,0.2);">
+        style="background-color: var(--color-primary); border-radius: 20px; padding: 2.5rem 3rem; color: white; box-shadow: 0 10px 30px rgba(26,122,100,0.2);">
         <!-- Abstract Shapes -->
         <div
-            style="position: absolute; right: -5%; top: -20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;">
+            style="position: absolute; right: -5%; top: -20%; width: 300px; height: 300px; background-color: rgba(255,255,255,0.05); border-radius: 50%;">
         </div>
         <div
-            style="position: absolute; right: 15%; bottom: -50%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;">
+            style="position: absolute; right: 15%; bottom: -50%; width: 200px; height: 200px; background-color: rgba(255,255,255,0.05); border-radius: 50%;">
         </div>
 
         <div class="row align-items-center position-relative z-index-1">
@@ -120,14 +120,14 @@
                         <div class="fs-2 fw-bold text-dark">{{ $totalKunjunganHariIni }}</div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center rounded-circle"
-                        style="width: 54px; height: 54px; background: rgba(255,152,0,0.1); color: #ff9800; font-size: 1.5rem;">
+                        style="width: 54px; height: 54px; background: rgba(255,152,0,0.1); color: var(--color-primary); font-size: 1.5rem;">
                         <i class="fas fa-calendar-check"></i>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
-            <div class="stat-card-premium scp-danger" style="background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);">
+            <div class="stat-card-premium scp-danger" style="background-color: var(--color-primary);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <div class="text-danger fw-bold text-uppercase mb-1"
@@ -135,7 +135,7 @@
                         <div class="fs-2 fw-bold text-danger">{{ $risikoTinggi }}</div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center rounded-circle shadow-sm"
-                        style="width: 54px; height: 54px; background: #dc3545; color: #fff; font-size: 1.5rem; animation: pulse 2s infinite;">
+                        style="width: 54px; height: 54px; background: #dc3545; color: var(--color-primary); font-size: 1.5rem; animation: pulse 2s infinite;">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
                         <div class="fs-2 fw-bold text-dark">{{ $menungguAsesmen }}</div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center rounded-circle"
-                        style="width: 54px; height: 54px; background: rgba(108,117,125,0.1); color: #6c757d; font-size: 1.5rem;">
+                        style="width: 54px; height: 54px; background: rgba(108,117,125,0.1); color: var(--color-primary); font-size: 1.5rem;">
                         <i class="fas fa-hourglass-half"></i>
                     </div>
                 </div>
@@ -177,7 +177,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                     <h2 class="card-title-custom border-0 mb-0 pb-0">
                         <span class="card-title-icon"
-                            style="background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%); color: white;"><i
+                            style="background-color: var(--color-primary); color: white;"><i
                                 class="fas fa-list-check"></i></span>
                         Manifes Pasien Hari Ini
                     </h2>
@@ -207,7 +207,7 @@
                                     <td>
                                         <div class="d-flex align-items-center gap-3">
                                             <div
-                                                style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 8px rgba(26,122,100,0.2);">
+                                                style="width: 38px; height: 38px; border-radius: 50%; background-color: var(--color-primary), var(--color-primary)); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 8px rgba(26,122,100,0.2);">
                                                 {{ substr($k->pasien->nama_tersamar, 0, 1) }}
                                             </div>
                                             <div class="fw-bold text-dark">{{ $k->pasien->nama_tersamar }}</div>
@@ -256,7 +256,7 @@
             <div class="ncpms-card h-100 shadow-sm" style="border-radius: 20px;">
                 <div class="d-flex align-items-center mb-4">
                     <div class="card-title-icon me-3 text-white"
-                        style="background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);"><i
+                        style="background-color: var(--color-primary);"><i
                             class="fas fa-chart-pie"></i></div>
                     <h2 class="card-title-custom border-0 mb-0 pb-0">Proporsi Risiko</h2>
                 </div>
@@ -267,7 +267,7 @@
             <div class="ncpms-card h-100 shadow-sm" style="border-radius: 20px;">
                 <div class="d-flex align-items-center mb-4">
                     <div class="card-title-icon me-3 text-white"
-                        style="background: linear-gradient(135deg, #6c757d 0%, #343a40 100%);"><i
+                        style="background-color: var(--color-primary);"><i
                             class="fas fa-chart-bar"></i></div>
                     <h2 class="card-title-custom border-0 mb-0 pb-0">Top 5 Penyakit Rujukan</h2>
                 </div>
@@ -301,13 +301,7 @@
                     label: 'Kunjungan',
                     data: @json($grafikKunjungan->pluck('total')),
                     borderColor: '#1A7A64',
-                    backgroundColor: (context) => {
-                        const ctx = context.chart.ctx;
-                        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                        gradient.addColorStop(0, 'rgba(26,122,100,0.4)');
-                        gradient.addColorStop(1, 'rgba(26,122,100,0.0)');
-                        return gradient;
-                    },
+                    backgroundColor: 'rgba(26,122,100,0.2)',
                     fill: true,
                     tension: 0.4,
                     borderWidth: 3,
@@ -404,13 +398,7 @@
                 datasets: [{
                     label: 'Jumlah Kunjungan',
                     data: @json($topDiagnosis->pluck('kunjungans_count')),
-                    backgroundColor: (context) => {
-                        const ctx = context.chart.ctx;
-                        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                        gradient.addColorStop(0, '#1A7A64');
-                        gradient.addColorStop(1, '#115545');
-                        return gradient;
-                    },
+                    backgroundColor: '#1A7A64',
                     borderRadius: 8,
                     borderSkipped: false,
                     barThickness: 30

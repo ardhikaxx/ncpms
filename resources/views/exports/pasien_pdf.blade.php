@@ -7,7 +7,7 @@
         @page { margin: 120px 40px 60px 40px; }
         body { 
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            color: #1C2A27; 
+            color: var(--color-primary); 
             font-size: 10pt;
             line-height: 1.5;
         }
@@ -25,13 +25,13 @@
             width: 50%;
         }
         .header-logo h1 {
-            color: #0E3F35;
+            color: var(--color-primary);
             font-size: 24pt;
             margin: 0;
             letter-spacing: 1px;
         }
         .header-logo p {
-            color: #4A6560;
+            color: var(--color-primary);
             font-size: 9pt;
             margin: 0;
             text-transform: uppercase;
@@ -46,7 +46,7 @@
         .header-info p {
             margin: 0;
             font-size: 9pt;
-            color: #8AA09A;
+            color: var(--color-primary);
         }
         footer { 
             position: fixed; 
@@ -57,7 +57,7 @@
             border-top: 1px solid #D4E6E1;
             padding-top: 5px;
             font-size: 8pt;
-            color: #8AA09A;
+            color: var(--color-primary);
         }
         .footer-left { float: left; }
         .footer-right { float: right; }
@@ -65,7 +65,7 @@
         
         h2.document-title {
             text-align: center;
-            color: #1A7A64;
+            color: var(--color-primary);
             margin-top: 0;
             margin-bottom: 25px;
             font-size: 16pt;
@@ -79,8 +79,8 @@
             margin-bottom: 20px;
         }
         table.data-table th {
-            background-color: #1A7A64;
-            color: #FFFFFF;
+            background-color: var(--color-primary);
+            color: var(--color-primary);
             font-weight: bold;
             padding: 10px 12px;
             text-align: left;
@@ -93,7 +93,7 @@
             font-size: 9.5pt;
         }
         table.data-table tr:nth-child(even) {
-            background-color: #F8FBFB;
+            background-color: var(--color-primary);
         }
         .badge {
             padding: 3px 8px;
@@ -101,16 +101,16 @@
             font-size: 8pt;
             font-weight: bold;
         }
-        .badge-l { background-color: #E3F2FD; color: #1565C0; }
-        .badge-p { background-color: #FCE4EC; color: #C2185B; }
+        .badge-l { background-color: var(--color-primary); color: var(--color-primary); }
+        .badge-p { background-color: var(--color-primary); color: var(--color-primary); }
         .text-mono { font-family: 'Courier New', Courier, monospace; font-size: 9pt; }
         .meta-summary {
-            background-color: #F0F4F3;
+            background-color: var(--color-primary);
             padding: 15px;
             border-radius: 6px;
             margin-bottom: 20px;
             font-size: 9pt;
-            border-left: 4px solid #1A7A64;
+            border-left: 4px solid var(--color-primary);
         }
     </style>
 </head>

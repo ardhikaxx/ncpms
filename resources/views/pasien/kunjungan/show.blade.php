@@ -38,7 +38,7 @@
     $risikoTinggi = $kunjungan->skriningGizi?->kategori_risiko === 'risiko_tinggi';
 @endphp
 @if($risikoTinggi || count($komorbids) > 0)
-    <div class="alert alert-danger d-flex align-items-center" role="alert" style="background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; border-radius: 8px; font-weight: 500;">
+    <div class="alert alert-danger d-flex align-items-center" role="alert" style="background-color: var(--color-primary); color: var(--color-primary); border: 1px solid #f5c2c7; border-radius: 8px; font-weight: 500;">
         <i class="fas fa-exclamation-triangle fs-4 me-3"></i>
         <div>
             <strong>PERINGATAN KLINIS:</strong> Pasien ini 

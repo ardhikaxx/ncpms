@@ -9,7 +9,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         .monitoring-banner {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background-color: var(--color-primary);
             border-radius: 20px;
             padding: 2.5rem 3rem;
             color: white;
@@ -20,14 +20,14 @@
         }
         .monitoring-banner::before {
             content: ''; position: absolute; right: -5%; top: -20%; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius: 50%;
+            background-color: rgba(255,255,255,0.05); border-radius: 50%;
         }
         .monitoring-banner::after {
             content: ''; position: absolute; right: 15%; bottom: -50%; width: 250px; height: 250px;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%;
+            background-color: rgba(255,255,255,0.05); border-radius: 50%;
         }
         .section-divider {
-            display: flex; align-items: center; margin: 1.5rem 0 1rem; color: #1e3c72; font-weight: 700;
+            display: flex; align-items: center; margin: 1.5rem 0 1rem; color: var(--color-primary); font-weight: 700;
         }
         .section-divider::after {
             content: ''; flex: 1; height: 1px; background: rgba(0,0,0,0.08); margin-left: 1rem;
@@ -36,15 +36,15 @@
             background: rgba(42, 82, 152, 0.05);
             border: 1px solid var(--color-border);
             border-right: none;
-            color: #2a5298;
+            color: var(--color-primary);
         }
         .form-control-ncpms.with-icon { border-left: none; }
-        .form-control-ncpms.with-icon:focus { border-left: 1px solid #2a5298; }
+        .form-control-ncpms.with-icon:focus { border-left: 4px solid var(--color-primary); }
         .badge-kepatuhan { padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
-        .kepatuhan-patuh { background: #d3f9d8; color: #2f9e44; border: 1px solid #b2f2bb; }
-        .kepatuhan-cukup_patuh { background: #fff3cd; color: #f59f00; border: 1px solid #ffec99; }
-        .kepatuhan-tidak_patuh { background: #ffe3e3; color: #e03131; border: 1px solid #ffc9c9; }
-        .kepatuhan-default { background: #f8f9fa; color: #6c757d; border: 1px solid #e9ecef; }
+        .kepatuhan-patuh { background: #d3f9d8; color: var(--color-primary); border: 1px solid #b2f2bb; }
+        .kepatuhan-cukup_patuh { background: #fff3cd; color: var(--color-primary); border: 1px solid #ffec99; }
+        .kepatuhan-tidak_patuh { background: #ffe3e3; color: var(--color-primary); border: 1px solid #ffc9c9; }
+        .kepatuhan-default { background: #f8f9fa; color: var(--color-primary); border: 1px solid #e9ecef; }
     </style>
 @endpush
 
@@ -65,7 +65,7 @@
 <div class="row g-4 mb-4">
     <div class="col-xl-4" data-aos="fade-right" data-aos-delay="100">
         <div class="ncpms-card h-100 mb-0 shadow-sm">
-            <h2 class="card-title-custom"><span class="card-title-icon" style="color: #2a5298; background: rgba(42,82,152,0.1);"><i class="fas fa-tasks"></i></span> Instruksi</h2>
+            <h2 class="card-title-custom"><span class="card-title-icon" style="color: var(--color-primary); background: rgba(42,82,152,0.1);"><i class="fas fa-tasks"></i></span> Instruksi</h2>
             <div class="alert bg-primary-subtle text-primary border-0 rounded-3 p-4">
                 <h5 class="fw-bold"><i class="fas fa-stethoscope me-2"></i> Fokus Evaluasi</h5>
                 <p class="mb-2" style="font-size: 0.9rem;">Evaluasi kemajuan diet berdasarkan diagnosis awal dan preskripsi yang diberikan.</p>
@@ -81,7 +81,7 @@
 
     <div class="col-xl-8" data-aos="fade-left" data-aos-delay="200">
         <div class="ncpms-card mb-0 shadow-sm h-100">
-            <h2 class="card-title-custom"><span class="card-title-icon" style="color: #2a5298; background: rgba(42,82,152,0.1);"><i class="fas fa-file-medical-alt"></i></span> Form Rekam Monitoring</h2>
+            <h2 class="card-title-custom"><span class="card-title-icon" style="color: var(--color-primary); background: rgba(42,82,152,0.1);"><i class="fas fa-file-medical-alt"></i></span> Form Rekam Monitoring</h2>
             <form method="POST" action="{{ route('monitoring.store') }}" class="row g-3">
                 @csrf
                 
@@ -168,7 +168,7 @@
 <div class="ncpms-card mb-0 shadow-sm" data-aos="fade-up" data-aos-delay="400">
     <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
         <h2 class="card-title-custom border-0 mb-0 pb-0">
-            <span class="card-title-icon" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white;">
+            <span class="card-title-icon" style="background-color: var(--color-primary); color: white;">
                 <i class="fas fa-table"></i>
             </span> 
             Riwayat Evaluasi

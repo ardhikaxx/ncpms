@@ -88,7 +88,7 @@
                 <tr>
                     <td>
                         <div class="d-flex align-items-center gap-3">
-                            <div class="user-avatar-sm" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                            <div class="user-avatar-sm" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--color-primary), var(--color-primary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
                                 {{ substr($p->nama_lengkap, 0, 1) }}
                             </div>
                             <div>
@@ -106,9 +106,9 @@
                     <td class="text-muted">{{ $p->unit_kerja }}</td>
                     <td>
                         @if($p->trashed() || !$p->status_aktif)
-                            <span class="badge" style="background: #fff5f5; color: #e03131; border: 1px solid #ffe3e3; padding: 6px 10px; border-radius: 20px;"><i class="fas fa-ban"></i> Nonaktif</span>
+                            <span class="badge" style="background: #fff5f5; color: var(--color-primary); border: 1px solid #ffe3e3; padding: 6px 10px; border-radius: 20px;"><i class="fas fa-ban"></i> Nonaktif</span>
                         @else
-                            <span class="badge" style="background: #ebfbee; color: #2f9e44; border: 1px solid #d3f9d8; padding: 6px 10px; border-radius: 20px;"><i class="fas fa-check-circle"></i> Aktif</span>
+                            <span class="badge" style="background: #ebfbee; color: var(--color-primary); border: 1px solid #d3f9d8; padding: 6px 10px; border-radius: 20px;"><i class="fas fa-check-circle"></i> Aktif</span>
                         @endif
                     </td>
                     <td class="text-end">

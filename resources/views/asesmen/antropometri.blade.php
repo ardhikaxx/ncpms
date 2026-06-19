@@ -78,7 +78,7 @@
             <div class="ncpms-card shadow-sm mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                     <h2 class="card-title-custom border-bottom-0 mb-0 pb-0">
-                        <span class="card-title-icon" style="background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);"><i class="fas fa-clipboard-check"></i></span> 
+                        <span class="card-title-icon" style="background-color: var(--color-primary); color: white;"><i class="fas fa-clipboard-check"></i></span> 
                         Hasil Kalkulasi Sistem
                     </h2>
                     <div class="text-muted small"><i class="fas fa-clock"></i> {{ $data->created_at->format('d M Y, H:i') }}</div>

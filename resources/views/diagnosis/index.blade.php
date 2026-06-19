@@ -9,7 +9,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         .diagnosis-banner {
-            background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+            background-color: var(--color-primary);
             border-radius: 20px;
             padding: 2.5rem 3rem;
             color: white;
@@ -20,21 +20,21 @@
         }
         .diagnosis-banner::before {
             content: ''; position: absolute; right: -5%; top: -20%; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius: 50%;
+            background-color: rgba(255,255,255,0.05); border-radius: 50%;
         }
         .diagnosis-banner::after {
             content: ''; position: absolute; right: 15%; bottom: -50%; width: 250px; height: 250px;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%;
+            background-color: rgba(255,255,255,0.05); border-radius: 50%;
         }
         .section-divider {
-            display: flex; align-items: center; margin: 1.5rem 0 1rem; color: #c62828; font-weight: 700;
+            display: flex; align-items: center; margin: 1.5rem 0 1rem; color: var(--color-primary); font-weight: 700;
         }
         .section-divider::after {
             content: ''; flex: 1; height: 1px; background: rgba(0,0,0,0.08); margin-left: 1rem;
         }
         .pes-block {
             background: #fff;
-            border-left: 4px solid #e53935;
+            border-left: 4px solid var(--color-primary);
             padding: 1rem 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
@@ -44,12 +44,12 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             font-weight: 700;
-            color: #c62828;
+            color: var(--color-primary);
             letter-spacing: 0.05em;
             margin-bottom: 0.5rem;
         }
         .pes-keyword {
-            color: #1976d2;
+            color: var(--color-primary);
             font-weight: bold;
             font-style: italic;
         }
@@ -57,10 +57,10 @@
             background: rgba(198, 40, 40, 0.05);
             border: 1px solid var(--color-border);
             border-right: none;
-            color: #c62828;
+            color: var(--color-primary);
         }
         .form-control-ncpms.with-icon { border-left: none; }
-        .form-control-ncpms.with-icon:focus { border-left: 1px solid #c62828; }
+        .form-control-ncpms.with-icon:focus { border-left: 4px solid var(--color-primary); }
         .badge-status { padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
     </style>
 @endpush
@@ -82,11 +82,11 @@
 <div class="row g-4 mb-4">
     <div class="col-xl-4" data-aos="fade-right" data-aos-delay="100">
         <div class="ncpms-card h-100 mb-0 shadow-sm">
-            <h2 class="card-title-custom"><span class="card-title-icon" style="color: #c62828; background: rgba(198,40,40,0.1);"><i class="fas fa-book-medical"></i></span> Format PES</h2>
+            <h2 class="card-title-custom"><span class="card-title-icon" style="color: var(--color-primary); background: rgba(198,40,40,0.1);"><i class="fas fa-book-medical"></i></span> Format PES</h2>
             <div class="alert bg-danger-subtle text-danger border-0 rounded-3 p-4">
                 <h5 class="fw-bold"><i class="fas fa-magic me-2"></i> Auto-Narasi</h5>
                 <p class="mb-2" style="font-size: 0.9rem;">Sistem akan merangkai input Anda secara otomatis menjadi kalimat baku klinis:</p>
-                <div class="bg-white p-3 rounded-3 shadow-sm mt-3" style="font-size: 0.85rem; line-height: 1.6; color: #333;">
+                <div class="bg-white p-3 rounded-3 shadow-sm mt-3" style="font-size: 0.85rem; line-height: 1.6; color: var(--color-primary);">
                     <span class="text-danger fw-bold">[Problem]</span> <br>
                     <span class="pes-keyword">berkaitan dengan</span> <br>
                     <span class="text-warning fw-bold text-dark">[Etiology]</span> <br>
@@ -99,7 +99,7 @@
 
     <div class="col-xl-8" data-aos="fade-left" data-aos-delay="200">
         <div class="ncpms-card mb-0 shadow-sm h-100">
-            <h2 class="card-title-custom"><span class="card-title-icon" style="color: #c62828; background: rgba(198,40,40,0.1);"><i class="fas fa-pen-nib"></i></span> Input Diagnosis</h2>
+            <h2 class="card-title-custom"><span class="card-title-icon" style="color: var(--color-primary); background: rgba(198,40,40,0.1);"><i class="fas fa-pen-nib"></i></span> Input Diagnosis</h2>
             <form method="POST" action="{{ route('diagnosis.store') }}" class="row g-3">
                 @csrf
                 
@@ -159,7 +159,7 @@
                 </div>
 
                 <div class="col-12 mt-4 text-end">
-                    <button class="btn btn-primary-ncpms px-4 py-2" style="background: linear-gradient(135deg, #c62828 0%, #e53935 100%); border: none; font-size: 1rem;">
+                    <button class="btn btn-primary-ncpms px-4 py-2" style="background-color: var(--color-primary); border: none; font-size: 1rem;">
                         <i class="fas fa-stethoscope me-2"></i> Tegakkan Diagnosis
                     </button>
                 </div>
@@ -171,7 +171,7 @@
 <div class="ncpms-card mb-0 shadow-sm" data-aos="fade-up" data-aos-delay="400">
     <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
         <h2 class="card-title-custom border-0 mb-0 pb-0">
-            <span class="card-title-icon" style="background: linear-gradient(135deg, #c62828 0%, #e53935 100%); color: white;">
+            <span class="card-title-icon" style="background-color: var(--color-primary); color: white;">
                 <i class="fas fa-list-ul"></i>
             </span> 
             Daftar Diagnosis Gizi
@@ -201,7 +201,7 @@
                         <div class="badge bg-light text-dark border mt-1">Prio: {{ $d->urutan_prioritas }}</div>
                     </td>
                     <td>
-                        <div class="pes-block m-0 p-3 shadow-none bg-light border-0" style="border-left: 3px solid #e53935 !important;">
+                        <div class="pes-block m-0 p-3 shadow-none bg-light border-0" style="border-left: 4px solid var(--color-primary) !important;">
                             <div class="fw-bold text-dark" style="font-size: 0.9rem;">
                                 {{ $d->terminologi->nama_masalah ?? 'Problem' }}
                             </div>

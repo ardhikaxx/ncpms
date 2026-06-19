@@ -9,7 +9,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         .laporan-banner {
-            background: linear-gradient(135deg, #4b134f 0%, #c94b4b 100%);
+            background-color: var(--color-primary);
             border-radius: 20px;
             padding: 2.5rem 3rem;
             color: white;
@@ -20,15 +20,15 @@
         }
         .laporan-banner::before {
             content: ''; position: absolute; right: -5%; top: -20%; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius: 50%;
+            background-color: rgba(255,255,255,0.05); border-radius: 50%;
         }
         .laporan-banner::after {
             content: ''; position: absolute; right: 15%; bottom: -50%; width: 250px; height: 250px;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%;
+            background-color: rgba(255,255,255,0.05); border-radius: 50%;
         }
         .btn-export-pdf {
             background: #fff;
-            color: #dc3545;
+            color: var(--color-primary);
             border: 1px solid #fff;
             border-radius: 50px;
             font-weight: bold;
@@ -38,11 +38,11 @@
             background: rgba(255,255,255,0.9);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            color: #dc3545;
+            color: var(--color-primary);
         }
         .btn-export-excel {
             background: rgba(0,0,0,0.2);
-            color: #fff;
+            color: var(--color-primary);
             border: 1px solid rgba(255,255,255,0.3);
             border-radius: 50px;
             font-weight: bold;
@@ -50,8 +50,8 @@
         }
         .btn-export-excel:hover {
             background: rgba(0,0,0,0.3);
-            border-color: #fff;
-            color: #fff;
+            border-color: var(--color-primary);
+            color: var(--color-primary);
             transform: translateY(-2px);
         }
         
@@ -77,15 +77,15 @@
         
         .json-preview {
             background: #282c34;
-            color: #abb2bf;
+            color: var(--color-primary);
             padding: 1.5rem;
             border-radius: 12px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.85rem;
             overflow-x: auto;
         }
-        .json-key { color: #e06c75; }
-        .json-value { color: #98c379; }
+        .json-key { color: var(--color-primary); }
+        .json-value { color: var(--color-primary); }
     </style>
 @endpush
 
@@ -113,7 +113,7 @@
 
 <div class="ncpms-card shadow-sm mb-4" data-aos="fade-up" data-aos-delay="100">
     <h2 class="card-title-custom border-bottom pb-3 mb-4">
-        <span class="card-title-icon" style="color: white; background: linear-gradient(135deg, #4b134f, #c94b4b);">
+        <span class="card-title-icon" style="color: white; background-color: var(--color-primary);">
             <i class="fas fa-filter"></i>
         </span> 
         Filter Laporan
@@ -155,7 +155,7 @@
                         <div class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">{{ str_replace('_',' ', $label) }}</div>
                         <div class="fs-2 fw-bold text-dark">{{ $nilai }}</div>
                     </div>
-                    <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 50px; height: 50px; background: rgba(201, 75, 75, 0.1); color: #c94b4b; font-size: 1.4rem;">
+                    <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 50px; height: 50px; background: rgba(201, 75, 75, 0.1); color: var(--color-primary); font-size: 1.4rem;">
                         <i class="fas fa-chart-pie"></i>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
 <div class="ncpms-card shadow-sm" data-aos="fade-up" data-aos-delay="400">
     <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
         <h2 class="card-title-custom border-0 mb-0 pb-0">
-            <span class="card-title-icon" style="color: white; background: linear-gradient(135deg, #4b134f, #c94b4b);">
+            <span class="card-title-icon" style="color: white; background-color: var(--color-primary);">
                 <i class="fas fa-file-medical"></i>
             </span> 
             Preview Laporan Data

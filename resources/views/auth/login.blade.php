@@ -10,7 +10,7 @@
     
     .login-sidebar {
         flex: 1;
-        background: linear-gradient(135deg, var(--color-primary-darker) 0%, var(--color-primary) 100%);
+        background-color: var(--color-primary);
         position: relative;
         overflow: hidden;
         display: flex;
@@ -24,8 +24,7 @@
         content: '';
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(circle at top right, rgba(255,255,255,0.1) 0%, transparent 50%),
-                    radial-gradient(circle at bottom left, rgba(26,122,100,0.4) 0%, transparent 50%);
+        background-color: rgba(26,122,100,0.05);
         pointer-events: none;
     }
     
@@ -142,8 +141,8 @@
     .btn-login {
         width: 100%;
         padding: 14px;
-        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-        color: #fff;
+        background-color: var(--color-primary);
+        color: var(--color-primary);
         border: none;
         border-radius: 12px;
         font-size: 1rem;
