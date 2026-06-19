@@ -16,7 +16,6 @@
   - Pedoman PGRS (Pelayanan Gizi Rumah Sakit) Kemenkes 2013
   - Pedoman Proses Asuhan Gizi Terstandar (PAGT)
   - Standar Profesi Dietisien Kemenkes
-  - FHIR R4 SATUSEHAT Kemenkes
 
 ---
 

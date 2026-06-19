@@ -37,6 +37,7 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
     Route::middleware('role:nutrisionis,dietisien,spgk')->group(function() {
         Route::post('/kunjungan/{kunjungan}/antropometri', [KunjunganController::class, 'storeAntropometri'])->name('kunjungan.antropometri.store');
         Route::post('/kunjungan/{kunjungan}/asupan', [KunjunganController::class, 'storeAsupan'])->name('kunjungan.asupan.store');
+        Route::post('/kunjungan/{kunjungan}/konseling', [KunjunganController::class, 'storeKonseling'])->name('kunjungan.konseling.store');
     });
 
     Route::middleware('role:dietisien,spgk')->group(function() {
@@ -49,6 +50,8 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::post('/diagnosis', [DiagnosaGiziController::class, 'store'])->name('diagnosis.store');
         Route::get('/intervensi', [PreskripsiDietController::class, 'index'])->name('intervensi.index');
         Route::post('/intervensi', [PreskripsiDietController::class, 'store'])->name('intervensi.store');
+        Route::post('/intervensi/{preskripsiDiet}/menu', [KunjunganController::class, 'storeMenuHarian'])->name('intervensi.menu.store');
+        Route::post('/kunjungan/{kunjungan}/dokumen-edukasi', [KunjunganController::class, 'storeDokumenEdukasi'])->name('kunjungan.dokumen-edukasi.store');
         Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
         Route::post('/monitoring', [MonitoringController::class, 'store'])->name('monitoring.store');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');

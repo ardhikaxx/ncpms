@@ -12,7 +12,15 @@ class DetailMenuHarian extends Model
 
     protected $table = 'detail_menu_harians';
     protected $fillable = ['preskripsi_diet_id', 'waktu_makan', 'bahan_makanan_id', 'porsi_gram', 'energi_kkal', 'protein_gram', 'lemak_gram', 'karbohidrat_gram', 'keterangan_penukar'];
-    
-    
+
+    public function preskripsiDiet()
+    {
+        return $this->belongsTo(PreskripsiDiet::class);
+    }
+
+    public function bahanMakanan()
+    {
+        return $this->belongsTo(BahanMakanan::class);
+    }
 
 }

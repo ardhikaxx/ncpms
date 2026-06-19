@@ -7,7 +7,7 @@
         <h1 class="page-title">Dashboard Klinis</h1>
         <p class="page-subtitle">Ringkasan pelayanan gizi klinis hari ini.</p>
     </div>
-    @if(in_array(Auth::user()->peran, ['perawat','nutrisionis','dietisien','spgk']))
+    @if(in_array(Auth::user()->peran, ['perawat','spgk']))
         <a href="{{ route('pasien.create') }}" class="btn-primary-ncpms"><i class="fas fa-plus"></i> Pasien Baru</a>
     @endif
 </div>

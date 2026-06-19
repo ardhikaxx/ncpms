@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\BahanMakanan;
+use App\Models\CatatanKonseling;
 use App\Models\DataAntropometri;
 use App\Models\DataBiokimia;
+use App\Models\DetailMenuHarian;
+use App\Models\DokumenEdukasi;
 use App\Models\Kunjungan;
 use App\Models\PemeriksaanFisikGizi;
+use App\Models\PreskripsiDiet;
 use App\Models\RiwayatAsupanGizi;
 use App\Models\SkriningGizi;
 use App\Services\AntropometriService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class KunjunganController extends Controller
 {
@@ -27,8 +32,10 @@ class KunjunganController extends Controller
             'biokimia',
             'asupan',
             'diagnosaGizis',
-            'preskripsiDiets',
+            'preskripsiDiets.detailMenuHarians.bahanMakanan',
             'monitoring',
+            'catatanKonselings.pelaksana',
+            'dokumenEdukasiis.pembuat',
         ]);
         $bahanMakanans = BahanMakanan::orderBy('nama_bahan')->get();
 
@@ -151,6 +158,86 @@ class KunjunganController extends Controller
         $data['dicatat_oleh'] = Auth::id();
         RiwayatAsupanGizi::updateOrCreate(['kunjungan_id' => $kunjungan->id], $data);
         return back()->with('swal_success', 'Riwayat asupan berhasil disimpan.');
+    }
+
+    public function storeMenuHarian(Request $request, PreskripsiDiet $preskripsiDiet)
+    {
+        $this->izinkan(['dietisien', 'spgk']);
+        $this->pastikanTidakTerkunci($preskripsiDiet->kunjungan);
+
+        $data = $request->validate([
+            'waktu_makan' => ['required', 'in:makan_pagi,selingan_pagi,makan_siang,selingan_sore,makan_malam,selingan_malam'],
+            'bahan_makanan_id' => ['required', 'exists:bahan_makanans,id'],
+            'porsi_gram' => ['required', 'numeric', 'between:1,1000'],
+            'keterangan_penukar' => ['nullable'],
+        ], $this->messages());
+
+        $bahan = BahanMakanan::findOrFail($data['bahan_makanan_id']);
+        $faktor = (float) $data['porsi_gram'] / (float) $bahan->porsi_standar_gram;
+
+        DetailMenuHarian::create(array_merge($data, [
+            'preskripsi_diet_id' => $preskripsiDiet->id,
+            'energi_kkal' => round($bahan->energi_kkal * $faktor, 2),
+            'protein_gram' => round($bahan->protein_gram * $faktor, 2),
+            'lemak_gram' => round($bahan->lemak_gram * $faktor, 2),
+            'karbohidrat_gram' => round($bahan->karbohidrat_gram * $faktor, 2),
+        ]));
+
+        return back()->with('swal_success', 'Detail menu harian berhasil ditambahkan.');
+    }
+
+    public function storeKonseling(Request $request, Kunjungan $kunjungan)
+    {
+        $this->izinkan(['nutrisionis', 'dietisien', 'spgk']);
+        $this->pastikanTidakTerkunci($kunjungan);
+
+        $data = $request->validate([
+            'tanggal_konseling' => ['required', 'date', 'before_or_equal:today'],
+            'durasi_menit' => ['nullable', 'integer', 'between:1,240'],
+            'metode' => ['required', 'in:tatap_muka,telepon,video_call'],
+            'topik_konseling' => ['required'],
+            'isi_konseling' => ['required'],
+            'hambatan_pasien' => ['nullable'],
+            'kesepakatan_tindak_lanjut' => ['nullable'],
+            'tingkat_pemahaman_pasien' => ['nullable', 'in:baik,cukup,kurang'],
+        ], $this->messages());
+
+        $data['topik_konseling'] = array_values(array_filter(array_map('trim', explode(',', $data['topik_konseling']))));
+        $data['dilakukan_oleh'] = Auth::id();
+
+        CatatanKonseling::create(array_merge($data, ['kunjungan_id' => $kunjungan->id]));
+
+        return back()->with('swal_success', 'Catatan konseling berhasil disimpan.');
+    }
+
+    public function storeDokumenEdukasi(Request $request, Kunjungan $kunjungan)
+    {
+        $this->izinkan(['dietisien', 'spgk']);
+        $this->pastikanTidakTerkunci($kunjungan);
+
+        $data = $request->validate([
+            'judul_dokumen' => ['required', 'max:255'],
+            'tipe' => ['required', 'in:leaflet_diet,panduan_makan,ringkasan_kalori,pantangan_alergi,rencana_makan'],
+            'ringkasan' => ['required'],
+            'token_expired_at' => ['nullable', 'date', 'after:today'],
+        ], $this->messages());
+
+        DokumenEdukasi::create([
+            'pasien_id' => $kunjungan->pasien_id,
+            'kunjungan_id' => $kunjungan->id,
+            'judul_dokumen' => $data['judul_dokumen'],
+            'tipe' => $data['tipe'],
+            'konten_json' => [
+                'ringkasan' => $data['ringkasan'],
+                'nomor_kunjungan' => $kunjungan->nomor_kunjungan,
+                'dibuat_pada' => now()->toDateTimeString(),
+            ],
+            'token_akses' => Str::random(40),
+            'token_expired_at' => $data['token_expired_at'] ?? now()->addDays(7),
+            'dibuat_oleh' => Auth::id(),
+        ]);
+
+        return back()->with('swal_success', 'Dokumen edukasi berhasil dibuat.');
     }
 
     public function kunci(Kunjungan $kunjungan)

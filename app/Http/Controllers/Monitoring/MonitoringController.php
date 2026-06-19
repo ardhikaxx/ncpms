@@ -39,6 +39,8 @@ class MonitoringController extends Controller
         ], $this->messages());
 
         $kunjungan = Kunjungan::findOrFail($data['kunjungan_id']);
+        abort_if($kunjungan->dokumen_terkunci, 423, 'Dokumen klinis sudah terkunci.');
+
         $data['parameter_dipantau'] = array_values(array_filter(explode(',', $data['parameter_dipantau'])));
         $data['perlu_rujukan'] = $request->boolean('perlu_rujukan');
         $data['dilakukan_oleh'] = Auth::id();

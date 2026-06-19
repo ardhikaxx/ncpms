@@ -86,10 +86,26 @@
             <div class="sidebar-menu-item"><a href="{{ route('laporan.index') }}" class="{{ request()->routeIs('laporan.*') ? 'active' : '' }}"><i class="fas fa-file-medical-alt menu-icon"></i><span class="menu-text">Laporan</span></a></div>
         @endif
         @if(Auth::user()->peran === 'admin_ti')
-            <div class="sidebar-menu-label">Administrator</div>
-            <div class="sidebar-menu-item"><a href="{{ route('admin.pengguna.index') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}"><i class="fas fa-user-shield menu-icon"></i><span class="menu-text">Manajemen Akun</span></a></div>
+        <div class="sidebar-menu-label" style="font-size: 0.625rem; color: rgba(255,255,255,0.35); padding: 20px 20px 8px; text-transform: uppercase; font-weight: bold;">Administrator</div>
+        <div class="sidebar-menu-item">
+            <a href="{{ route('admin.pengguna') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">
+                <i class="fas fa-user-cog menu-icon"></i> Manajemen Akun
+            </a>
+        </div>
         @endif
-        <div class="sidebar-user-info">
+
+        <div class="sidebar-menu-label" style="font-size: 0.625rem; color: rgba(255,255,255,0.35); padding: 20px 20px 8px; text-transform: uppercase; font-weight: bold;">Enterprise</div>
+        <div class="sidebar-menu-item">
+            <a href="{{ route('export.pasien.pdf') }}" target="_blank">
+                <i class="fas fa-file-pdf menu-icon"></i> Export Pasien (PDF)
+            </a>
+        </div>
+        <div class="sidebar-menu-item">
+            <a href="{{ route('export.laporan.excel') }}" target="_blank">
+                <i class="fas fa-file-excel menu-icon"></i> Export Laporan (Excel)
+            </a>
+        </div>
+    <div class="sidebar-user-info">
             <div class="fw-bold">{{ Auth::user()->nama_lengkap }}</div>
             <div class="small text-white-50">{{ Auth::user()->nama_peran }}</div>
         </div>
