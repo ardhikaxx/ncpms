@@ -1,59 +1,106 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏥 NCPMS (Nutrition Care Process Management System)
+**Sistem Manajemen Asuhan Gizi Rumah Sakit Terstandar**
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+NCPMS adalah Sistem Informasi Manajemen Rumah Sakit (SIMRS) terspesialisasi pada bidang Pelayanan Gizi. Sistem ini dirancang khusus untuk memfasilitasi Dietisien, Nutrisionis, Dokter Spesialis Gizi Klinis (SpGK), dan Perawat dalam melaksanakan Proses Asuhan Gizi Terstandar (PAGT) dengan kepatuhan penuh terhadap regulasi pemerintah.
 
-## About Laravel
+Aplikasi ini mengadopsi prinsip antarmuka modern yang bersih, efisien, dan berpusat pada pengguna (user-centric), dikembangkan dengan kerangka kerja Laravel 12.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📜 Kepatuhan Regulasi (Compliance)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+NCPMS dibangun berlandaskan 3 pilar regulasi dan pedoman nasional:
+1. **Permenkes RI No. 24 Tahun 2022** tentang Rekam Medis Elektronik (RME)
+2. **Pedoman Pelayanan Gizi Rumah Sakit (PGRS)** Kemenkes RI Tahun 2013
+3. **Pedoman Proses Asuhan Gizi Terstandar (PAGT)** / *Nutrition Care Process* (NCP)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## ✨ Fitur Unggulan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🔐 1. Kepatuhan Rekam Medis Elektronik (Permenkes 24/2022)
+*   **Tanda Tangan Elektronik (TTE):** Fitur penguncian dokumen (*lock*) dengan stempel waktu dan identifikasi nakes. Setelah dikunci, data tidak dapat dimodifikasi secara langsung.
+*   **Sistem Audit Trail RME:** Setiap aktivitas (melihat, menambah, mengubah, mencetak, atau mengunci) pada data pasien terekam dalam log permanen yang tidak bisa dihapus, dilengkapi pelacakan *IP Address* dan *User Agent*.
+*   **Modul Adendum & Koreksi RME (Pasal 20):** Dokumen rekam medis yang telah dikunci TTE hanya dapat diperbaiki melalui mekanisme Adendum (koreksi terlampir yang menampilkan jejak perubahan tanpa menghapus data asli).
+*   **Enkripsi Data Pasien (AES-256):** Data rekam medis (Nomor RM, NIK, Nama, Alamat, Antropometri, Diagnosis, dan Catatan Klinis) dienkripsi otomatis di tingkat basis data.
 
-## Laravel Sponsors
+### 🥗 2. Modul Pelayanan Asuhan Gizi Terstandar (PAGT)
+*   **Skrining Gizi Demografi Spesifik:** Mendukung metode skrining terstandar sesuai demografi pasien:
+    *   **MST** (Dewasa Umum)
+    *   **NRS-2002** (Dewasa Risiko Tinggi / Rawat Inap / ICU)
+    *   **STRONGkids** (Pediatri / Anak 1 bln - 18 tahun)
+    *   **MNA** (Geriatri / Lansia > 65 tahun)
+*   **Asesmen Komprehensif:** Modul pencatatan Antropometri, Biokimia, Fisik/Klinis, dan Riwayat Asupan Makanan (Recall 24h, SQ-FFQ).
+*   **Diagnosis Gizi (PES):** Pencatatan *Problem*, *Etiology*, *Sign/Symptom* dengan terminologi baku (NI, NC, NB).
+*   **Kalkulator Kebutuhan Energi Dinamis:** Terintegrasi langsung dengan formulir Preskripsi Diet, mendukung penghitungan Harris-Benedict & Mifflin-St Jeor.
+*   **Peringatan Interaksi Obat-Makanan (*Food-Drug Interaction*):** Peringatan otomatis cerdas saat Dietisien meresepkan diet pada pasien yang sedang mengonsumsi obat-obatan khusus (misal: Warfarin, Captopril, Metformin).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🍳 3. Modul Dapur & Penyelenggaraan Makanan (PGRS 2013)
+*   **Dashboard Instalasi Gizi (Dapur):** Melihat *real-time* permintaan preskripsi diet dari ruang rawat.
+*   **Cetak Etiket Label Makanan:** Pembuatan dan pencetakan etiket label pasien yang siap ditempel pada *food tray*, lengkap dengan detail bentuk makanan, kalori, dan alergi/pantangan.
+*   **Master Data Bahan Makanan:** Basis data nilai tukar/kandungan zat gizi bahan makanan untuk formulasi diet.
 
-### Premium Partners
+### 🤝 4. Catatan Perkembangan Pasien Terintegrasi (CPPT)
+*   **Monitoring & Evaluasi:** Pemantauan perkembangan luaran klinis pasien.
+*   **Catatan Edukasi & Konseling:** Pencatatan durasi, metode, topik, dan tingkat pemahaman pasien atas edukasi gizi.
+*   **Cetak Dokumen Medis PDF:** Ekspor rekaman asuhan gizi ke dalam format PDF yang tersertifikasi.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🛠️ Stack Teknologi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+*   **Backend:** PHP 8.2, Laravel 12.x
+*   **Frontend:** Bootstrap 5.3.3, Vanilla JavaScript, Chart.js
+*   **Database:** MySQL / MariaDB
+*   **Security:** Laravel Crypt (AES-256-CBC), Middleware Role-based
+*   **PDF Generator:** Barryvdh / dompdf
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Panduan Instalasi (Development)
 
-## Security Vulnerabilities
+1. **Kloning Repositori**
+   ```bash
+   git clone https://github.com/ardhikaxx/ncpms.git
+   cd ncpms
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+2. **Instalasi Dependensi**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## License
+3. **Konfigurasi Environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   *Atur konfigurasi database MySQL Anda di dalam file `.env`.*
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4. **Migrasi & Seeding Database**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+   *Perintah ini akan menyuntikkan data dummy yang lengkap (Pasien, Kunjungan, Skrining, Interaksi Obat, Adendum, Etiket Makanan, dll).*
+
+5. **Jalankan Server Lokal**
+   ```bash
+   php artisan serve
+   ```
+   *Aplikasi dapat diakses di http://127.0.0.1:8000*
+
+---
+
+## 👥 Hak Akses (Role-Based)
+
+Gunakan kredensial berikut untuk menguji masing-masing *role* (Password default: `password`):
+*   **Dokter Spesialis Gizi Klinis (SpGK):** `andika.spgk@ncpms.local`
+*   **Dietisien:** `budi.dietisien@ncpms.local`
+*   **Nutrisionis:** `citra.nutrisionis@ncpms.local`
+*   **Perawat:** `diana.perawat@ncpms.local`
+*   **Admin/Dapur:** `eko.admin@ncpms.local`
+
+---
+
+*Dikembangkan untuk dedikasi tinggi terhadap pelayanan kesehatan dan asuhan gizi yang presisi.* 🍏
