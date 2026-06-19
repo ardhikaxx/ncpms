@@ -12,9 +12,14 @@
             {{ $pasien->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}
         </p>
     </div>
-    <a href="{{ route('pasien.edit', $pasien) }}" class="btn-ncpms-outline">
-        Edit Profil
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('pasien.cppt', $pasien) }}" class="btn-ncpms">
+            <i class="fas fa-notes-medical me-1"></i> Buka CPPT
+        </a>
+        <a href="{{ route('pasien.edit', $pasien) }}" class="btn-ncpms-outline">
+            Edit Profil
+        </a>
+    </div>
 </div>
 
 <div class="row g-3">
