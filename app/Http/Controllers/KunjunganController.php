@@ -48,7 +48,7 @@ class KunjunganController extends Controller
         $this->izinkan(['perawat', 'spgk']);
         $this->pastikanTidakTerkunci($kunjungan);
         $data = $request->validate([
-            'metode_skrining' => ['required', 'in:MNA,NRS2002,MST,MUST,STAMP'],
+            'metode_skrining' => ['required', 'in:MNA,NRS2002,MST,MUST,STAMP,STRONGkids'],
             'skor_penurunan_bb' => ['required', 'integer', 'between:0,3'],
             'skor_penurunan_asupan' => ['required', 'integer', 'between:0,3'],
             'skor_keparahan_penyakit' => ['required', 'integer', 'between:0,3'],
@@ -319,5 +319,31 @@ class KunjunganController extends Controller
             'date' => ':attribute harus berupa tanggal yang valid.',
             'before_or_equal' => ':attribute tidak boleh lebih dari hari ini.',
         ];
+    }
+
+    public function updateObat(Request $request, Kunjungan $kunjungan)
+    {
+        $this->izinkan(['perawat', 'spgk', 'dietisien', 'nutrisionis']);
+        $this->pastikanTidakTerkunci($kunjungan);
+        $kunjungan->update(['obat_sedang_dikonsumsi' => $request->obat_sedang_dikonsumsi]);
+        return back()->with('swal_success', 'Riwayat pengobatan berhasil disimpan.');
+    }
+
+    public function storeAdendum(Request $request, Kunjungan $kunjungan)
+    {
+        $this->izinkan(['perawat', 'dietisien', 'spgk', 'nutrisionis']);
+        $request->validate([
+            'jenis_data' => 'required|string',
+            'catatan_koreksi' => 'required|string',
+        ]);
+
+        \App\Models\AdendumRme::create([
+            'kunjungan_id' => $kunjungan->id,
+            'jenis_data' => $request->jenis_data,
+            'catatan_koreksi' => $request->catatan_koreksi,
+            'dibuat_oleh' => Auth::id(),
+        ]);
+
+        return back()->with('swal_success', 'Adendum/Koreksi medis berhasil dilampirkan pada rekam medis yang terkunci.');
     }
 }
