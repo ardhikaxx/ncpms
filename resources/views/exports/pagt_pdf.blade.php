@@ -36,10 +36,9 @@
         <tr>
             <th>Antropometri</th>
             <td>
-                @if($kunjungan->dataAntropometris->count())
-                    @foreach($kunjungan->dataAntropometris as $a)
-                        BB: {{ $a->berat_badan_kg }} kg, TB: {{ $a->tinggi_badan_cm }} cm, LILA: {{ $a->lila_cm ?? '-' }} cm<br>
-                    @endforeach
+                @if($kunjungan->antropometri)
+                    @php $a = $kunjungan->antropometri; @endphp
+                    BB: {{ $a->berat_badan_kg }} kg, TB: {{ $a->tinggi_badan_cm }} cm<br>
                 @else
                     Belum ada data.
                 @endif
@@ -48,10 +47,9 @@
         <tr>
             <th>Biokimia</th>
             <td>
-                @if($kunjungan->dataBiokimias->count())
-                    @foreach($kunjungan->dataBiokimias as $b)
-                        Hb: {{ $b->hemoglobin ?? '-' }}, Albumin: {{ $b->albumin ?? '-' }}, GDS: {{ $b->gula_darah_sewaktu ?? '-' }}<br>
-                    @endforeach
+                @if($kunjungan->biokimia)
+                    @php $b = $kunjungan->biokimia; @endphp
+                    Hb: {{ $b->hemoglobin ?? '-' }}, Albumin: {{ $b->albumin ?? '-' }}, GDS: {{ $b->gula_darah_sewaktu ?? '-' }}<br>
                 @else
                     Belum ada data.
                 @endif
@@ -60,11 +58,10 @@
         <tr>
             <th>Klinis/Fisik</th>
             <td>
-                @if($kunjungan->pemeriksaanFisikGizis->count())
-                    @foreach($kunjungan->pemeriksaanFisikGizis as $f)
-                        TD: {{ $f->tekanan_darah_sistolik }}/{{ $f->tekanan_darah_diastolik }} mmHg, Suhu: {{ $f->suhu_tubuh_celsius }} °C<br>
-                        Kesan: {{ $f->kesan_umum }}
-                    @endforeach
+                @if($kunjungan->fisik)
+                    @php $f = $kunjungan->fisik; @endphp
+                    TD: {{ $f->tekanan_darah_sistolik }}/{{ $f->tekanan_darah_diastolik }} mmHg, Suhu: {{ $f->suhu_tubuh_celsius ?? $f->suhu_celsius ?? '-' }} °C<br>
+                    Kesan: {{ $f->kesan_umum ?? $f->kondisi_mulut ?? '-' }}
                 @else
                     Belum ada data.
                 @endif
@@ -73,11 +70,10 @@
         <tr>
             <th>Riwayat Asupan</th>
             <td>
-                @if($kunjungan->riwayatAsupanGizis->count())
-                    @foreach($kunjungan->riwayatAsupanGizis as $r)
-                        Energi: {{ $r->total_energi_kkal }} kkal, Protein: {{ $r->total_protein_gram }} g<br>
-                        Alergi Makanan: {{ implode(', ', json_decode($r->alergi_makanan_json ?? '[]', true) ?: ['Tidak ada']) }}
-                    @endforeach
+                @if($kunjungan->asupan)
+                    @php $r = $kunjungan->asupan; @endphp
+                    Energi: {{ $r->total_energi_kkal ?? '-' }} kkal, Protein: {{ $r->total_protein_gram ?? '-' }} g<br>
+                    Alergi Makanan: {{ is_string($r->alergi_makanan_json) ? implode(', ', json_decode($r->alergi_makanan_json, true) ?: ['Tidak ada']) : 'Tidak ada' }}
                 @else
                     Belum ada data.
                 @endif
@@ -90,7 +86,7 @@
         @forelse($kunjungan->diagnosaGizis as $d)
         <tr>
             <th>Format PES ({{ $d->status }})</th>
-            <td><strong>{{ \Illuminate\Support\Facades\Crypt::decryptString($d->narasi_pes) }}</strong></td>
+            <td><strong>{{ $d->narasi_pes }}</strong></td>
         </tr>
         @empty
         <tr><td colspan="2">Belum ada diagnosis gizi dicatat.</td></tr>
@@ -119,7 +115,8 @@
 
     <div class="section-title">E. MONITORING & EVALUASI (MONITORING & EVALUATION)</div>
     <table>
-        @forelse($kunjungan->monitorings as $m)
+        @if($kunjungan->monitoring)
+        @php $m = $kunjungan->monitoring; @endphp
         <tr>
             <th>Tanggal Evaluasi</th>
             <td>{{ \Carbon\Carbon::parse($m->created_at)->format('d/m/Y H:i') }}</td>
@@ -132,9 +129,9 @@
             <th>Kesimpulan</th>
             <td>{{ $m->kesimpulan }}</td>
         </tr>
-        @empty
+        @else
         <tr><td colspan="2">Belum ada catatan evaluasi.</td></tr>
-        @endforelse
+        @endif
     </table>
 
     <div style="margin-top: 40px; text-align: right; font-size: 11px;">
