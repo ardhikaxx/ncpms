@@ -293,10 +293,15 @@ class DatabaseSeeder extends Seeder
                     $penyertas = array_map(fn($k) => $availablePenyerta[$k], (array) array_rand($availablePenyerta, $numPenyerta));
                 }
 
+                $kunjunganNum = 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad($i, 3, '0', STR_PAD_LEFT).str_pad($v, 2, '0', STR_PAD_LEFT);
+                $tipeKunjungan = rand(0, 1) === 0 ? 'mandiri' : 'rujukan_internal';
+                $asal = $tipeKunjungan === 'rujukan_internal' ? 'IGD' : 'Poli Umum';
+                $obats = ['Warfarin, Aspirin', 'Captopril, Metformin', 'Simvastatin', 'Insulin, Amlodipine', null, null, null];
                 $kunjunganId = DB::table('kunjungans')->insertGetId([
                     'pasien_id' => $pasienId,
-                    'nomor_kunjungan' => 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad($i, 3, '0', STR_PAD_LEFT).str_pad($v, 2, '0', STR_PAD_LEFT),
-                    'tipe_kunjungan' => rand(0, 1) === 0 ? 'mandiri' : 'rujukan_internal',
+                    'nomor_kunjungan' => $kunjunganNum,
+                    'tipe_kunjungan' => $tipeKunjungan,
+                    'asal_rujukan' => $asal,
                     'status' => $status,
                     'tanggal_kunjungan' => $tanggal->toDateString(),
                     'waktu_registrasi' => $tanggal->copy()->setTime(8, 0),
@@ -305,15 +310,17 @@ class DatabaseSeeder extends Seeder
                     'spgk_id' => $pengguna['spgk'],
                     'diagnosis_medis_utama_id' => $utamaId,
                     'diagnosis_medis_penyerta' => json_encode($penyertas),
+                    'obat_sedang_dikonsumsi' => $obats[array_rand($obats)],
                     'dokumen_terkunci' => $v !== 0,
                     'dikunci_oleh' => $v !== 0 ? $pengguna['spgk'] : null,
                     'created_at' => $tanggal,
                     'updated_at' => $tanggal,
                 ]);
 
+                $metodeSkrining = ['MST', 'MST', 'MST', 'NRS2002', 'STRONGkids', 'MNA'];
                 DB::table('skrining_gizis')->insert([
                     'kunjungan_id' => $kunjunganId,
-                    'metode_skrining' => 'MST',
+                    'metode_skrining' => $metodeSkrining[array_rand($metodeSkrining)],
                     'skor_penurunan_bb' => rand(0,2),
                     'skor_penurunan_asupan' => rand(0,1),
                     'skor_keparahan_penyakit' => rand(0,2),
@@ -480,7 +487,7 @@ class DatabaseSeeder extends Seeder
                             'durasi_menit' => rand(15, 60),
                             'metode' => $metodes[array_rand($metodes)],
                             'topik_konseling' => json_encode(['Pemahaman Diet', 'Cara Pengolahan Makanan']),
-                            'isi_konseling' => 'Menjelaskan prinsip diet dan bahan makanan penukar. Pasien bertanya mengenai batasan buah-buahan.',
+                            'isi_konseling' => \Illuminate\Support\Facades\Crypt::encryptString('Menjelaskan prinsip diet dan bahan makanan penukar. Pasien bertanya mengenai batasan buah-buahan.'),
                             'hambatan_pasien' => rand(0, 1) === 1 ? 'Kurang motivasi untuk mengubah kebiasaan' : null,
                             'kesepakatan_tindak_lanjut' => 'Keluarga akan membantu mengawasi asupan di rumah',
                             'tingkat_pemahaman_pasien' => $tingkats[array_rand($tingkats)],
@@ -549,6 +556,29 @@ class DatabaseSeeder extends Seeder
                 'created_at' => $now->copy()->subHours(rand(1, 72)),
                 'updated_at' => $now->copy()->subHours(rand(1, 72)),
             ]);
+        }
+
+        // Seed Adendum RME dummy for locked kunjungans
+        $lockedKunjungans = DB::table('kunjungans')->where('dokumen_terkunci', true)->pluck('id');
+        if($lockedKunjungans->count() > 0) {
+            $jenisDataList = ['Skrining Gizi', 'Asesmen Antropometri', 'Asesmen Asupan', 'Diagnosis PES', 'Preskripsi Diet'];
+            $koreksiList = [
+                'Koreksi berat badan aktual dari 55 kg menjadi 52 kg',
+                'Koreksi target kalori dari 1800 kkal menjadi 1500 kkal sesuai kondisi ginjal terbaru',
+                'Penambahan alergi Telur pada riwayat diet',
+                'Ralat diagnosis gizi NI 5.8 menjadi NI 5.4'
+            ];
+            
+            for ($i=0; $i<5; $i++) {
+                DB::table('adendum_rmes')->insert([
+                    'kunjungan_id' => $lockedKunjungans->random(),
+                    'jenis_data' => $jenisDataList[array_rand($jenisDataList)],
+                    'catatan_koreksi' => $koreksiList[array_rand($koreksiList)],
+                    'dibuat_oleh' => array_rand(array_flip([1, 2, 3, 4, 5])),
+                    'created_at' => $now->copy()->subHours(rand(1, 48)),
+                    'updated_at' => $now->copy()->subHours(rand(1, 48)),
+                ]);
+            }
         }
     }
 }
