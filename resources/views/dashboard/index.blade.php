@@ -54,6 +54,21 @@
         </div>
     </div>
 </div>
+
+<div class="row g-3 mt-1">
+    <div class="col-lg-5">
+        <div class="ncpms-card">
+            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-chart-pie"></i></span> Proporsi Risiko Malnutrisi</h2>
+            <div class="chart-wrap"><canvas id="chartRisiko"></canvas></div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="ncpms-card">
+            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-chart-bar"></i></span> Top 5 Penyakit Utama</h2>
+            <div class="chart-wrap"><canvas id="chartDiagnosis"></canvas></div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -65,6 +80,39 @@ new Chart(document.getElementById('chartKunjungan'), {
         datasets: [{ label: 'Kunjungan', data: @json($grafikKunjungan->pluck('total')), borderColor: '#1A7A64', backgroundColor: 'rgba(26,122,100,.12)', fill: true, tension: .35 }]
     },
     options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } } }
+});
+
+new Chart(document.getElementById('chartRisiko'), {
+    type: 'pie',
+    data: {
+        labels: @json($proporsiRisiko->pluck('kategori_risiko')->map(fn($k) => str_replace('_', ' ', strtoupper($k)))),
+        datasets: [{
+            data: @json($proporsiRisiko->pluck('total')),
+            backgroundColor: ['#1A7A64', '#ff9800', '#dc3545', '#6c757d']
+        }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position: 'right' } } }
+});
+
+new Chart(document.getElementById('chartDiagnosis'), {
+    type: 'bar',
+    data: {
+        labels: @json($topDiagnosis->pluck('nama_diagnosis')),
+        datasets: [{
+            label: 'Jumlah Kunjungan',
+            data: @json($topDiagnosis->pluck('kunjungans_count')),
+            backgroundColor: '#1A7A64',
+            borderRadius: 6
+        }]
+    },
+    options: { 
+        responsive:true, maintainAspectRatio:false, 
+        plugins:{ legend:{ display:false } }, 
+        scales:{ 
+            y:{ beginAtZero:true, ticks:{ precision:0 } },
+            x: { ticks: { display: false } }
+        } 
+    }
 });
 </script>
 @endpush

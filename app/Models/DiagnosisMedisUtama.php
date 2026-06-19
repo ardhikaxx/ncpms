@@ -12,7 +12,8 @@ class DiagnosisMedisUtama extends Model
 
     protected $table = 'diagnosis_medis_utamas';
     protected $fillable = ['kode_icd10', 'nama_diagnosis', 'kategori'];
-    
-    
-
+    public function kunjungans()
+    {
+        return $this->hasMany(Kunjungan::class, 'diagnosis_medis_utama_id');
+    }
 }

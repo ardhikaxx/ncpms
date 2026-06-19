@@ -44,6 +44,16 @@ class DashboardController extends Controller
             ];
         });
 
+        $proporsiRisiko = SkriningGizi::selectRaw('kategori_risiko, count(*) as total')
+            ->groupBy('kategori_risiko')
+            ->get();
+
+        $topDiagnosis = \App\Models\DiagnosisMedisUtama::withCount('kunjungans')
+            ->having('kunjungans_count', '>', 0)
+            ->orderByDesc('kunjungans_count')
+            ->limit(5)
+            ->get();
+
         return view('dashboard.index', compact(
             'totalPasien',
             'totalKunjunganHariIni',
@@ -51,7 +61,9 @@ class DashboardController extends Controller
             'menungguAsesmen',
             'totalPreskripsiAktif',
             'kunjungans',
-            'grafikKunjungan'
+            'grafikKunjungan',
+            'proporsiRisiko',
+            'topDiagnosis'
         ));
     }
 }
