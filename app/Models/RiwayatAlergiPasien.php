@@ -13,6 +13,6 @@ class RiwayatAlergiPasien extends Model implements \OwenIt\Auditing\Contracts\Au
     protected $table = 'riwayat_alergi_pasiens';
     protected $fillable = ['pasien_id', 'jenis_alergi', 'nama_alergen', 'reaksi', 'tingkat_keparahan', 'dicatat_oleh'];
     protected $casts = ['nama_alergen' => 'encrypted'];
-    
-
+    public function pasien() { return $this->belongsTo(Pasien::class); }
+    public function pencatat() { return $this->belongsTo(Pengguna::class, 'dicatat_oleh'); }
 }
