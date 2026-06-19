@@ -732,6 +732,9 @@
                 <div class="sidebar-menu-item"><a href="{{ route('diagnosis.index') }}"
                         class="{{ request()->routeIs('diagnosis.*') ? 'active' : '' }}"><i
                             class="fas fa-clipboard-list menu-icon"></i><span class="menu-text">Diagnosis Gizi</span></a></div>
+                <div class="sidebar-menu-item"><a href="{{ route('bahan-makanan.index') }}"
+                        class="{{ request()->routeIs('bahan-makanan.*') ? 'active' : '' }}"><i
+                            class="fas fa-carrot menu-icon"></i><span class="menu-text">Database DKPI</span></a></div>
                 <div class="sidebar-menu-item"><a href="{{ route('intervensi.index') }}"
                         class="{{ request()->routeIs('intervensi.*') ? 'active' : '' }}"><i
                             class="fas fa-utensils menu-icon"></i><span class="menu-text">Preskripsi Diet</span></a></div>
