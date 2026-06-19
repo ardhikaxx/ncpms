@@ -32,7 +32,8 @@
     $bisaKonseling = !$terkunci && in_array($peran, ['nutrisionis','dietisien','spgk'], true);
     $bisaDokumen = !$terkunci && in_array($peran, ['dietisien','spgk'], true);
     $bisaSelesai = !$terkunci && in_array($peran, ['dietisien','spgk'], true);
-    $komorbids = json_decode($kunjungan->diagnosis_medis_penyerta ?? '[]', true);
+    $bisaIntervensi = !$terkunci && in_array($peran, ['dietisien','spgk'], true);
+    $komorbids = is_string($kunjungan->diagnosis_medis_penyerta) ? json_decode($kunjungan->diagnosis_medis_penyerta, true) : ($kunjungan->diagnosis_medis_penyerta ?? []);
     $risikoTinggi = $kunjungan->skriningGizi?->kategori_risiko === 'risiko_tinggi';
 @endphp
 
@@ -43,12 +44,9 @@
     </div>
     <div class="d-flex gap-2">
         @if(!$kunjungan->dokumen_terkunci && Auth::user()->peran === 'spgk')
-            <form method="POST" action="{{ route('kunjungan.kunci', $kunjungan) }}" data-confirm-lock>
-                @csrf
-                <button class="btn-danger-ncpms">
-                    <i class="fas fa-lock"></i> Kunci Dokumen
-                </button>
-            </form>
+            <button type="button" class="btn-danger-ncpms" data-bs-toggle="modal" data-bs-target="#modalTTE">
+                <i class="fas fa-lock"></i> Kunci & TTE
+            </button>
         @endif
         <a href="{{ route('kunjungan.cetak-pagt', $kunjungan) }}" target="_blank" class="btn-ncpms" style="text-decoration: none;">
             <i class="fas fa-file-pdf"></i> Cetak PAGT
@@ -65,7 +63,12 @@
 </div>
 
 @if($kunjungan->dokumen_terkunci)
-    <div class="locked-banner"><i class="fas fa-lock"></i> DOKUMEN TERKUNCI — data klinis tidak dapat diubah.</div>
+<div class="locked-banner d-flex justify-content-between align-items-center">
+    <div>
+        <i class="fas fa-lock me-2"></i> Dokumen asuhan gizi ini telah diverifikasi & dikunci pada {{ $kunjungan->dikunci_pada?->format('d/m/Y H:i') }}.
+    </div>
+    <span class="badge-pill" style="background: #dcfce7; color: #166534; font-size: 0.75rem;"><i class="fas fa-certificate text-success"></i> TTE TERSERTIFIKASI</span>
+</div>
 @endif
 
 @if($risikoTinggi || count($komorbids) > 0)
@@ -381,6 +384,45 @@
                 <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Preskripsi diet belum dibuat.</p>
             @endforelse
         </div>
+        {{-- 6.5. Nutrisi Kritis --}}
+        <div class="ncpms-card">
+            <div class="card-title-custom">
+                <i class="fas fa-procedures" style="color: var(--color-primary);"></i>
+                Nutrisi Enteral & Parenteral (ICU/Kritis)
+            </div>
+            @if($kunjungan->preskripsiKritis)
+                @php $kritis = $kunjungan->preskripsiKritis; @endphp
+                <div class="info-row"><div class="info-label">Jenis Nutrisi</div><div class="info-value"><span class="badge-pill badge-soft-danger">{{ strtoupper($kritis->jenis_nutrisi) }}</span></div></div>
+                <div class="info-row"><div class="info-label">Rute Pemberian</div><div class="info-value">{{ $kritis->rute_pemberian }}</div></div>
+                <div class="info-row"><div class="info-label">Nama Formula</div><div class="info-value">{{ $kritis->nama_formula }}</div></div>
+                <div class="info-row"><div class="info-label">Volume & Frekuensi</div><div class="info-value">{{ $kritis->volume_ml }} ml x {{ $kritis->frekuensi_sehari }} /hari</div></div>
+                <div class="info-row"><div class="info-label">Kecepatan Drip</div><div class="info-value">{{ $kritis->kecepatan_pemberian ?? '-' }}</div></div>
+                <div class="info-row"><div class="info-label">Total Gizi</div><div class="info-value">E: {{ $kritis->total_kalori_kkal }}kkal | P: {{ $kritis->total_protein_gram }}g | L: {{ $kritis->total_lemak_gram }}g | KH: {{ $kritis->total_karbohidrat_gram }}g</div></div>
+                @if($kritis->instruksi_khusus)<div class="info-row"><div class="info-label">Instruksi Khusus</div><div class="info-value">{{ $kritis->instruksi_khusus }}</div></div>@endif
+            @endif
+            
+            @if($bisaIntervensi && !$kunjungan->preskripsiKritis)
+            <div class="section-divider">Buat Preskripsi Kritis</div>
+            <form method="POST" action="{{ route('kunjungan.kritis.store', $kunjungan) }}" class="row g-2">
+                @csrf
+                <div class="col-md-3"><label class="form-label-ncpms">Jenis</label><select name="jenis_nutrisi" class="form-control-ncpms"><option value="enteral">Enteral</option><option value="parenteral">Parenteral</option><option value="kombinasi">Kombinasi</option></select></div>
+                <div class="col-md-4"><label class="form-label-ncpms">Rute Pemberian</label><input name="rute_pemberian" class="form-control-ncpms" placeholder="Misal: NGT, NDT, Central IV" required></div>
+                <div class="col-md-5"><label class="form-label-ncpms">Nama Formula</label><input name="nama_formula" class="form-control-ncpms" required></div>
+                
+                <div class="col-md-3"><label class="form-label-ncpms">Volume (ml)</label><input type="number" step="0.1" name="volume_ml" class="form-control-ncpms" required></div>
+                <div class="col-md-3"><label class="form-label-ncpms">Frekuensi /hari</label><input type="number" name="frekuensi_sehari" class="form-control-ncpms" required></div>
+                <div class="col-md-6"><label class="form-label-ncpms">Kecepatan (tetes/mnt atau ml/jam)</label><input type="number" step="0.1" name="kecepatan_pemberian" class="form-control-ncpms"></div>
+                
+                <div class="col-md-3"><label class="form-label-ncpms">Tot. Kalori (kkal)</label><input type="number" step="0.1" name="total_kalori_kkal" class="form-control-ncpms" required></div>
+                <div class="col-md-3"><label class="form-label-ncpms">Tot. Protein (g)</label><input type="number" step="0.1" name="total_protein_gram" class="form-control-ncpms" required></div>
+                <div class="col-md-3"><label class="form-label-ncpms">Tot. Lemak (g)</label><input type="number" step="0.1" name="total_lemak_gram" class="form-control-ncpms" required></div>
+                <div class="col-md-3"><label class="form-label-ncpms">Tot. KH (g)</label><input type="number" step="0.1" name="total_karbohidrat_gram" class="form-control-ncpms" required></div>
+                
+                <div class="col-12"><label class="form-label-ncpms">Instruksi Khusus</label><textarea name="instruksi_khusus" class="form-control-ncpms" rows="2"></textarea></div>
+                <div class="col-12"><button class="btn-ncpms"><i class="fas fa-save"></i> Simpan Preskripsi Kritis</button></div>
+            </form>
+            @endif
+        </div>
 
         {{-- 7. Konseling --}}
         <div class="ncpms-card">
@@ -470,4 +512,44 @@
     </div>
 </div>
 
+{{-- Modal TTE --}}
+<div class="modal fade" id="modalTTE" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" style="color: var(--color-primary);"><i class="fas fa-certificate me-2"></i> Tanda Tangan Elektronik</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ route('kunjungan.kunci', $kunjungan) }}">
+                @csrf
+                <div class="modal-body">
+                    <div class="p-3 rounded mb-3" style="background: #f1f5f9; border: 1px solid #cbd5e1; font-size: 0.85rem;">
+                        <i class="fas fa-info-circle text-primary me-1"></i> Anda akan memverifikasi dan mengunci permanen dokumen klinis ini menggunakan TTE (Tanda Tangan Elektronik) Tersertifikasi BSrE. Tindakan ini memenuhi standar RME Permenkes 24/2022.
+                    </div>
+                    <div class="mb-3 text-center">
+                        <label class="form-label-ncpms d-block">Masukkan PIN TTE (6 Karakter) <span class="required-mark">*</span></label>
+                        <input type="password" name="pin_tte" class="form-control-ncpms text-center mx-auto d-inline-block" style="max-width: 200px; font-size: 1.5rem; letter-spacing: 0.5rem;" maxlength="6" minlength="6" placeholder="******" required>
+                        <small class="text-muted mt-2 d-block" style="font-size: 0.75rem;">Contoh Simulasi: 123456</small>
+                    </div>
+                </div>
+                <div class="modal-footer border-0" style="background: #f8fafc;">
+                    <button type="button" class="btn btn-secondary px-4 py-2 rounded-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-ncpms px-4 py-2 rounded-3"><i class="fas fa-fingerprint me-1"></i> Verifikasi & Kunci</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    // Memindahkan modal TTE ke luar dari wrapper utama agar tidak terhalang z-index / overlay
+    document.addEventListener('DOMContentLoaded', function() {
+        const modalTTE = document.getElementById('modalTTE');
+        if (modalTTE) {
+            document.body.appendChild(modalTTE);
+        }
+    });
+</script>
+@endpush
 @endsection
