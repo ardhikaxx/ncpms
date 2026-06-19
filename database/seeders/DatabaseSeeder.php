@@ -241,15 +241,18 @@ class DatabaseSeeder extends Seeder
 
         for ($i = 0; $i < count($pasienIds); $i++) {
             $pasienId = $pasienIds[$i];
-            
             $numVisits = rand(1, 4);
             
             for ($v = 0; $v < $numVisits; $v++) {
-                // Determine if this visit should be exactly today (e.g., last visit of the loop and a 10% chance overall)
-                if ($v === $numVisits - 1 && rand(1, 100) <= 15) {
-                    $tanggal = $now->copy(); // Today's visit
+                // Ensure the last 50 patients have a visit exactly today that is waiting for assessment
+                $isTodayVisit = ($i >= count($pasienIds) - 50 && $v === $numVisits - 1);
+                
+                if ($isTodayVisit) {
+                    $tanggal = Carbon::today(); // Force today without time components shifting it
+                    $status = 'dalam_pelayanan';
                 } else {
                     $tanggal = $now->copy()->subDays(rand(1, 300));
+                    $status = 'selesai';
                 }
                 
                 $kodeDx = $dxKeys[array_rand($dxKeys)];
@@ -261,7 +264,7 @@ class DatabaseSeeder extends Seeder
                     'pasien_id' => $pasienId,
                     'nomor_kunjungan' => 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad($i, 3, '0', STR_PAD_LEFT).str_pad($v, 2, '0', STR_PAD_LEFT),
                     'tipe_kunjungan' => rand(0, 1) === 0 ? 'mandiri' : 'rujukan_internal',
-                    'status' => ($tanggal->isToday() && rand(1, 100) <= 60) ? 'dalam_pelayanan' : 'selesai',
+                    'status' => $status,
                     'tanggal_kunjungan' => $tanggal->toDateString(),
                     'waktu_registrasi' => $tanggal->copy()->setTime(8, 0),
                     'perawat_id' => $pengguna['perawat'],
@@ -288,46 +291,48 @@ class DatabaseSeeder extends Seeder
                     'updated_at' => $tanggal,
                 ]);
 
-                $imt = round($bb / (($tb / 100) ** 2), 2);
-                DB::table('data_antropometris')->insert([
-                    'kunjungan_id' => $kunjunganId,
-                    'tanggal_pengukuran' => $tanggal->toDateString(),
-                    'berat_badan_kg' => Crypt::encryptString((string) $bb),
-                    'tinggi_badan_cm' => Crypt::encryptString((string) $tb),
-                    'imt' => Crypt::encryptString((string) $imt),
-                    'status_gizi_imt' => $imt < 18.5 ? 'kurus' : ($imt <= 25 ? 'normal' : 'gemuk'),
-                    'dicatat_oleh' => $pengguna['nutrisionis'],
-                    'created_at' => $tanggal,
-                    'updated_at' => $tanggal,
-                ]);
+                if ($status === 'selesai') {
+                    $imt = round($bb / (($tb / 100) ** 2), 2);
+                    DB::table('data_antropometris')->insert([
+                        'kunjungan_id' => $kunjunganId,
+                        'tanggal_pengukuran' => $tanggal->toDateString(),
+                        'berat_badan_kg' => Crypt::encryptString((string) $bb),
+                        'tinggi_badan_cm' => Crypt::encryptString((string) $tb),
+                        'imt' => Crypt::encryptString((string) $imt),
+                        'status_gizi_imt' => $imt < 18.5 ? 'kurus' : ($imt <= 25 ? 'normal' : 'gemuk'),
+                        'dicatat_oleh' => $pengguna['nutrisionis'],
+                        'created_at' => $tanggal,
+                        'updated_at' => $tanggal,
+                    ]);
 
-                DB::table('pemeriksaan_fisik_gizis')->insert([
-                    'kunjungan_id' => $kunjunganId,
-                    'tekanan_darah_sistolik' => rand(100, 160),
-                    'tekanan_darah_diastolik' => rand(70, 100),
-                    'nadi_per_menit' => rand(60, 100),
-                    'suhu_celsius' => 36.5,
-                    'kondisi_mulut' => 'Normal',
-                    'dicatat_oleh' => $pengguna['perawat'],
-                    'created_at' => $tanggal,
-                    'updated_at' => $tanggal,
-                ]);
-                
-                $term = $termKeys[array_rand($termKeys)];
-                $problem = DB::table('terminologi_diagnosis_gizis')->where('id', $terminologi[$term])->value('nama_masalah');
-                
-                DB::table('diagnosa_gizis')->insert([
-                    'kunjungan_id' => $kunjunganId,
-                    'terminologi_id' => $terminologi[$term],
-                    'domain' => 'klinis',
-                    'problem_masalah' => $problem,
-                    'etiologi_penyebab' => 'kondisi klinis terkait',
-                    'signs_symptoms' => 'berdasarkan asesmen awal',
-                    'narasi_pes' => Crypt::encryptString($problem . ' berkaitan dengan kondisi klinis terkait.'),
-                    'dicatat_oleh' => $pengguna['dietisien'],
-                    'created_at' => $tanggal,
-                    'updated_at' => $tanggal,
-                ]);
+                    DB::table('pemeriksaan_fisik_gizis')->insert([
+                        'kunjungan_id' => $kunjunganId,
+                        'tekanan_darah_sistolik' => rand(100, 160),
+                        'tekanan_darah_diastolik' => rand(70, 100),
+                        'nadi_per_menit' => rand(60, 100),
+                        'suhu_celsius' => 36.5,
+                        'kondisi_mulut' => 'Normal',
+                        'dicatat_oleh' => $pengguna['perawat'],
+                        'created_at' => $tanggal,
+                        'updated_at' => $tanggal,
+                    ]);
+                    
+                    $term = $termKeys[array_rand($termKeys)];
+                    $problem = DB::table('terminologi_diagnosis_gizis')->where('id', $terminologi[$term])->value('nama_masalah');
+                    
+                    DB::table('diagnosa_gizis')->insert([
+                        'kunjungan_id' => $kunjunganId,
+                        'terminologi_id' => $terminologi[$term],
+                        'domain' => 'klinis',
+                        'problem_masalah' => $problem,
+                        'etiologi_penyebab' => 'kondisi klinis terkait',
+                        'signs_symptoms' => 'berdasarkan asesmen awal',
+                        'narasi_pes' => Crypt::encryptString($problem . ' berkaitan dengan kondisi klinis terkait.'),
+                        'dicatat_oleh' => $pengguna['dietisien'],
+                        'created_at' => $tanggal,
+                        'updated_at' => $tanggal,
+                    ]);
+                }
             }
         }
     }
