@@ -721,35 +721,35 @@
             <div class="sidebar-menu-label">Menu Utama</div>
             <div class="sidebar-menu-item"><a href="{{ route('dashboard') }}"
                     class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"><i
-                        class="fas fa-th-large menu-icon"></i><span class="menu-text">Dashboard</span></a></div>
+                        class="fas fa-chart-pie menu-icon"></i><span class="menu-text">Dashboard</span></a></div>
             @if (in_array(Auth::user()->peran, ['perawat', 'nutrisionis', 'dietisien', 'spgk']))
                 <div class="sidebar-menu-item"><a href="{{ route('pasien.index') }}"
                         class="{{ request()->routeIs('pasien.*') || request()->routeIs('kunjungan.*') ? 'active' : '' }}"><i
-                            class="fas fa-users menu-icon"></i><span class="menu-text">Pasien & Kunjungan</span></a>
+                            class="fas fa-hospital-user menu-icon"></i><span class="menu-text">Pasien & Kunjungan</span></a>
                 </div>
             @endif
             @if (in_array(Auth::user()->peran, ['dietisien', 'spgk']))
                 <div class="sidebar-menu-item"><a href="{{ route('diagnosis.index') }}"
                         class="{{ request()->routeIs('diagnosis.*') ? 'active' : '' }}"><i
-                            class="fas fa-clipboard-list menu-icon"></i><span class="menu-text">Diagnosis Gizi</span></a></div>
+                            class="fas fa-notes-medical menu-icon"></i><span class="menu-text">Diagnosis Gizi</span></a></div>
                 <div class="sidebar-menu-item"><a href="{{ route('bahan-makanan.index') }}"
                         class="{{ request()->routeIs('bahan-makanan.*') ? 'active' : '' }}"><i
-                            class="fas fa-carrot menu-icon"></i><span class="menu-text">Database DKPI</span></a></div>
+                            class="fas fa-book-medical menu-icon"></i><span class="menu-text">Database DKPI</span></a></div>
                 <div class="sidebar-menu-item"><a href="{{ route('intervensi.index') }}"
                         class="{{ request()->routeIs('intervensi.*') ? 'active' : '' }}"><i
-                            class="fas fa-utensils menu-icon"></i><span class="menu-text">Preskripsi Diet</span></a></div>
+                            class="fas fa-file-prescription menu-icon"></i><span class="menu-text">Preskripsi Diet</span></a></div>
                 <div class="sidebar-menu-item"><a href="{{ route('monitoring.index') }}"
                         class="{{ request()->routeIs('monitoring.*') ? 'active' : '' }}"><i
-                            class="fas fa-chart-line menu-icon"></i><span class="menu-text">Monitoring</span></a></div>
+                            class="fas fa-heart-pulse menu-icon"></i><span class="menu-text">Monitoring</span></a></div>
                 <div class="sidebar-menu-item"><a href="{{ route('laporan.index') }}"
                         class="{{ request()->routeIs('laporan.*') ? 'active' : '' }}"><i
-                            class="fas fa-file-alt menu-icon"></i><span class="menu-text">Laporan</span></a></div>
+                            class="fas fa-file-waveform menu-icon"></i><span class="menu-text">Laporan</span></a></div>
             @endif
             @if (Auth::user()->peran === 'admin_ti')
                 <div class="sidebar-menu-label">Administrator</div>
                 <div class="sidebar-menu-item">
                     <a href="{{ route('admin.pengguna') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">
-                        <i class="fas fa-cog menu-icon"></i> <span class="menu-text">Manajemen Akun</span>
+                        <i class="fas fa-users-cog menu-icon"></i> <span class="menu-text">Manajemen Akun</span>
                     </a>
                 </div>
             @endif
