@@ -28,7 +28,7 @@ class ExportController extends Controller
                 'Nama' => $p->nama_lengkap,
                 'Usia' => $p->tanggal_lahir?->age,
                 'Jenis Kelamin' => $p->jenis_kelamin,
-                'Total Kunjungan' => $p->kunjungans->count(,
+                'Total Kunjungan' => $p->kunjungans->count(),
             ]);
         }
         
