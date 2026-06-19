@@ -13,6 +13,5 @@ class LaporanStatistik extends Model
     protected $table = 'laporan_statistiks';
     protected $fillable = ['tipe_laporan', 'periode_dari', 'periode_sampai', 'parameter', 'data_laporan', 'dibuat_oleh'];
     protected $casts = ['parameter' => 'array', 'data_laporan' => 'array', 'periode_dari' => 'date', 'periode_sampai' => 'date'];
-    
-
+    public function pembuat() { return $this->belongsTo(Pengguna::class, 'dibuat_oleh'); }
 }
