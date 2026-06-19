@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         foreach ([
             'login_histories', 'laporan_statistiks', 'monitorings', 'catatan_konselings', 'dokumen_edukasiis',
-            'detail_menu_harians', 'preskripsi_diets', 'diagnosa_gizis', 'riwayat_asupan_gizis',
+            'detail_menu_harians', 'preskripsi_kritis', 'preskripsi_diets', 'diagnosa_gizis', 'riwayat_asupan_gizis',
             'pemeriksaan_fisik_gizis', 'data_biokimias', 'data_antropometris', 'skrining_gizis',
             'kunjungans', 'terminologi_diagnosis_gizis', 'bahan_makanans', 'diagnosis_medis_utamas',
             'riwayat_alergi_pasiens', 'sesi_aktifs', 'pasiens', 'penggunas',
@@ -172,18 +172,43 @@ class DatabaseSeeder extends Seeder
     private function seedBahanMakanan(Carbon $now): array
     {
         $rows = [
-            ['Nasi putih', 'karbohidrat', 100, 130, 2.7, 0.3, 28.6, 0.4, 1, 35],
-            ['Kentang rebus', 'karbohidrat', 100, 87, 1.9, 0.1, 20.1, 1.8, 6, 379],
-            ['Ayam dada tanpa kulit', 'protein_hewani', 50, 82.5, 15.5, 1.8, 0, 0, 37, 128],
-            ['Ikan kembung', 'protein_hewani', 50, 83, 10.5, 4.2, 0, 0, 34, 122],
-            ['Telur ayam', 'protein_hewani', 55, 85, 6.8, 6.2, 0.6, 0, 71, 69],
-            ['Tempe kedelai', 'protein_nabati', 50, 96.5, 9.5, 5.4, 4.7, 0.7, 5, 206],
-            ['Tahu putih', 'protein_nabati', 100, 80, 10.9, 4.7, 0.8, 0.1, 7, 87],
-            ['Bayam rebus', 'sayuran', 100, 23, 3, 0.3, 3.8, 2.4, 70, 466],
-            ['Wortel rebus', 'sayuran', 100, 35, 0.8, 0.2, 8.2, 3, 58, 235],
-            ['Pepaya', 'buah', 100, 46, 0.5, 0.1, 12.2, 1.6, 4, 257],
-            ['Apel merah', 'buah', 100, 52, 0.3, 0.2, 13.8, 2.4, 1, 107],
-            ['Minyak kanola', 'lemak', 5, 45, 0, 5, 0, 0, 0, 0],
+            // Karbohidrat
+            ['Nasi Putih', 'karbohidrat', 100, 130, 2.4, 0.2, 28.6, 0.4, 1, 35],
+            ['Beras Giling', 'karbohidrat', 100, 357, 8.4, 1.7, 77.1, 0.4, 1, 35],
+            ['Singkong (Ubi Kayu)', 'karbohidrat', 100, 160, 1.2, 0.3, 38.1, 0.4, 1, 35],
+            ['Kentang', 'karbohidrat', 100, 83, 2.0, 0.1, 19.1, 1.8, 6, 379],
+            ['Roti Putih', 'karbohidrat', 100, 266, 8.9, 3.3, 49.0, 0.4, 1, 35],
+            
+            // Protein Hewani
+            ['Daging Sapi (Tanpa Lemak)', 'protein_hewani', 100, 250, 26.0, 15.0, 0.0, 0.0, 37, 128],
+            ['Telur Ayam Ras (Mentah)', 'protein_hewani', 100, 154, 12.4, 10.8, 0.7, 0.0, 71, 69],
+            ['Daging Ayam (Dada)', 'protein_hewani', 100, 165, 31.0, 3.6, 0.0, 0.0, 37, 128],
+            ['Ikan Lele Segar', 'protein_hewani', 100, 105, 18.0, 2.9, 0.0, 0.0, 34, 122],
+            ['Susu Sapi Segar', 'minuman', 100, 61, 3.2, 3.5, 4.3, 0.0, 37, 128],
+            
+            // Protein Nabati
+            ['Tempe Kedelai', 'protein_nabati', 100, 193, 18.5, 10.8, 9.4, 0.7, 5, 206],
+            ['Tahu Putih', 'protein_nabati', 100, 76, 8.1, 4.8, 1.9, 0.1, 7, 87],
+            ['Kacang Hijau', 'protein_nabati', 100, 347, 23.8, 1.2, 62.9, 0.7, 5, 206],
+            
+            // Sayuran
+            ['Bayam Segar', 'sayuran', 100, 23, 2.9, 0.4, 3.6, 2.4, 70, 466],
+            ['Kangkung Segar', 'sayuran', 100, 19, 3.4, 0.2, 3.1, 2.4, 70, 466],
+            ['Wortel Segar', 'sayuran', 100, 41, 0.9, 0.2, 9.6, 3.0, 58, 235],
+            
+            // Buah
+            ['Pisang Ambon', 'buah', 100, 89, 1.1, 0.3, 22.8, 1.6, 4, 257],
+            ['Apel Segar', 'buah', 100, 52, 0.3, 0.2, 13.8, 2.4, 1, 107],
+            ['Jeruk Manis', 'buah', 100, 47, 0.9, 0.1, 11.8, 1.6, 4, 257],
+            ['Pepaya Segar', 'buah', 100, 43, 0.5, 0.1, 10.8, 1.6, 4, 257],
+
+            // Lemak & Minyak
+            ['Minyak Kelapa Sawit', 'lemak', 100, 884, 0.0, 100.0, 0.0, 0.0, 0, 0],
+            ['Mentega (Butter)', 'lemak', 100, 717, 0.9, 81.1, 0.1, 0.0, 0, 0],
+
+            // Formula Medis Kritis (Komersial)
+            ['Formula Enteral Standar', 'minuman', 100, 100, 4.0, 3.3, 13.8, 0.0, 0, 0],
+            ['Formula High Protein ICU', 'minuman', 100, 150, 10.0, 5.0, 16.2, 0.0, 0, 0],
         ];
 
         $ids = [];
@@ -199,7 +224,7 @@ class DatabaseSeeder extends Seeder
                 'serat_gram' => $serat,
                 'natrium_mg' => $natrium,
                 'kalium_mg' => $kalium,
-                'sumber_data' => 'TKPI Indonesia 2019',
+                'sumber_data' => 'DKPI Kemenkes',
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
@@ -301,6 +326,8 @@ class DatabaseSeeder extends Seeder
 
                 if ($status === 'selesai') {
                     $imt = round($bb / (($tb / 100) ** 2), 2);
+                    $isPediatri = rand(1, 100) <= 20; // 20% anak-anak
+                    $zbb = $isPediatri ? (rand(-30, 30) / 10) : null;
                     DB::table('data_antropometris')->insert([
                         'kunjungan_id' => $kunjunganId,
                         'tanggal_pengukuran' => $tanggal->toDateString(),
@@ -308,6 +335,13 @@ class DatabaseSeeder extends Seeder
                         'tinggi_badan_cm' => Crypt::encryptString((string) $tb),
                         'imt' => Crypt::encryptString((string) $imt),
                         'status_gizi_imt' => $imt < 18.5 ? 'kurus' : ($imt <= 25 ? 'normal' : 'gemuk'),
+                        'is_pediatri' => $isPediatri,
+                        'usia_tahun' => $isPediatri ? rand(1, 17) : null,
+                        'usia_bulan' => $isPediatri ? rand(0, 11) : null,
+                        'zscore_bb_u' => $zbb,
+                        'zscore_tb_u' => $isPediatri ? (rand(-30, 30) / 10) : null,
+                        'zscore_imt_u' => $isPediatri ? (rand(-30, 30) / 10) : null,
+                        'status_gizi_anak' => $isPediatri ? ($zbb < -2 ? 'gizi_kurang' : ($zbb > 2 ? 'gizi_lebih' : 'gizi_baik')) : null,
                         'dicatat_oleh' => $pengguna['nutrisionis'],
                         'created_at' => $tanggal,
                         'updated_at' => $tanggal,
@@ -378,6 +412,29 @@ class DatabaseSeeder extends Seeder
                         'created_at' => $tanggal,
                         'updated_at' => $tanggal,
                     ]);
+
+                    if (rand(1, 100) <= 15) { // 15% peluang preskripsi nutrisi kritis
+                        $jenis = ['enteral', 'parenteral', 'kombinasi'];
+                        $rute = ['NGT', 'NDT', 'Central IV', 'Peripheral IV'];
+                        $formulas = ['Peptamen', 'Nutrican', 'Aminofusin', 'Clinimix', 'Ensure', 'Pan-Enteral'];
+                        DB::table('preskripsi_kritis')->insert([
+                            'kunjungan_id' => $kunjunganId,
+                            'jenis_nutrisi' => $jenis[array_rand($jenis)],
+                            'rute_pemberian' => $rute[array_rand($rute)],
+                            'nama_formula' => $formulas[array_rand($formulas)],
+                            'volume_ml' => rand(500, 2000),
+                            'frekuensi_sehari' => rand(4, 6),
+                            'kecepatan_pemberian' => rand(20, 60),
+                            'total_kalori_kkal' => rand(1000, 2000),
+                            'total_protein_gram' => rand(40, 80),
+                            'total_lemak_gram' => rand(30, 60),
+                            'total_karbohidrat_gram' => rand(150, 250),
+                            'instruksi_khusus' => 'Bilas selang dengan air hangat 30ml setiap selesai pemberian. Observasi residu lambung.',
+                            'dicatat_oleh' => $pengguna['dietisien'],
+                            'created_at' => $tanggal,
+                            'updated_at' => $tanggal,
+                        ]);
+                    }
 
                     $waktuMakan = ['makan_pagi', 'selingan_pagi', 'makan_siang', 'selingan_sore', 'makan_malam'];
                     $pengolahans = ['Rebus', 'Kukus', 'Panggang', 'Tumis Sedikit Minyak', 'Bakar', 'Saring'];
