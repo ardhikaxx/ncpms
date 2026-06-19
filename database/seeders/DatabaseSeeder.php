@@ -332,6 +332,75 @@ class DatabaseSeeder extends Seeder
                         'created_at' => $tanggal,
                         'updated_at' => $tanggal,
                     ]);
+
+                    $preskripsiId = DB::table('preskripsi_diets')->insertGetId([
+                        'kunjungan_id' => $kunjunganId,
+                        'formula_basal' => 'harris_benedict',
+                        'berat_badan_acuan' => 'aktual',
+                        'kebutuhan_energi_basal_kkal' => rand(1200, 1500),
+                        'faktor_aktivitas' => 1.2,
+                        'faktor_stres' => 1.1,
+                        'total_kebutuhan_energi_kkal' => rand(1500, 2200),
+                        'persen_karbohidrat' => 50,
+                        'gram_karbohidrat' => rand(200, 300),
+                        'persen_protein' => 20,
+                        'gram_protein' => rand(50, 80),
+                        'persen_lemak' => 30,
+                        'gram_lemak' => rand(40, 70),
+                        'bentuk_makanan' => 'lunak',
+                        'frekuensi_makan_utama' => 3,
+                        'frekuensi_selingan' => 2,
+                        'tujuan_terapi' => 'Meningkatkan asupan oral secara bertahap',
+                        'tanggal_mulai' => $tanggal->toDateString(),
+                        'status' => 'selesai',
+                        'dibuat_oleh' => $pengguna['dietisien'],
+                        'created_at' => $tanggal,
+                        'updated_at' => $tanggal,
+                    ]);
+
+                    $waktuMakan = ['makan_pagi', 'selingan_pagi', 'makan_siang', 'selingan_sore', 'makan_malam'];
+                    foreach ($waktuMakan as $waktu) {
+                        DB::table('detail_menu_harians')->insert([
+                            'preskripsi_diet_id' => $preskripsiId,
+                            'waktu_makan' => $waktu,
+                            'bahan_makanan_id' => $bahan[array_rand($bahan)],
+                            'porsi_gram' => rand(50, 150),
+                            'energi_kkal' => rand(100, 300),
+                            'protein_gram' => rand(5, 20),
+                            'lemak_gram' => rand(5, 15),
+                            'karbohidrat_gram' => rand(20, 50),
+                            'keterangan_penukar' => 'Rebus / Kukus',
+                            'created_at' => $tanggal,
+                            'updated_at' => $tanggal,
+                        ]);
+                    }
+
+                    if (rand(1, 100) <= 50) {
+                        DB::table('dokumen_edukasiis')->insert([
+                            'pasien_id' => $pasienId,
+                            'kunjungan_id' => $kunjunganId,
+                            'judul_dokumen' => 'Panduan Edukasi Diet',
+                            'tipe' => 'leaflet_diet',
+                            'konten_json' => json_encode(['poin' => 'Kurangi garam', 'target' => 'BB ideal']),
+                            'dibuat_oleh' => $pengguna['dietisien'],
+                            'created_at' => $tanggal,
+                            'updated_at' => $tanggal,
+                        ]);
+                    }
+
+                    if (rand(1, 100) <= 70) {
+                        DB::table('monitorings')->insert([
+                            'kunjungan_id' => $kunjunganId,
+                            'parameter_dipantau' => json_encode(['Berat Badan', 'Asupan Energi']),
+                            'evaluasi_kepatuhan_diet' => 'patuh',
+                            'evaluasi_anthropometri' => 'BB stabil',
+                            'evaluasi_asupan' => 'Asupan membaik 80%',
+                            'kesimpulan' => 'Kondisi membaik',
+                            'dilakukan_oleh' => $pengguna['dietisien'],
+                            'created_at' => $tanggal,
+                            'updated_at' => $tanggal,
+                        ]);
+                    }
                 }
             }
         }
