@@ -19,7 +19,7 @@ class ExportController extends Controller
 
     public function cetakPagt(Kunjungan $kunjungan)
     {
-        $kunjungan->load(['pasien', 'skriningGizi', 'dataAntropometris', 'dataBiokimias', 'pemeriksaanFisikGizis', 'riwayatAsupanGizis', 'diagnosaGizis', 'preskripsiDiets', 'monitorings']);
+        $kunjungan->load(['pasien', 'skriningGizi', 'antropometri', 'biokimia', 'fisik', 'asupan', 'diagnosaGizis', 'preskripsiDiets', 'monitoring']);
         $pdf = Pdf::loadView('exports.pagt_pdf', compact('kunjungan'));
         return $pdf->download('Resume_PAGT_'.$kunjungan->nomor_kunjungan.'.pdf');
     }
