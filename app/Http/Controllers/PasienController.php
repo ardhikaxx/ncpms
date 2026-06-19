@@ -74,19 +74,24 @@ class PasienController extends Controller
 
     public function show(Pasien $pasien)
     {
-        abort_if(Auth::user()->peran === 'admin_ti', 403, 'Admin TI tidak boleh mengakses detail klinis pasien.');
+        $pasien->load(['kunjungans' => function ($query) {
+            $query->orderBy('tanggal_kunjungan', 'desc')->with(['diagnosisMedisUtama', 'skriningGizi', 'antropometri']);
+        }, 'riwayatAlergi']);
+        
+        $dietisiens = \App\Models\Pengguna::whereIn('peran', ['dietisien', 'spgk'])->get();
+        $diagnosisMedis = \App\Models\DiagnosisMedisUtama::orderBy('nama_diagnosis')->get();
 
-        $pasien->load([
-            'riwayatAlergi',
-            'kunjungans.skriningGizi',
-            'kunjungans.diagnosisMedisUtama',
-            'kunjungans.antropometri',
-            'kunjungans.biokimia',
-        ]);
+        return view('pasien.show', compact('pasien', 'dietisiens', 'diagnosisMedis'));
+    }
 
-        $diagnosisMedis = DiagnosisMedisUtama::orderBy('kode_icd10')->get();
-        $dietisiens = Pengguna::whereIn('peran', ['dietisien', 'spgk'])->where('status_aktif', true)->get();
-        return view('pasien.show', compact('pasien', 'diagnosisMedis', 'dietisiens'));
+    public function cppt(Pasien $pasien)
+    {
+        $pasien->load(['kunjungans' => function ($query) {
+            $query->orderBy('tanggal_kunjungan', 'desc')
+                  ->with(['skriningGizi', 'antropometri', 'fisik', 'biokimia', 'asupan', 'diagnosaGizis', 'preskripsiDiets', 'preskripsiKritis', 'monitoring', 'catatanKonselings', 'spgk', 'diagnosisMedisUtama']);
+        }]);
+
+        return view('pasien.cppt', compact('pasien'));
     }
 
     public function edit(Pasien $pasien)
