@@ -24,7 +24,9 @@ class Kunjungan extends Model implements \OwenIt\Auditing\Contracts\Auditable
     public function fisik() { return $this->hasOne(PemeriksaanFisikGizi::class)->latestOfMany(); }
     public function asupan() { return $this->hasOne(RiwayatAsupanGizi::class)->latestOfMany(); }
     public function diagnosaGizis() { return $this->hasMany(DiagnosaGizi::class)->orderBy('urutan_prioritas'); }
-    public function preskripsiDiets() { return $this->hasMany(PreskripsiDiet::class)->latest(); }
+    public function preskripsiDiets() { return $this->hasMany(PreskripsiDiet::class); }
+    public function preskripsiKritis() { return $this->hasOne(PreskripsiKritis::class); }
+    public function detailMenuHarians() { return $this->hasManyThrough(DetailMenuHarian::class, PreskripsiDiet::class); }
     public function monitoring() { return $this->hasOne(Monitoring::class); }
     public function catatanKonselings() { return $this->hasMany(CatatanKonseling::class)->latest('tanggal_konseling'); }
     public function dokumenEdukasiis() { return $this->hasMany(DokumenEdukasi::class)->latest(); }
