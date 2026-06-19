@@ -13,6 +13,7 @@ class Monitoring extends Model implements \OwenIt\Auditing\Contracts\Auditable
     protected $table = 'monitorings';
     protected $fillable = ['kunjungan_id', 'kunjungan_sebelumnya_id', 'parameter_dipantau', 'evaluasi_anthropometri', 'evaluasi_biokimia', 'evaluasi_asupan', 'evaluasi_kepatuhan_diet', 'persen_sisa_makanan', 'kesimpulan', 'rekomendasi_lanjutan', 'perlu_rujukan', 'tujuan_rujukan', 'rencana_kunjungan_berikutnya', 'dilakukan_oleh'];
     protected $casts = ['parameter_dipantau' => 'array', 'rencana_kunjungan_berikutnya' => 'date'];
-    
-
+    public function kunjungan() { return $this->belongsTo(Kunjungan::class); }
+    public function kunjunganSebelumnya() { return $this->belongsTo(Kunjungan::class, 'kunjungan_sebelumnya_id'); }
+    public function pelaksana() { return $this->belongsTo(Pengguna::class, 'dilakukan_oleh'); }
 }
