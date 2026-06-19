@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -81,16 +82,16 @@ class DatabaseSeeder extends Seeder
         $ids = [];
         foreach ($rows as $row) {
             $ids[] = DB::table('pasiens')->insertGetId([
-                'nomor_rekam_medis' => encrypt($row[0]),
-                'nik' => encrypt($row[1]),
-                'nama_lengkap' => encrypt($row[2]),
+                'nomor_rekam_medis' => Crypt::encryptString($row[0]),
+                'nik' => Crypt::encryptString($row[1]),
+                'nama_lengkap' => Crypt::encryptString($row[2]),
                 'tempat_lahir' => $row[3],
                 'tanggal_lahir' => $row[4],
                 'jenis_kelamin' => $row[5],
                 'golongan_darah' => $row[6],
-                'nomor_telepon' => encrypt($row[7]),
-                'alamat' => encrypt($row[8]),
-                'nomor_bpjs' => encrypt($row[9]),
+                'nomor_telepon' => Crypt::encryptString($row[7]),
+                'alamat' => Crypt::encryptString($row[8]),
+                'nomor_bpjs' => Crypt::encryptString($row[9]),
                 'status_aktif' => true,
                 'satusehat_patient_id' => 'P'.Str::upper(Str::random(10)),
                 'created_at' => $now,
@@ -108,7 +109,7 @@ class DatabaseSeeder extends Seeder
             DB::table('riwayat_alergi_pasiens')->insert([
                 'pasien_id' => $pasienId,
                 'jenis_alergi' => $jenis,
-                'nama_alergen' => encrypt($nama),
+                'nama_alergen' => Crypt::encryptString($nama),
                 'reaksi' => $reaksi,
                 'tingkat_keparahan' => $tingkat,
                 'dicatat_oleh' => $pengguna['perawat'],
@@ -265,13 +266,13 @@ class DatabaseSeeder extends Seeder
             DB::table('data_antropometris')->insert([
                 'kunjungan_id' => $kunjunganId,
                 'tanggal_pengukuran' => $tanggal->toDateString(),
-                'berat_badan_kg' => encrypt((string) $bb),
-                'tinggi_badan_cm' => encrypt((string) $tb),
-                'imt' => encrypt((string) $imt),
+                'berat_badan_kg' => Crypt::encryptString((string) $bb),
+                'tinggi_badan_cm' => Crypt::encryptString((string) $tb),
+                'imt' => Crypt::encryptString((string) $imt),
                 'status_gizi_imt' => $imt < 18.5 ? 'kurus' : ($imt <= 25 ? 'normal' : ($imt <= 27 ? 'gemuk' : 'obesitas_1')),
-                'lingkar_lengan_atas_cm' => encrypt((string) round($bb / 2.8, 1)),
-                'lingkar_perut_cm' => encrypt((string) round($bb + 20, 1)),
-                'berat_badan_ideal_kg' => encrypt((string) round(($tb - 100) * .9, 1)),
+                'lingkar_lengan_atas_cm' => Crypt::encryptString((string) round($bb / 2.8, 1)),
+                'lingkar_perut_cm' => Crypt::encryptString((string) round($bb + 20, 1)),
+                'berat_badan_ideal_kg' => Crypt::encryptString((string) round(($tb - 100) * .9, 1)),
                 'dicatat_oleh' => $pengguna['nutrisionis'],
                 'created_at' => $tanggal,
                 'updated_at' => $tanggal,
@@ -340,7 +341,7 @@ class DatabaseSeeder extends Seeder
                 'problem_masalah' => $problem,
                 'etiologi_penyebab' => 'pola makan belum sesuai kondisi klinis dan kebutuhan terapi',
                 'signs_symptoms' => 'hasil skrining '.$risiko.', recall asupan tidak sesuai target, dan parameter klinis terkait',
-                'narasi_pes' => encrypt($problem.' berkaitan dengan pola makan belum sesuai kondisi klinis ditandai dengan hasil skrining '.$risiko.' dan parameter klinis terkait.'),
+                'narasi_pes' => Crypt::encryptString($problem.' berkaitan dengan pola makan belum sesuai kondisi klinis ditandai dengan hasil skrining '.$risiko.' dan parameter klinis terkait.'),
                 'urutan_prioritas' => 1,
                 'status' => 'aktif',
                 'divalidasi_oleh' => $i >= 4 ? $pengguna['spgk'] : null,
@@ -374,7 +375,7 @@ class DatabaseSeeder extends Seeder
                 'frekuensi_makan_utama' => 3,
                 'frekuensi_selingan' => 2,
                 'pantangan_spesifik' => json_encode($kodeDx === 'N18.3' ? ['makanan tinggi kalium', 'makanan tinggi natrium'] : ['minuman tinggi gula']),
-                'catatan_klinis' => encrypt('Preskripsi disesuaikan dengan diagnosis medis utama dan hasil asesmen gizi.'),
+                'catatan_klinis' => Crypt::encryptString('Preskripsi disesuaikan dengan diagnosis medis utama dan hasil asesmen gizi.'),
                 'tujuan_terapi' => 'Mencapai asupan adekuat, memperbaiki parameter klinis, dan meningkatkan kepatuhan diet.',
                 'target_luaran_klinis' => json_encode(['asupan energi 90-110% kebutuhan', 'kepatuhan diet meningkat', 'parameter lab membaik']),
                 'tanggal_mulai' => $tanggal->toDateString(),
@@ -423,7 +424,7 @@ class DatabaseSeeder extends Seeder
                 'durasi_menit' => 30,
                 'metode' => 'tatap_muka',
                 'topik_konseling' => json_encode(['pembagian porsi', 'pemilihan bahan makanan', 'target kontrol']),
-                'isi_konseling' => encrypt('Pasien diedukasi tentang pembagian porsi, jadwal makan, pantangan, dan pemantauan mandiri.'),
+                'isi_konseling' => Crypt::encryptString('Pasien diedukasi tentang pembagian porsi, jadwal makan, pantangan, dan pemantauan mandiri.'),
                 'hambatan_pasien' => 'Jadwal kerja dan kebiasaan makan keluarga.',
                 'kesepakatan_tindak_lanjut' => 'Kontrol ulang dua minggu dengan catatan makan harian.',
                 'tingkat_pemahaman_pasien' => $i % 3 === 0 ? 'cukup' : 'baik',
