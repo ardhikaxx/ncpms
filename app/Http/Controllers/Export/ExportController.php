@@ -24,11 +24,11 @@ class ExportController extends Controller
         
         foreach ($pasiens as $p) {
             $writer->addRow([
-                'NRM' => decrypt($p->nomor_rekam_medis),
-                'Nama' => decrypt($p->nama_lengkap),
+                'NRM' => $p->nomor_rekam_medis,
+                'Nama' => $p->nama_lengkap,
                 'Usia' => $p->tanggal_lahir?->age,
                 'Jenis Kelamin' => $p->jenis_kelamin,
-                'Total Kunjungan' => $p->kunjungans->count(),
+                'Total Kunjungan' => $p->kunjungans->count(,
             ]);
         }
         
