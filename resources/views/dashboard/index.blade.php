@@ -177,7 +177,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                     <h2 class="card-title-custom border-0 mb-0 pb-0">
                         <span class="card-title-icon"
-                            style="background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);"><i
+                            style="background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%); color: white;"><i
                                 class="fas fa-list-check"></i></span>
                         Manifes Pasien Hari Ini
                     </h2>
@@ -228,9 +228,9 @@
                                     </td>
                                     <td class="text-end pe-4">
                                         <a href="{{ route('kunjungan.show', $k) }}"
-                                            class="btn btn-sm btn-light border fw-bold text-primary"
-                                            style="border-radius: 8px; transition: all 0.2s;">
-                                            Buka <i class="fas fa-chevron-right ms-1" style="font-size: 0.7rem;"></i>
+                                            class="btn btn-sm btn-light border text-primary"
+                                            style="border-radius: 8px; transition: all 0.2s; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;" title="Buka Detail">
+                                            <i class="fas fa-chevron-right" style="font-size: 0.8rem;"></i>
                                         </a>
                                     </td>
                                 </tr>
