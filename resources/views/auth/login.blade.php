@@ -1,282 +1,224 @@
 @extends('layouts.app')
 @section('title', 'Masuk ke Sistem')
-@section('content')
+
+@push('styles')
 <style>
-    .login-wrap {
+    .login-root {
         display: flex;
         min-height: 100vh;
-        background: #f0f4f2;
+        background: var(--color-bg-page);
         font-family: var(--font-primary);
     }
 
-    /* Left panel */
-    .login-panel {
-        width: 45%;
-        background: var(--color-primary);
-        position: relative;
+    /* Left Panel */
+    .login-left {
+        width: 42%;
+        background: #0f766e;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 4rem 3.5rem;
+        padding: 3.5rem 3rem;
         color: #fff;
-        overflow: hidden;
     }
-    .login-panel::before {
-        content: '';
-        position: absolute;
-        width: 400px; height: 400px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.05);
-        top: -120px; left: -100px;
-    }
-    .login-panel::after {
-        content: '';
-        position: absolute;
-        width: 260px; height: 260px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.04);
-        bottom: -80px; right: -60px;
-    }
-    .panel-logo {
-        width: 60px; height: 60px;
-        background: rgba(255,255,255,0.15);
-        border-radius: 16px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.8rem;
-        margin-bottom: 2rem;
-        border: 1px solid rgba(255,255,255,0.2);
-        position: relative; z-index: 1;
-    }
-    .panel-title {
-        font-size: 3.2rem;
+
+    .login-brand {
+        font-size: 2.4rem;
         font-weight: 800;
-        letter-spacing: -0.04em;
+        letter-spacing: -0.03em;
         line-height: 1;
-        margin-bottom: 1rem;
-        position: relative; z-index: 1;
+        margin-bottom: 0.75rem;
     }
-    .panel-desc {
-        font-size: 1rem;
+
+    .login-tagline {
+        font-size: 0.92rem;
+        color: rgba(255,255,255,0.75);
         line-height: 1.7;
-        color: rgba(255,255,255,0.78);
-        max-width: 380px;
-        position: relative; z-index: 1;
+        margin-bottom: 2.5rem;
+        max-width: 340px;
     }
-    .panel-features {
-        margin-top: 2.5rem;
+
+    .login-features {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        position: relative; z-index: 1;
+        gap: 0.85rem;
     }
-    .panel-feature-item {
+
+    .login-feature {
         display: flex;
         align-items: center;
-        gap: 12px;
-        font-size: 0.9rem;
-        color: rgba(255,255,255,0.85);
+        gap: 10px;
+        font-size: 0.86rem;
+        color: rgba(255,255,255,0.8);
     }
-    .panel-feature-item i {
-        width: 32px; height: 32px;
-        background: rgba(255,255,255,0.12);
-        border-radius: 8px;
-        display: flex; align-items: center; justify-content: center;
+
+    .login-feature-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.45);
         flex-shrink: 0;
     }
 
-    /* Right form area */
-    .login-form-area {
+    /* Right Panel */
+    .login-right {
         flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 2rem;
-        background: #f0f4f2;
     }
+
     .login-card {
         width: 100%;
-        max-width: 420px;
+        max-width: 400px;
         background: #fff;
-        border-radius: 20px;
-        padding: 2.5rem 2.5rem;
-        box-shadow: 0 8px 40px rgba(18,130,96,0.08), 0 2px 8px rgba(0,0,0,0.04);
+        border-radius: var(--radius-lg);
+        padding: 2.25rem;
+        box-shadow: var(--shadow-sm);
         border: 1px solid var(--color-border);
-        animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: loginFadeIn 0.35s ease-out forwards;
     }
-    @keyframes slideUpFade {
-        from { opacity: 0; transform: translateY(24px); }
+
+    @keyframes loginFadeIn {
+        from { opacity: 0; transform: translateY(12px); }
         to   { opacity: 1; transform: translateY(0); }
     }
-    .login-heading {
-        margin-bottom: 2rem;
-    }
-    .login-heading h2 {
-        font-size: 1.75rem;
+
+    .login-card-title {
+        font-size: 1.45rem;
         font-weight: 800;
         color: var(--color-text-primary);
         letter-spacing: -0.02em;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.2rem;
     }
-    .login-heading p {
+
+    .login-card-sub {
+        font-size: 0.86rem;
         color: var(--color-text-muted);
-        font-size: 0.9rem;
-        margin: 0;
+        margin-bottom: 1.5rem;
     }
-    .form-group-login {
-        margin-bottom: 1.2rem;
-    }
-    .form-group-login label {
+
+    .login-label {
         display: block;
-        font-size: 0.82rem;
-        font-weight: 700;
+        font-size: 0.78rem;
+        font-weight: 600;
         color: var(--color-text-secondary);
-        margin-bottom: 6px;
+        margin-bottom: 5px;
         text-transform: uppercase;
         letter-spacing: 0.04em;
     }
-    .form-input-login {
+
+    .login-input {
         width: 100%;
-        padding: 12px 16px;
+        padding: 10px 14px;
         border: 1.5px solid var(--color-border);
-        border-radius: 10px;
-        font-size: 0.95rem;
-        font-family: var(--font-secondary);
-        transition: all 0.25s ease;
-        background: #fafcfb;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-family: var(--font-primary);
+        background: #fff;
         color: var(--color-text-primary);
         outline: none;
-    }
-    .form-input-login:focus {
-        border-color: var(--color-primary);
-        background: #fff;
-        box-shadow: 0 0 0 4px var(--color-primary-subtle);
-    }
-    .input-icon-wrap {
-        position: relative;
-    }
-    .input-icon-wrap i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--color-text-muted);
-        font-size: 0.9rem;
-    }
-    .input-icon-wrap .form-input-login {
-        padding-left: 40px;
-    }
-    .btn-login-submit {
-        width: 100%;
-        padding: 13px;
-        background: var(--color-primary);
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        box-shadow: 0 4px 16px rgba(18,130,96,0.25);
-        margin-top: 0.5rem;
-        letter-spacing: 0.02em;
-        font-family: var(--font-primary);
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .btn-login-submit:hover {
-        background: var(--color-primary-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(18,130,96,0.3);
-    }
-    .demo-box {
-        margin-top: 1.5rem;
-        padding: 1rem 1.25rem;
-        background: var(--color-primary-subtle);
-        border-radius: 10px;
-        border: 1px dashed var(--color-primary-border);
-        font-size: 0.82rem;
-        color: var(--color-primary-dark);
-    }
-    .demo-box strong { color: var(--color-primary); }
-    .demo-box code {
-        background: rgba(18,130,96,0.1);
-        padding: 1px 6px;
-        border-radius: 4px;
-        font-size: 0.82rem;
-        color: var(--color-primary-dark);
+        transition: border-color 0.2s, box-shadow 0.2s;
+        margin-bottom: 1rem;
     }
 
-    @media (max-width: 900px) {
-        .login-panel { display: none; }
-        .login-card { padding: 2rem; }
+    .login-input:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.08);
+    }
+
+    .login-error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .demo-info {
+        margin-top: 1.25rem;
+        padding: 0.85rem 1rem;
+        background: var(--color-primary-subtle);
+        border-radius: var(--radius-sm);
+        border: 1px dashed var(--color-primary-border);
+        font-size: 0.8rem;
+        color: var(--color-primary-dark);
+        line-height: 1.7;
+    }
+
+    .demo-info code {
+        background: rgba(15, 118, 110, 0.1);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    @media (max-width: 860px) {
+        .login-left { display: none; }
     }
 </style>
+@endpush
 
-<div class="login-wrap">
-    {{-- Left Panel --}}
-    <div class="login-panel">
-        <div class="panel-logo">
-            <i class="fas fa-leaf text-white"></i>
-        </div>
-        <h1 class="panel-title">NCPMS</h1>
-        <p class="panel-desc">Sistem Informasi Manajemen Asuhan Gizi Terpadu. Tingkatkan presisi asuhan, kurangi risiko malnutrisi.</p>
-        <div class="panel-features">
-            <div class="panel-feature-item">
-                <i class="fas fa-shield-alt"></i>
-                <span>Keamanan data pasien terstandar</span>
+@section('content')
+<div class="login-root">
+    <div class="login-left">
+        <div class="login-brand">NCPMS</div>
+        <p class="login-tagline">Sistem Informasi Manajemen Asuhan Gizi Terpadu untuk pelayanan klinis yang presisi dan terstandar.</p>
+        <div class="login-features">
+            <div class="login-feature">
+                <div class="login-feature-dot"></div>
+                <span>Asesmen nutrisi berbasis ADIME</span>
             </div>
-            <div class="panel-feature-item">
-                <i class="fas fa-chart-line"></i>
-                <span>Analitik klinis real-time</span>
+            <div class="login-feature">
+                <div class="login-feature-dot"></div>
+                <span>Preskripsi diet dengan kalkulator kalori</span>
             </div>
-            <div class="panel-feature-item">
-                <i class="fas fa-user-md"></i>
-                <span>Alur PAGT terintegrasi penuh</span>
+            <div class="login-feature">
+                <div class="login-feature-dot"></div>
+                <span>Monitoring & evaluasi PAGT terpadu</span>
+            </div>
+            <div class="login-feature">
+                <div class="login-feature-dot"></div>
+                <span>Laporan statistik & audit mutu gizi</span>
             </div>
         </div>
     </div>
 
-    {{-- Right Form --}}
-    <div class="login-form-area">
+    <div class="login-right">
         <div class="login-card">
-            <div class="login-heading">
-                <h2>Selamat Datang</h2>
-                <p>Masukkan kredensial Anda untuk mengakses sistem.</p>
-            </div>
+            <div class="login-card-title">Selamat Datang</div>
+            <div class="login-card-sub">Masukkan kredensial Anda untuk mengakses sistem.</div>
 
             @if ($errors->any())
-                <div class="alert alert-danger d-flex align-items-center gap-2 mb-3" style="border-radius: 10px; font-size: 0.85rem; border: 1px solid #ffc9c9; background: #fff5f5;">
-                    <i class="fas fa-exclamation-circle text-danger"></i>
-                    {{ $errors->first() }}
+                <div class="login-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ $errors->first() }}</span>
                 </div>
             @endif
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
-                <div class="form-group-login">
-                    <label>Email / ID Pengguna</label>
-                    <div class="input-icon-wrap">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" name="email" class="form-input-login" required autofocus
-                            value="andika.spgk@ncpms.local" placeholder="email@rumah-sakit.com">
-                    </div>
-                </div>
+                <label class="login-label">Email / ID Pengguna</label>
+                <input type="email" name="email" class="login-input" required autofocus
+                    value="andika.spgk@ncpms.local" placeholder="email@rumah-sakit.com">
 
-                <div class="form-group-login">
-                    <label>Kata Sandi</label>
-                    <div class="input-icon-wrap">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" name="password" class="form-input-login" required
-                            value="password123" placeholder="••••••••">
-                    </div>
-                </div>
+                <label class="login-label">Kata Sandi</label>
+                <input type="password" name="password" class="login-input" required
+                    value="password123" placeholder="••••••••">
 
-                <button type="submit" class="btn-login-submit">
-                    <i class="fas fa-sign-in-alt"></i> Masuk ke Sistem
+                <button type="submit" class="btn-ncpms w-100 py-2" style="font-size: 0.92rem;">
+                    <i class="fas fa-sign-in-alt me-1"></i> Masuk ke Sistem
                 </button>
             </form>
 
-            <div class="demo-box">
-                <i class="fas fa-info-circle me-1"></i> <strong>Mode Demo:</strong><br>
+            <div class="demo-info">
+                <strong>Mode Demo:</strong><br>
                 Email: <code>andika.spgk@ncpms.local</code> &bull; Password: <code>password123</code>
             </div>
         </div>
