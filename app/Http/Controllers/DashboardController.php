@@ -1,16 +1,28 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Pasien;
 use App\Models\Kunjungan;
 use App\Models\PreskripsiDiet;
 use App\Models\SkriningGizi;
-use Illuminate\Support\Facades\DB;
+use App\Models\LoginHistory;
+use App\Models\Pengguna;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index() {
+        if (Auth::user()->peran === 'admin_ti') {
+            return view('dashboard.admin', [
+                'totalPengguna' => Pengguna::withTrashed()->count(),
+                'penggunaAktif' => Pengguna::where('status_aktif', true)->count(),
+                'loginHariIni' => LoginHistory::where('tipe_event', 'login')->whereDate('created_at', today())->count(),
+                'loginGagalHariIni' => LoginHistory::where('tipe_event', 'login_gagal')->whereDate('created_at', today())->count(),
+                'timeoutHariIni' => LoginHistory::where('tipe_event', 'timeout')->whereDate('created_at', today())->count(),
+                'loginTerakhir' => LoginHistory::with('pengguna')->latest()->limit(10)->get(),
+            ]);
+        }
+
         $totalPasien = Pasien::count();
         $totalKunjunganHariIni = Kunjungan::whereDate('tanggal_kunjungan', today())->count();
         $risikoTinggi = SkriningGizi::where('kategori_risiko', 'risiko_tinggi')

@@ -47,13 +47,16 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
     Route::middleware('role:dietisien,spgk')->group(function() {
         Route::get('/diagnosis', [DiagnosaGiziController::class, 'index'])->name('diagnosis.index');
         Route::post('/diagnosis', [DiagnosaGiziController::class, 'store'])->name('diagnosis.store');
-        Route::post('/diagnosis/{diagnosaGizi}/validasi', [DiagnosaGiziController::class, 'validasi'])->name('diagnosis.validasi');
         Route::get('/intervensi', [PreskripsiDietController::class, 'index'])->name('intervensi.index');
         Route::post('/intervensi', [PreskripsiDietController::class, 'store'])->name('intervensi.store');
-        Route::post('/intervensi/{preskripsiDiet}/setujui', [PreskripsiDietController::class, 'setujui'])->name('intervensi.setujui');
         Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
         Route::post('/monitoring', [MonitoringController::class, 'store'])->name('monitoring.store');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    });
+
+    Route::middleware('role:spgk')->group(function() {
+        Route::post('/diagnosis/{diagnosaGizi}/validasi', [DiagnosaGiziController::class, 'validasi'])->name('diagnosis.validasi');
+        Route::post('/intervensi/{preskripsiDiet}/setujui', [PreskripsiDietController::class, 'setujui'])->name('intervensi.setujui');
         Route::post('/kunjungan/{kunjungan}/kunci', [KunjunganController::class, 'kunci'])->name('kunjungan.kunci');
     });
 

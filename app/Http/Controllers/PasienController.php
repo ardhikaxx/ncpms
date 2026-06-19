@@ -8,20 +8,37 @@ use App\Models\Kunjungan;
 use App\Models\Pasien;
 use App\Models\Pengguna;
 use App\Models\RiwayatAlergiPasien;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\Rule;
 
 class PasienController extends Controller
 {
     public function index(Request $request) {
         abort_if(Auth::user()->peran === 'admin_ti', 403, 'Admin TI tidak boleh mengakses data klinis pasien.');
 
-        $query = Pasien::with(['kunjungans' => fn ($q) => $q->limit(1)]);
+        $query = Pasien::with(['kunjungans' => fn ($q) => $q->limit(1)])->latest();
 
         if ($request->filled('q')) {
-            $kata = strtolower($request->q);
-            $query->get()->filter(fn ($pasien) => str_contains(strtolower($pasien->nama_lengkap), $kata));
+            $kata = mb_strtolower($request->q);
+            $hasil = $query->get()->filter(function ($pasien) use ($kata) {
+                return str_contains(mb_strtolower((string) $pasien->nama_lengkap), $kata)
+                    || str_contains(mb_strtolower((string) $pasien->nomor_rekam_medis), $kata)
+                    || str_contains(mb_strtolower((string) $pasien->nik), $kata);
+            })->values();
+
+            $perPage = 10;
+            $page = LengthAwarePaginator::resolveCurrentPage();
+            $pasiens = new LengthAwarePaginator(
+                $hasil->forPage($page, $perPage),
+                $hasil->count(),
+                $perPage,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        } else {
+            $pasiens = $query->paginate(10)->withQueryString();
         }
 
-        $pasiens = $query->latest()->paginate(10)->withQueryString();
         return view('pasien.index', compact('pasiens'));
     }
 
@@ -102,7 +119,14 @@ class PasienController extends Controller
             'tipe_kunjungan' => ['required', 'in:mandiri,rujukan_internal,rujukan_eksternal'],
             'asal_rujukan' => ['nullable', 'max:200'],
             'tanggal_kunjungan' => ['required', 'date', 'before_or_equal:today'],
-            'dietisien_id' => ['nullable', 'exists:penggunas,id'],
+            'dietisien_id' => [
+                'nullable',
+                Rule::exists('penggunas', 'id')->where(fn ($query) => $query
+                    ->whereIn('peran', ['dietisien', 'spgk'])
+                    ->where('status_aktif', true)
+                    ->whereNull('deleted_at')
+                ),
+            ],
             'diagnosis_medis_utama_id' => ['nullable', 'exists:diagnosis_medis_utamas,id'],
         ], $this->messages());
 

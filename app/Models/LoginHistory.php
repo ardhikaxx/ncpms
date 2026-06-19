@@ -12,7 +12,10 @@ class LoginHistory extends Model
 
     protected $table = 'login_histories';
     protected $fillable = ['pengguna_id', 'tipe_event', 'ip_address', 'user_agent'];
-    
-    
+
+    public function pengguna()
+    {
+        return $this->belongsTo(Pengguna::class, 'pengguna_id')->withTrashed();
+    }
 
 }
