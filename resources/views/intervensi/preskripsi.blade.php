@@ -63,7 +63,12 @@
                     </select>
                 </div>
 
-                <div class="col-12"><div class="section-divider"><i class="fas fa-fire-alt"></i> Parameter Energi</div></div>
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                    <div class="section-divider flex-grow-1 me-3"><i class="fas fa-fire-alt"></i> Parameter Energi</div>
+                    <button type="button" class="btn-sm-ncpms btn-ncpms-outline" data-bs-toggle="modal" data-bs-target="#kalkulatorModal">
+                        <i class="fas fa-calculator me-1"></i> Kalkulator Energi PAGT
+                    </button>
+                </div>
 
                 <div class="col-md-4">
                     <label class="form-label-ncpms">Formula Basal</label>
@@ -243,3 +248,99 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<!-- Modal Kalkulator Energi Dinamis -->
+<div class="modal fade" id="kalkulatorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white" style="background: var(--color-primary);">
+                <h5 class="modal-title fs-6"><i class="fas fa-calculator me-2"></i>Kalkulator Energi Dinamis PAGT</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label class="form-label-ncpms">Jenis Kelamin</label>
+                        <select id="calc_jk" class="form-select form-control-ncpms">
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label-ncpms">Usia (Tahun)</label>
+                        <input type="number" id="calc_usia" class="form-control-ncpms" value="30">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label-ncpms">Berat Badan (kg)</label>
+                        <input type="number" step="0.1" id="calc_bb" class="form-control-ncpms" value="60">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label-ncpms">Tinggi Badan (cm)</label>
+                        <input type="number" step="0.1" id="calc_tb" class="form-control-ncpms" value="160">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-ncpms">Formula</label>
+                        <select id="calc_formula" class="form-select form-control-ncpms">
+                            <option value="hb">Harris-Benedict</option>
+                            <option value="mifflin">Mifflin-St Jeor</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-3 rounded text-center" style="background: #e6fcf5; border: 1px dashed #20c997;">
+                    <div style="font-size: 0.8rem; font-weight: 600; color: #0ca678; text-transform: uppercase;">Estimasi Energi Basal (BEE)</div>
+                    <div id="calc_result" style="font-size: 2rem; font-weight: 800; color: var(--color-primary); line-height: 1.2;">0</div>
+                    <div style="font-size: 0.85rem; color: #495057;">kkal / hari</div>
+                </div>
+            </div>
+            <div class="modal-footer bg-white border-top-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-ncpms" id="btnApplyCalc"><i class="fas fa-check me-1"></i>Gunakan Hasil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = ['calc_jk', 'calc_usia', 'calc_bb', 'calc_tb', 'calc_formula'];
+    
+    function hitungBEE() {
+        let jk = document.getElementById('calc_jk').value;
+        let usia = parseFloat(document.getElementById('calc_usia').value) || 0;
+        let bb = parseFloat(document.getElementById('calc_bb').value) || 0;
+        let tb = parseFloat(document.getElementById('calc_tb').value) || 0;
+        let formula = document.getElementById('calc_formula').value;
+        
+        let bee = 0;
+        if (formula === 'hb') {
+            if (jk === 'L') {
+                bee = 66.5 + (13.75 * bb) + (5.003 * tb) - (6.75 * usia);
+            } else {
+                bee = 655.1 + (9.563 * bb) + (1.850 * tb) - (4.676 * usia);
+            }
+        } else if (formula === 'mifflin') {
+            bee = (10 * bb) + (6.25 * tb) - (5 * usia) + (jk === 'L' ? 5 : -161);
+        }
+        
+        document.getElementById('calc_result').innerText = Math.max(0, Math.round(bee));
+    }
+
+    inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', hitungBEE);
+    });
+    
+    document.getElementById('btnApplyCalc').addEventListener('click', function() {
+        let bee = document.getElementById('calc_result').innerText;
+        document.querySelector('input[name="kebutuhan_energi_basal_kkal"]').value = bee;
+        let formula = document.getElementById('calc_formula').value === 'hb' ? 'harris_benedict' : 'mifflin_st_jeor';
+        document.querySelector('select[name="formula_basal"]').value = formula;
+        
+        bootstrap.Modal.getInstance(document.getElementById('kalkulatorModal')).hide();
+    });
+    
+    hitungBEE();
+});
+</script>
+@endpush
