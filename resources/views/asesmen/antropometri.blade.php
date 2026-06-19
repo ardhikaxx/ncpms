@@ -99,6 +99,43 @@
                 @endif
             </form>
         </div>
+        
+        {{-- Pediatri Section --}}
+        <div class="ncpms-card mt-3">
+            <div class="card-title-custom">
+                <span class="card-title-icon"><i class="fas fa-baby"></i></span>
+                Modul Pediatri (WHO Z-Score)
+            </div>
+            <form action="{{ route('asesmen.antropometri.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="kunjungan_id" value="{{ $kunjungan->id }}">
+                <input type="hidden" name="tanggal_pengukuran" value="{{ $data ? $data->tanggal_pengukuran?->format('Y-m-d') : date('Y-m-d') }}">
+                <input type="hidden" name="berat_badan_kg" value="{{ $data ? decrypt($data->berat_badan_kg) : 0 }}">
+                <input type="hidden" name="tinggi_badan_cm" value="{{ $data ? decrypt($data->tinggi_badan_cm) : 0 }}">
+                <input type="hidden" name="is_pediatri" value="1">
+                
+                <div class="row g-2 mb-3">
+                    <div class="col-6"><label class="form-label-ncpms">Usia (Tahun)</label><input type="number" name="usia_tahun" class="form-control-ncpms" value="{{ $data->usia_tahun ?? '' }}"></div>
+                    <div class="col-6"><label class="form-label-ncpms">Usia (Bulan)</label><input type="number" name="usia_bulan" class="form-control-ncpms" value="{{ $data->usia_bulan ?? '' }}"></div>
+                    <div class="col-4"><label class="form-label-ncpms">Z-Score BB/U</label><input type="number" step="0.1" name="zscore_bb_u" class="form-control-ncpms" value="{{ $data->zscore_bb_u ?? '' }}"></div>
+                    <div class="col-4"><label class="form-label-ncpms">Z-Score TB/U</label><input type="number" step="0.1" name="zscore_tb_u" class="form-control-ncpms" value="{{ $data->zscore_tb_u ?? '' }}"></div>
+                    <div class="col-4"><label class="form-label-ncpms">Z-Score IMT/U</label><input type="number" step="0.1" name="zscore_imt_u" class="form-control-ncpms" value="{{ $data->zscore_imt_u ?? '' }}"></div>
+                    <div class="col-12"><label class="form-label-ncpms">Status Gizi (Anak)</label>
+                        <select name="status_gizi_anak" class="form-control-ncpms">
+                            <option value="">-- Pilih --</option>
+                            <option value="gizi_buruk" {{ ($data->status_gizi_anak??'')=='gizi_buruk'?'selected':'' }}>Gizi Buruk</option>
+                            <option value="gizi_kurang" {{ ($data->status_gizi_anak??'')=='gizi_kurang'?'selected':'' }}>Gizi Kurang</option>
+                            <option value="gizi_baik" {{ ($data->status_gizi_anak??'')=='gizi_baik'?'selected':'' }}>Gizi Baik</option>
+                            <option value="gizi_lebih" {{ ($data->status_gizi_anak??'')=='gizi_lebih'?'selected':'' }}>Gizi Lebih</option>
+                            <option value="obesitas" {{ ($data->status_gizi_anak??'')=='obesitas'?'selected':'' }}>Obesitas</option>
+                        </select>
+                    </div>
+                </div>
+                @if(!$kunjungan->dokumen_terkunci)
+                    <button type="submit" class="btn-ncpms-outline w-100 py-2"><i class="fas fa-save me-1"></i> Simpan Data Pediatri</button>
+                @endif
+            </form>
+        </div>
     </div>
 
     {{-- Results --}}
