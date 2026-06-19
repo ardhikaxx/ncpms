@@ -62,6 +62,60 @@
     </div>
 </div>
 
+{{-- Adendum RME Section --}}
+@if($terkunci)
+<div class="ncpms-card mt-4 border-danger" style="border-width: 2px;">
+    <div class="card-title-custom text-danger">
+        <span class="card-title-icon bg-danger text-white"><i class="fas fa-file-medical-alt"></i></span>
+        Adendum & Catatan Koreksi RME
+    </div>
+    <div class="alert alert-warning border-0" style="background: #fff3cd; color: #856404; font-size: 0.85rem;">
+        <i class="fas fa-exclamation-triangle me-1"></i> Berdasarkan Permenkes 24/2022 Pasal 20, rekam medis yang telah ditandatangani elektronik <strong>tidak dapat diubah</strong>. Jika terdapat kesalahan pencatatan, tenaga kesehatan harus membuat <strong>Adendum</strong>.
+    </div>
+
+    @if(in_array($peran, ['dietisien','spgk','perawat']))
+    <form method="POST" action="{{ route('kunjungan.adendum.store', $kunjungan) }}" class="mb-4 bg-light p-3 rounded border">
+        @csrf
+        <div class="row g-2">
+            <div class="col-md-4">
+                <label class="form-label-ncpms">Jenis Data yang Dikoreksi</label>
+                <select name="jenis_data" class="form-select form-control-ncpms" required>
+                    <option value="Skrining Gizi">Skrining Gizi</option>
+                    <option value="Asesmen Antropometri">Asesmen Antropometri</option>
+                    <option value="Asesmen Klinis/Fisik">Asesmen Klinis/Fisik</option>
+                    <option value="Asesmen Asupan">Asesmen Asupan</option>
+                    <option value="Diagnosis PES">Diagnosis PES</option>
+                    <option value="Preskripsi Diet">Preskripsi Diet</option>
+                </select>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label-ncpms">Catatan Koreksi (Adendum) <span class="text-danger">*</span></label>
+                <textarea name="catatan_koreksi" class="form-control-ncpms" rows="2" required placeholder="Tuliskan data yang benar di sini..."></textarea>
+            </div>
+            <div class="col-12 text-end mt-2">
+                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-plus-circle me-1"></i> Lampirkan Adendum</button>
+            </div>
+        </div>
+    </form>
+    @endif
+
+    <div class="mt-3">
+        @forelse($kunjungan->adendums as $adendum)
+        <div class="p-3 mb-2 border rounded" style="background: #fffafa; border-color: #f5c6cb !important;">
+            <div class="d-flex justify-content-between">
+                <strong class="text-danger"><i class="fas fa-check-double me-1"></i> Koreksi pada: {{ $adendum->jenis_data }}</strong>
+                <small class="text-muted">{{ $adendum->created_at->format('d/m/Y H:i:s') }}</small>
+            </div>
+            <p class="mt-2 mb-1 fw-bold text-dark">{{ $adendum->catatan_koreksi }}</p>
+            <small class="text-muted">Dilampirkan oleh: {{ $adendum->pembuat->nama_lengkap ?? 'Sistem' }}</small>
+        </div>
+        @empty
+        <div class="text-center py-3 text-muted">Belum ada adendum pada rekam medis ini.</div>
+        @endforelse
+    </div>
+</div>
+@endif
+
 @if($kunjungan->dokumen_terkunci)
 <div class="locked-banner d-flex justify-content-between align-items-center">
     <div>
@@ -141,8 +195,8 @@
                 $pagtSteps = [
                     ['Skrining Gizi', (bool)$kunjungan->skriningGizi, 'fa-clipboard-check'],
                     ['Antropometri', (bool)$kunjungan->antropometri, 'fa-ruler-vertical'],
-                    ['Fisik Klinis', (bool)$kunjungan->fisik, 'fa-heart-pulse'],
-                    ['Biokimia', (bool)$kunjungan->biokimia, 'fa-vial'],
+                    ['Riwayat Medis', true, 'fa-notes-medical'],
+                    ['Skrining Gizi', (bool)$kunjungan->skriningGizi, 'fa-clipboard-check'],
                     ['Riwayat Asupan', (bool)$kunjungan->asupan, 'fa-bowl-food'],
                     ['Diagnosis Gizi', (bool)$kunjungan->diagnosaGizis->count(), 'fa-stethoscope'],
                     ['Preskripsi Diet', (bool)$kunjungan->preskripsiDiets->count(), 'fa-utensils'],
@@ -187,8 +241,11 @@
                 @csrf
                 <div class="col-md-3">
                     <label class="form-label-ncpms">Metode</label>
-                    <select name="metode_skrining" class="form-control-ncpms">
-                        <option>MST</option><option>MNA</option><option>NRS2002</option><option>MUST</option><option>STAMP</option>
+                    <select name="metode_skrining" class="form-select form-control-ncpms">
+                        <option value="MST" {{ ($kunjungan->skriningGizi?->metode_skrining=='MST')?'selected':'' }}>MST (Dewasa Umum)</option>
+                        <option value="NRS2002" {{ ($kunjungan->skriningGizi?->metode_skrining=='NRS2002')?'selected':'' }}>NRS-2002 (Dewasa ICU)</option>
+                        <option value="STRONGkids" {{ ($kunjungan->skriningGizi?->metode_skrining=='STRONGkids')?'selected':'' }}>STRONGkids (Pediatri)</option>
+                        <option value="MNA" {{ ($kunjungan->skriningGizi?->metode_skrining=='MNA')?'selected':'' }}>MNA (Lansia > 65 thn)</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -215,6 +272,32 @@
             </form>
             @else
                 <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Skrining hanya dapat dicatat oleh perawat atau SpGK selama dokumen belum terkunci.</p>
+            @endif
+        </div>
+
+        {{-- Riwayat Pengobatan --}}
+        <div class="ncpms-card mb-4" id="riwayat_medis">
+            <div class="card-title-custom">
+                <span class="card-title-icon"><i class="fas fa-pills"></i></span>
+                Riwayat Pengobatan Medis
+            </div>
+            
+            @if(!$terkunci && in_array($peran, ['perawat','dietisien','spgk']))
+            <form method="POST" action="{{ route('kunjungan.obat.update', $kunjungan) }}" class="row g-2">
+                @csrf
+                <div class="col-12">
+                    <label class="form-label-ncpms">Obat-obatan yang sedang dikonsumsi <span class="text-muted">(Penting untuk mendeteksi Food-Drug Interaction)</span></label>
+                    <textarea name="obat_sedang_dikonsumsi" class="form-control-ncpms" rows="2" placeholder="Contoh: Warfarin, Captopril, Metformin...">{{ $kunjungan->obat_sedang_dikonsumsi }}</textarea>
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn-ncpms btn-sm-ncpms"><i class="fas fa-save me-1"></i> Simpan Obat</button>
+                </div>
+            </form>
+            @else
+            <div class="info-row">
+                <div class="info-label">Daftar Obat Aktif</div>
+                <div class="info-value fw-bold text-danger">{{ $kunjungan->obat_sedang_dikonsumsi ?: 'Tidak ada catatan obat khusus.' }}</div>
+            </div>
             @endif
         </div>
 
