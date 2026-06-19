@@ -31,15 +31,18 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
     Route::middleware('role:perawat,spgk')->group(function() {
         Route::post('/kunjungan/{kunjungan}/skrining', [KunjunganController::class, 'storeSkrining'])->name('kunjungan.skrining.store');
     });
-
     Route::middleware('role:perawat,dietisien,spgk')->group(function() {
         Route::post('/kunjungan/{kunjungan}/fisik', [KunjunganController::class, 'storeFisik'])->name('kunjungan.fisik.store');
     });
 
-    Route::middleware('role:nutrisionis,dietisien,spgk')->group(function() {
+    Route::middleware('role:perawat,nutrisionis,dietisien,spgk')->group(function() {
+        Route::get('/kunjungan/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.show');
+        Route::post('/kunjungan/{kunjungan}/kunci', [KunjunganController::class, 'kunciDokumen'])->name('kunjungan.kunci');
         Route::post('/kunjungan/{kunjungan}/antropometri', [KunjunganController::class, 'storeAntropometri'])->name('kunjungan.antropometri.store');
         Route::post('/kunjungan/{kunjungan}/asupan', [KunjunganController::class, 'storeAsupan'])->name('kunjungan.asupan.store');
         Route::post('/kunjungan/{kunjungan}/konseling', [KunjunganController::class, 'storeKonseling'])->name('kunjungan.konseling.store');
+        Route::post('/kunjungan/{kunjungan}/obat', [KunjunganController::class, 'updateObat'])->name('kunjungan.obat.update');
+        Route::post('/kunjungan/{kunjungan}/adendum', [KunjunganController::class, 'storeAdendum'])->name('kunjungan.adendum.store');
     });
 
     Route::middleware('role:dietisien,spgk')->group(function() {
