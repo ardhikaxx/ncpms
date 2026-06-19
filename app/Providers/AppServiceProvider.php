@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(\App\Models\Pasien::class, \App\Policies\PasienPolicy::class);
         Gate::policy(\App\Models\Kunjungan::class, \App\Policies\KunjunganPolicy::class);
+        Gate::policy(\App\Models\PreskripsiDiet::class, \App\Policies\KunjunganPolicy::class);
         //
     }
 }

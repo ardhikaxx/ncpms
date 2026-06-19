@@ -2,15 +2,13 @@
 namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSkriningRequest extends FormRequest
+class StoreFisikRequest extends FormRequest
 {
     public function authorize() { return true; }
     public function rules() {
         return [
-            'metode_skrining' => ['required', 'in:MNA,NRS2002,MST,MUST,STAMP'],
-            'skor_penurunan_bb' => ['required', 'integer', 'min:0', 'max:3'],
-            'skor_penurunan_asupan' => ['required', 'integer', 'min:0', 'max:3'],
-            'skor_keparahan_penyakit' => ['required', 'integer', 'min:0', 'max:3'],
+            'tekanan_darah_sistolik' => ['nullable', 'integer', 'min:50', 'max:250'],
+            'tekanan_darah_diastolik' => ['nullable', 'integer', 'min:30', 'max:150'],
         ];
     }
     public function messages() {

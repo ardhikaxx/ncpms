@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StorePasienRequest;
+use App\Http\Requests\StoreKunjunganRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DiagnosisMedisUtama;
 use App\Models\Kunjungan;
@@ -49,11 +51,11 @@ class PasienController extends Controller
         return view('pasien.create');
     }
 
-    public function store(Request $request)
+    public function store(StorePasienRequest $request)
     {
         abort_unless(in_array(Auth::user()->peran, ['perawat', 'spgk']), 403, 'Hanya perawat atau SpGK yang dapat mendaftarkan pasien.');
 
-        $data = $request->validate($this->rules(), $this->messages());
+        $data = $request->validated();
         $pasien = Pasien::create($data);
 
         if ($request->filled('nama_alergen')) {
@@ -94,7 +96,7 @@ class PasienController extends Controller
         return view('pasien.edit', compact('pasien'));
     }
 
-    public function update(Request $request, Pasien $pasien)
+    public function update(StorePasienRequest $request, Pasien $pasien)
     {
         abort_unless(in_array(Auth::user()->peran, ['perawat', 'spgk']), 403, 'Hanya perawat atau SpGK yang dapat mengubah identitas pasien.');
 
@@ -111,24 +113,11 @@ class PasienController extends Controller
         return redirect()->route('pasien.index')->with('swal_success', 'Data pasien berhasil dinonaktifkan.');
     }
 
-    public function storeKunjungan(Request $request, Pasien $pasien)
+    public function storeKunjungan(StoreKunjunganRequest $request, Pasien $pasien)
     {
         abort_unless(in_array(Auth::user()->peran, ['perawat', 'spgk']), 403, 'Hanya perawat atau SpGK yang dapat mendaftarkan kunjungan.');
 
-        $data = $request->validate([
-            'tipe_kunjungan' => ['required', 'in:mandiri,rujukan_internal,rujukan_eksternal'],
-            'asal_rujukan' => ['nullable', 'max:200'],
-            'tanggal_kunjungan' => ['required', 'date', 'before_or_equal:today'],
-            'dietisien_id' => [
-                'nullable',
-                Rule::exists('penggunas', 'id')->where(fn ($query) => $query
-                    ->whereIn('peran', ['dietisien', 'spgk'])
-                    ->where('status_aktif', true)
-                    ->whereNull('deleted_at')
-                ),
-            ],
-            'diagnosis_medis_utama_id' => ['nullable', 'exists:diagnosis_medis_utamas,id'],
-        ], $this->messages());
+        $data = $request->validated();
 
         $data['pasien_id'] = $pasien->id;
         $data['nomor_kunjungan'] = $this->nomorKunjungan();

@@ -66,4 +66,7 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
     Route::middleware('role:admin_ti')->group(function() {
         Route::resource('/admin/pengguna', PenggunaController::class)->names('admin.pengguna');
     });
+
+    Route::get('/export/pasien/pdf', [\App\Http\Controllers\Export\ExportController::class, 'exportPasienPdf'])->name('export.pasien.pdf');
+    Route::get('/export/laporan/excel', [\App\Http\Controllers\Export\ExportController::class, 'exportLaporanExcel'])->name('export.laporan.excel');
 });
