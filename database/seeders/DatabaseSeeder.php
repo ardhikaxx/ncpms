@@ -8,10 +8,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
+    private $firstNamesMale = ['Budi', 'Andi', 'Hendra', 'Eko', 'Agus', 'Dwi', 'Tri', 'Iwan', 'Rizal', 'Joko', 'Wahyu', 'Arif', 'Ahmad', 'Muhamad', 'Bayu', 'Rudi', 'Fajar', 'Deni', 'Yusuf', 'Ilham', 'Dimas', 'Reza', 'Fadli', 'Surya', 'Rama', 'Gilang', 'Rangga', 'Teguh', 'Bambang', 'Sigit'];
+    private $firstNamesFemale = ['Siti', 'Ayu', 'Sri', 'Putri', 'Dewi', 'Nur', 'Rini', 'Dina', 'Sari', 'Indah', 'Lestari', 'Fitri', 'Rina', 'Wulan', 'Tari', 'Maya', 'Nita', 'Ratna', 'Lia', 'Rika', 'Ani', 'Yuni', 'Desi', 'Ika', 'Mega', 'Santi', 'Vina', 'Eka', 'Puspa', 'Dita'];
+    private $lastNames = ['Pratama', 'Santoso', 'Wijaya', 'Kusuma', 'Saputra', 'Setiawan', 'Nugroho', 'Hidayat', 'Kurniawan', 'Ramadhan', 'Lestari', 'Wahyuni', 'Susanti', 'Purnama', 'Wibowo', 'Siregar', 'Hutagalung', 'Gunawan', 'Hartono', 'Halim', 'Putra', 'Firmansyah', 'Ardiansyah', 'Baskoro', 'Sutanto'];
+    private $cities = ['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Semarang', 'Makassar', 'Palembang', 'Depok', 'Tangerang', 'Bekasi', 'Bogor', 'Malang', 'Padang', 'Denpasar', 'Samarinda', 'Balikpapan', 'Banjarmasin', 'Pontianak', 'Cimahi', 'Surakarta'];
+    private $streets = ['Jl. Merdeka', 'Jl. Sudirman', 'Jl. Thamrin', 'Jl. Gatot Subroto', 'Jl. Ahmad Yani', 'Jl. Pahlawan', 'Jl. Diponegoro', 'Jl. Gajah Mada', 'Jl. Hayam Wuruk', 'Jl. Imam Bonjol', 'Jl. Pattimura', 'Jl. Veteran', 'Jl. Pemuda', 'Jl. Ki Hajar Dewantara', 'Jl. Sisingamangaraja'];
+
     public function run(): void
     {
         $now = Carbon::now();
@@ -33,11 +38,29 @@ class DatabaseSeeder extends Seeder
         $bahan = $this->seedBahanMakanan($now);
         $terminologi = $this->seedTerminologi($now);
         
-        $faker = Faker::create('id_ID');
-        $pasienIds = $this->seedPasienBulk($now, $pengguna, $faker, 200);
+        $pasienIds = $this->seedPasienBulkCustom($now, $pengguna, 300);
 
-        $this->seedKlinisBulk($now, $pengguna, $pasienIds, $diagnosisMedis, $terminologi, $bahan, $faker);
+        $this->seedKlinisBulkCustom($now, $pengguna, $pasienIds, $diagnosisMedis, $terminologi, $bahan);
         $this->seedLaporan($now, $pengguna);
+    }
+
+    private function generateName($gender) {
+        $first = $gender === 'L' ? $this->firstNamesMale[array_rand($this->firstNamesMale)] : $this->firstNamesFemale[array_rand($this->firstNamesFemale)];
+        $last = $this->lastNames[array_rand($this->lastNames)];
+        return "$first $last";
+    }
+
+    private function generateDateOfBirth() {
+        $year = rand(1950, 2018);
+        $month = str_pad(rand(1, 12), 2, '0', STR_PAD_LEFT);
+        $day = str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT);
+        return "$year-$month-$day";
+    }
+
+    private function generateNik() {
+        $nik = '';
+        for ($i=0; $i<16; $i++) $nik .= rand(0,9);
+        return $nik;
     }
 
     private function seedPengguna(Carbon $now): array
@@ -68,42 +91,48 @@ class DatabaseSeeder extends Seeder
         return $ids;
     }
 
-    private function seedPasienBulk(Carbon $now, array $pengguna, \Faker\Generator $faker, int $count): array
+    private function seedPasienBulkCustom(Carbon $now, array $pengguna, int $count): array
     {
         $ids = [];
         $gols = ['A', 'B', 'AB', 'O', 'tidak_diketahui'];
         
         for ($i = 1; $i <= $count; $i++) {
-            $gender = $faker->randomElement(['L', 'P']);
-            $nama = $gender === 'L' ? $faker->firstNameMale . ' ' . $faker->lastName : $faker->firstNameFemale . ' ' . $faker->lastName;
+            $gender = rand(0, 1) === 0 ? 'L' : 'P';
+            $nama = $this->generateName($gender);
             $nrm = 'RM-' . date('Y') . '-' . str_pad($i, 5, '0', STR_PAD_LEFT);
-            $nik = $faker->numerify('################');
+            $nik = $this->generateNik();
+            $kota = $this->cities[array_rand($this->cities)];
+            $jalan = $this->streets[array_rand($this->streets)];
+            $alamat = "$jalan No. " . rand(1, 150) . ", $kota";
+            $telepon = '08' . rand(1000000000, 9999999999);
             
             $pasienId = DB::table('pasiens')->insertGetId([
                 'nomor_rekam_medis' => Crypt::encryptString($nrm),
                 'nik' => Crypt::encryptString($nik),
                 'nama_lengkap' => Crypt::encryptString($nama),
-                'tempat_lahir' => $faker->city,
-                'tanggal_lahir' => $faker->dateTimeBetween('-70 years', '-5 years')->format('Y-m-d'),
+                'tempat_lahir' => $kota,
+                'tanggal_lahir' => $this->generateDateOfBirth(),
                 'jenis_kelamin' => $gender,
-                'golongan_darah' => $faker->randomElement($gols),
-                'nomor_telepon' => Crypt::encryptString($faker->phoneNumber),
-                'alamat' => Crypt::encryptString($faker->address),
-                'nomor_bpjs' => Crypt::encryptString($faker->numerify('#############')),
+                'golongan_darah' => $gols[array_rand($gols)],
+                'nomor_telepon' => Crypt::encryptString($telepon),
+                'alamat' => Crypt::encryptString($alamat),
+                'nomor_bpjs' => Crypt::encryptString(rand(1000000000000, 9999999999999)),
                 'status_aktif' => true,
                 'satusehat_patient_id' => 'P'.Str::upper(Str::random(10)),
-                'created_at' => $faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d H:i:s'),
+                'created_at' => $now->copy()->subDays(rand(1, 700))->format('Y-m-d H:i:s'),
                 'updated_at' => $now,
             ]);
             $ids[] = $pasienId;
 
-            if ($faker->boolean(15)) {
+            if (rand(1, 10) > 8) {
+                $alergi = ['makanan', 'obat', 'lingkungan', 'lainnya'][rand(0, 3)];
+                $keparahan = ['ringan', 'sedang', 'berat'][rand(0, 2)];
                 DB::table('riwayat_alergi_pasiens')->insert([
                     'pasien_id' => $pasienId,
-                    'jenis_alergi' => $faker->randomElement(['makanan', 'obat', 'lingkungan', 'lainnya']),
-                    'nama_alergen' => Crypt::encryptString($faker->word),
-                    'reaksi' => $faker->sentence,
-                    'tingkat_keparahan' => $faker->randomElement(['ringan', 'sedang', 'berat']),
+                    'jenis_alergi' => $alergi,
+                    'nama_alergen' => Crypt::encryptString('Alergen Random ' . rand(1, 50)),
+                    'reaksi' => 'Reaksi alergi ' . $keparahan,
+                    'tingkat_keparahan' => $keparahan,
                     'dicatat_oleh' => $pengguna['perawat'],
                     'created_at' => $now,
                     'updated_at' => $now,
@@ -137,7 +166,6 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $now,
             ]);
         }
-
         return $ids;
     }
 
@@ -205,27 +233,28 @@ class DatabaseSeeder extends Seeder
         return $ids;
     }
 
-    private function seedKlinisBulk(Carbon $now, array $pengguna, array $pasienIds, array $diagnosisMedis, array $terminologi, array $bahan, \Faker\Generator $faker): void
+    private function seedKlinisBulkCustom(Carbon $now, array $pengguna, array $pasienIds, array $diagnosisMedis, array $terminologi, array $bahan): void
     {
         $dxKeys = array_keys($diagnosisMedis);
         $termKeys = array_keys($terminologi);
+        $risikos = ['risiko_rendah', 'risiko_sedang', 'risiko_tinggi'];
 
         for ($i = 0; $i < count($pasienIds); $i++) {
             $pasienId = $pasienIds[$i];
             
-            $numVisits = $faker->numberBetween(1, 4);
+            $numVisits = rand(1, 4);
             
             for ($v = 0; $v < $numVisits; $v++) {
-                $tanggal = Carbon::parse($faker->dateTimeBetween('-1 year', 'now'));
-                $kodeDx = $faker->randomElement($dxKeys);
-                $risiko = $faker->randomElement(['risiko_rendah', 'risiko_sedang', 'risiko_tinggi']);
-                $bb = $faker->randomFloat(1, 40, 120);
-                $tb = $faker->randomFloat(1, 140, 185);
+                $tanggal = $now->copy()->subDays(rand(1, 300));
+                $kodeDx = $dxKeys[array_rand($dxKeys)];
+                $risiko = $risikos[array_rand($risikos)];
+                $bb = rand(400, 1200) / 10;
+                $tb = rand(1400, 1850) / 10;
                 
                 $kunjunganId = DB::table('kunjungans')->insertGetId([
                     'pasien_id' => $pasienId,
                     'nomor_kunjungan' => 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT),
-                    'tipe_kunjungan' => $faker->randomElement(['mandiri', 'rujukan_internal']),
+                    'tipe_kunjungan' => rand(0, 1) === 0 ? 'mandiri' : 'rujukan_internal',
                     'status' => $v === 0 && $i < 20 ? 'dalam_pelayanan' : 'selesai',
                     'tanggal_kunjungan' => $tanggal->toDateString(),
                     'waktu_registrasi' => $tanggal->copy()->setTime(8, 0),
@@ -243,10 +272,10 @@ class DatabaseSeeder extends Seeder
                 DB::table('skrining_gizis')->insert([
                     'kunjungan_id' => $kunjunganId,
                     'metode_skrining' => 'MST',
-                    'skor_penurunan_bb' => $faker->numberBetween(0,2),
-                    'skor_penurunan_asupan' => $faker->numberBetween(0,1),
-                    'skor_keparahan_penyakit' => $faker->numberBetween(0,2),
-                    'total_skor' => $faker->numberBetween(0,5),
+                    'skor_penurunan_bb' => rand(0,2),
+                    'skor_penurunan_asupan' => rand(0,1),
+                    'skor_keparahan_penyakit' => rand(0,2),
+                    'total_skor' => rand(0,5),
                     'kategori_risiko' => $risiko,
                     'dilakukan_oleh' => $pengguna['perawat'],
                     'created_at' => $tanggal,
@@ -268,9 +297,9 @@ class DatabaseSeeder extends Seeder
 
                 DB::table('pemeriksaan_fisik_gizis')->insert([
                     'kunjungan_id' => $kunjunganId,
-                    'tekanan_darah_sistolik' => $faker->numberBetween(100, 160),
-                    'tekanan_darah_diastolik' => $faker->numberBetween(70, 100),
-                    'nadi_per_menit' => $faker->numberBetween(60, 100),
+                    'tekanan_darah_sistolik' => rand(100, 160),
+                    'tekanan_darah_diastolik' => rand(70, 100),
+                    'nadi_per_menit' => rand(60, 100),
                     'suhu_celsius' => 36.5,
                     'kondisi_mulut' => 'Normal',
                     'dicatat_oleh' => $pengguna['perawat'],
@@ -278,7 +307,7 @@ class DatabaseSeeder extends Seeder
                     'updated_at' => $tanggal,
                 ]);
                 
-                $term = $faker->randomElement($termKeys);
+                $term = $termKeys[array_rand($termKeys)];
                 $problem = DB::table('terminologi_diagnosis_gizis')->where('id', $terminologi[$term])->value('nama_masalah');
                 
                 DB::table('diagnosa_gizis')->insert([
