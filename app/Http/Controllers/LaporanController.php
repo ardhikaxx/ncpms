@@ -16,8 +16,8 @@ class LaporanController extends Controller
 {
     public function index(Request $request)
     {
-        $dari = $request->date('periode_dari', today()->startOfMonth());
-        $sampai = $request->date('periode_sampai', today());
+        $dari = $request->date('periode_dari') ?? today()->startOfMonth();
+        $sampai = $request->date('periode_sampai') ?? today();
 
         $ringkasan = [
             'kunjungan' => Kunjungan::whereBetween('tanggal_kunjungan', [$dari, $sampai])->count(),
