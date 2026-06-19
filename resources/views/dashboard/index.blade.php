@@ -161,7 +161,7 @@
     <!-- Main Dashboard Charts & Table -->
     <div class="row g-4 mb-4">
         <div class="col-lg-5" data-aos="fade-right" data-aos-delay="200">
-            <div class="ncpms-card h-100 mb-0 shadow-sm" style="border-radius: 20px;">
+            <div class="ncpms-card mb-0 shadow-sm" style="border-radius: 20px;">
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                     <h2 class="card-title-custom border-0 mb-0 pb-0">
                         <span class="card-title-icon bg-light text-primary"><i class="fas fa-chart-line"></i></span>
@@ -173,7 +173,7 @@
         </div>
 
         <div class="col-lg-7" data-aos="fade-left" data-aos-delay="300">
-            <div class="ncpms-card h-100 mb-0 shadow-sm" style="border-radius: 20px;">
+            <div class="ncpms-card mb-0 shadow-sm" style="border-radius: 20px;">
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                     <h2 class="card-title-custom border-0 mb-0 pb-0">
                         <span class="card-title-icon"
