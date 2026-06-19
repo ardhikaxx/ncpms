@@ -6,13 +6,13 @@
 
 <div class="page-header">
     <div>
-        <h1 class="page-title"><i class="fas fa-user-shield me-2" style="color: var(--color-primary);"></i>Manajemen Akun &amp; Hak Akses</h1>
+        <h1 class="page-title"><i class="fas fa-user-shield me-2" style="color: var(--color-primary);"></i>Manajemen Akun & Hak Akses</h1>
         <p class="page-subtitle">Kontrol penuh atas otorisasi staf medis dan administrator.</p>
     </div>
 </div>
 
 {{-- Register Form --}}
-<div class="ncpms-card mb-4" style="border-top: 3px solid var(--color-primary);">
+<div class="ncpms-card mb-4">
     <div class="card-title-custom">
         <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-user-plus"></i></span>
         Pendaftaran Akun Baru
@@ -21,7 +21,7 @@
         @csrf
         <div class="row g-3">
             <div class="col-md-4">
-                <label class="form-label-ncpms">Nama Lengkap &amp; Gelar</label>
+                <label class="form-label-ncpms">Nama Lengkap & Gelar</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0" style="border-color: var(--color-border);"><i class="fas fa-id-card text-muted"></i></span>
                     <input name="nama_lengkap" class="form-control form-control-ncpms border-start-0 ps-1" placeholder="Contoh: dr. Budi, Sp.GK" required>
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="mt-4 pt-3 border-top d-flex justify-content-end">
-            <button class="btn fw-bold px-4 py-2" style="background: var(--color-primary); color: white; border-radius: 10px; border: none; font-size: 0.9rem;">
+            <button class="btn-ncpms">
                 <i class="fas fa-user-check me-1"></i> Daftarkan Pengguna
             </button>
         </div>
@@ -85,20 +85,20 @@
         Daftar Staf Terdaftar
     </div>
     <div class="table-responsive" style="border-radius: 10px; border: 1px solid var(--color-border);">
-        <table class="table mb-0" style="font-size: 0.88rem;">
-            <thead style="background: #f8faf9;">
+        <table class="table data-table mb-0">
+            <thead>
                 <tr>
-                    <th style="font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding: 12px 16px;">Pengguna</th>
-                    <th style="font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding: 12px 16px;">Kontak &amp; Peran</th>
-                    <th style="font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding: 12px 16px;">Unit Kerja</th>
-                    <th style="font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding: 12px 16px;">Status</th>
-                    <th style="font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding: 12px 16px; text-align: right;">Aksi</th>
+                    <th style="padding-left: 16px;">Pengguna</th>
+                    <th>Kontak & Peran</th>
+                    <th>Unit Kerja</th>
+                    <th>Status</th>
+                    <th class="text-end" style="padding-right: 16px;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($penggunas as $p)
-                <tr style="border-bottom: 1px solid var(--color-divider); transition: background 0.15s;" onmouseover="this.style.background='var(--color-primary-subtle)'" onmouseout="this.style.background=''">
-                    <td style="padding: 12px 16px; vertical-align: middle;">
+                <tr>
+                    <td style="padding-left: 16px;">
                         <div class="d-flex align-items-center gap-2">
                             <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--color-primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; flex-shrink: 0;">
                                 {{ substr($p->nama_lengkap, 0, 1) }}
@@ -111,32 +111,29 @@
                             </div>
                         </div>
                     </td>
-                    <td style="padding: 12px 16px; vertical-align: middle;">
+                    <td>
                         <div class="text-dark" style="font-size: 0.88rem;">{{ $p->email }}</div>
-                        <span class="badge mt-1" style="background: var(--color-primary-subtle); color: var(--color-primary-dark); font-weight: 700; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; border: 1px solid var(--color-primary-border);">
+                        <span class="badge-pill mt-1 d-inline-block" style="background: var(--color-primary-subtle); color: var(--color-primary-dark); border: 1px solid var(--color-primary-border);">
                             <i class="fas fa-shield-alt me-1"></i>{{ $p->nama_peran }}
                         </span>
                     </td>
-                    <td style="padding: 12px 16px; vertical-align: middle; color: var(--color-text-muted);">{{ $p->unit_kerja }}</td>
-                    <td style="padding: 12px 16px; vertical-align: middle;">
+                    <td style="color: var(--color-text-muted);">{{ $p->unit_kerja }}</td>
+                    <td>
                         @if($p->trashed() || !$p->status_aktif)
-                            <span class="badge" style="background: #fff5f5; color: var(--color-risiko-tinggi); border: 1px solid #fecaca; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem;">
+                            <span class="badge-pill badge-soft-danger">
                                 <i class="fas fa-ban me-1"></i>Nonaktif
                             </span>
                         @else
-                            <span class="badge" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem;">
+                            <span class="badge-pill badge-soft-success">
                                 <i class="fas fa-check-circle me-1"></i>Aktif
                             </span>
                         @endif
                     </td>
-                    <td style="padding: 12px 16px; vertical-align: middle; text-align: right;">
+                    <td class="text-end" style="padding-right: 16px;">
                         @unless($p->trashed())
                         <form method="POST" action="{{ route('admin.pengguna.destroy', $p) }}" data-confirm-delete class="d-inline">
                             @csrf @method('DELETE')
-                            <button class="btn btn-sm" title="Nonaktifkan Akun"
-                                style="background: #fff5f5; color: var(--color-risiko-tinggi); border: 1px solid #fecaca; border-radius: 8px; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; transition: all 0.2s;"
-                                onmouseover="this.style.background='var(--color-risiko-tinggi)'; this.style.color='white';"
-                                onmouseout="this.style.background='#fff5f5'; this.style.color='var(--color-risiko-tinggi)';">
+                            <button class="btn-danger-ncpms btn-sm-ncpms">
                                 <i class="fas fa-user-slash me-1"></i>Nonaktifkan
                             </button>
                         </form>
