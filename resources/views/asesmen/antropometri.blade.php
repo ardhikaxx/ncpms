@@ -4,31 +4,21 @@
 
 @push('styles')
 <style>
-    .measure-card {
-        background: white; border-radius: 12px; padding: 1.25rem;
-        border: 1px solid var(--color-border); text-align: center;
-        box-shadow: var(--shadow-sm);
-    }
-    .measure-card .label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); margin-bottom: 6px; }
-    .measure-card .value { font-size: 1.8rem; font-weight: 800; color: var(--color-text-primary); line-height: 1; }
-    .measure-card .unit { font-size: 0.85rem; color: var(--color-text-muted); font-weight: 500; }
-
     .imt-preview {
         background: var(--color-primary-subtle);
         border: 1px dashed var(--color-primary-border);
-        border-radius: 12px; padding: 1.1rem 1.25rem;
+        border-radius: var(--radius-md);
+        padding: 1rem 1.25rem;
     }
-    .locked-banner {
-        background: linear-gradient(135deg, #e03131, #c92a2a);
-        color: white; border-radius: 12px; padding: 1rem 1.5rem;
-        display: flex; align-items: center; gap: 12px;
-        margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(224,49,49,0.2);
-    }
-    .empty-state {
-        background: rgba(18,130,96,0.03);
-        border: 1px dashed var(--color-primary-border);
-        border-radius: 14px; padding: 3rem; text-align: center;
-        min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+
+    .imt-ref-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: var(--radius-sm);
+        font-size: 0.78rem;
+        border: 1px solid rgba(0,0,0,0.05);
     }
 </style>
 @endpush
@@ -37,32 +27,30 @@
 
 @if($kunjungan->status === 'selesai' || $kunjungan->status === 'batal' || $kunjungan->dokumen_terkunci)
     <div class="locked-banner">
-        <i class="fas fa-lock fa-lg"></i>
+        <i class="fas fa-lock"></i>
         <div>
-            <div class="fw-bold">Dokumen Klinis Terkunci</div>
-            <div class="small" style="opacity: 0.8;">Status kunjungan ini adalah <strong>{{ str_replace('_', ' ', strtoupper($kunjungan->status)) }}</strong>. Anda tidak dapat mengubah data antropometri.</div>
+            <span class="fw-bold">Dokumen Klinis Terkunci</span> —
+            Status kunjungan: <strong>{{ str_replace('_', ' ', strtoupper($kunjungan->status)) }}</strong>. Data antropometri tidak dapat diubah.
         </div>
     </div>
 @endif
 
 <div class="page-header mb-4">
     <div>
-        <h1 class="page-title"><i class="fas fa-ruler-combined me-2" style="color: var(--color-primary);"></i>Asesmen Antropometri (ADIME)</h1>
-        <p class="page-subtitle">Pencatatan dimensi fisik dan komposisi tubuh pasien secara presisi.</p>
+        <h1 class="page-title"><i class="fas fa-ruler-combined me-2" style="color: var(--color-primary);"></i>Asesmen Antropometri</h1>
+        <p class="page-subtitle">Pencatatan dimensi fisik dan komposisi tubuh pasien.</p>
     </div>
-    <a href="{{ route('kunjungan.show', $kunjungan) }}"
-        class="btn fw-bold px-3 py-2"
-        style="background: transparent; border: 1.5px solid var(--color-border); color: var(--color-text-secondary); border-radius: 10px; font-size: 0.88rem;">
-        <i class="fas fa-arrow-left me-1"></i> Kembali ke Rekam Kunjungan
+    <a href="{{ route('kunjungan.show', $kunjungan) }}" class="btn-ncpms-outline">
+        <i class="fas fa-arrow-left"></i> Kembali
     </a>
 </div>
 
 <div class="row g-3">
     {{-- Form --}}
     <div class="col-lg-5">
-        <div class="ncpms-card shadow-sm" style="position: sticky; top: 90px; border-top: 3px solid var(--color-primary);">
+        <div class="ncpms-card" style="position: sticky; top: 90px;">
             <div class="card-title-custom">
-                <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-ruler-vertical"></i></span>
+                <span class="card-title-icon"><i class="fas fa-ruler-vertical"></i></span>
                 Input Pengukuran
             </div>
             <form action="{{ route('asesmen.antropometri.store') }}" method="POST">
@@ -105,7 +93,7 @@
                 </div>
 
                 @if(!$kunjungan->dokumen_terkunci)
-                    <button type="submit" class="btn fw-bold w-100 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 10px; font-size: 0.95rem;">
+                    <button type="submit" class="btn-ncpms w-100 py-2" style="font-size: 0.92rem;">
                         <i class="fas fa-save me-1"></i> Simpan Asesmen
                     </button>
                 @endif
@@ -116,10 +104,10 @@
     {{-- Results --}}
     <div class="col-lg-7">
         @if($data)
-            <div class="ncpms-card shadow-sm mb-3">
+            <div class="ncpms-card mb-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="card-title-custom mb-0">
-                        <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-clipboard-check"></i></span>
+                        <span class="card-title-icon"><i class="fas fa-clipboard-check"></i></span>
                         Hasil Kalkulasi Sistem
                     </div>
                     <div class="text-muted" style="font-size: 0.78rem;"><i class="fas fa-clock me-1"></i>{{ $data->created_at->format('d M Y, H:i') }}</div>
@@ -127,17 +115,17 @@
 
                 <div class="row g-2 mb-4">
                     <div class="col-4">
-                        <div class="measure-card">
-                            <div class="label">Berat Aktual</div>
-                            <div class="value">{{ decrypt($data->berat_badan_kg) }}</div>
-                            <div class="unit">kg</div>
+                        <div class="stat-card text-center">
+                            <div class="stat-label">Berat Aktual</div>
+                            <div class="stat-value">{{ decrypt($data->berat_badan_kg) }}</div>
+                            <div class="text-muted" style="font-size: 0.82rem;">kg</div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="measure-card">
-                            <div class="label">Tinggi Badan</div>
-                            <div class="value">{{ decrypt($data->tinggi_badan_cm) }}</div>
-                            <div class="unit">cm</div>
+                        <div class="stat-card text-center">
+                            <div class="stat-label">Tinggi Badan</div>
+                            <div class="stat-value">{{ decrypt($data->tinggi_badan_cm) }}</div>
+                            <div class="text-muted" style="font-size: 0.82rem;">cm</div>
                         </div>
                     </div>
                     <div class="col-4">
@@ -150,35 +138,38 @@
                             elseif($status == 'normal') { $bgCard = '#f0fdf4'; $valColor = '#166534'; }
                             elseif($status == 'lebih') { $bgCard = '#fff7ed'; $valColor = '#c2410c'; }
                         @endphp
-                        <div class="measure-card" style="background: {{ $bgCard }};">
-                            <div class="label">Skor IMT</div>
-                            <div class="value" style="color: {{ $valColor }};">{{ decrypt($data->imt) }}</div>
-                            <div class="unit">kg/m²</div>
+                        <div class="stat-card text-center" style="background: {{ $bgCard }};">
+                            <div class="stat-label">Skor IMT</div>
+                            <div class="stat-value" style="color: {{ $valColor }};">{{ decrypt($data->imt) }}</div>
+                            <div class="text-muted" style="font-size: 0.82rem;">kg/m²</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="text-center p-3 rounded" style="background: #f8faf9; border: 1px solid var(--color-border);">
-                    <div class="fw-bold mb-2" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted);">Kesimpulan Status Gizi IMT</div>
-                    <span class="badge px-4 py-2 rounded-pill" style="font-size: 0.88rem; letter-spacing: 0.04em;
-                        @if($status == 'normal') background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;
-                        @elseif($status == 'kurang') background: #fef3c7; color: #92400e; border: 1px solid #fde68a;
-                        @elseif($status == 'lebih') background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa;
-                        @elseif($status == 'obesitas') background: #fee2e2; color: #991b1b; border: 1px solid #fecaca;
-                        @else background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; @endif">
+                <div class="section-divider">Kesimpulan Status Gizi</div>
+
+                <div class="text-center p-3 rounded" style="background: var(--color-divider); border: 1px solid var(--color-border);">
+                    <span class="badge-pill
+                        @if($status == 'normal') badge-soft-success
+                        @elseif($status == 'kurang') badge-soft-warning
+                        @elseif($status == 'lebih') badge-soft-warning
+                        @elseif($status == 'obesitas') badge-soft-danger
+                        @else badge-soft-gray @endif"
+                        style="font-size: 0.85rem; padding: 5px 16px;">
                         {{ strtoupper(str_replace('_', ' ', $status)) }}
                     </span>
                 </div>
             </div>
 
-            <div class="p-3 rounded" style="background: var(--color-primary-subtle); border: 1px dashed var(--color-primary-border);">
-                <div class="fw-bold mb-2" style="font-size: 0.8rem; color: var(--color-primary-dark);">
-                    <i class="fas fa-info-circle me-1"></i>Referensi Klasifikasi IMT (WHO Asia-Pasifik)
+            <div class="ncpms-card">
+                <div class="card-title-custom">
+                    <span class="card-title-icon"><i class="fas fa-info-circle"></i></span>
+                    Referensi Klasifikasi IMT (WHO Asia-Pasifik)
                 </div>
-                <div class="row g-1" style="font-size: 0.78rem;">
+                <div class="row g-2">
                     @foreach([['< 18.5','Kurang','#fef3c7','#92400e'],['18.5 – 24.9','Normal','#dcfce7','#166534'],['25.0 – 29.9','Lebih','#ffedd5','#c2410c'],['≥ 30.0','Obesitas','#fee2e2','#991b1b']] as [$range, $label, $bg, $color])
                     <div class="col-6">
-                        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background: {{ $bg }}; border: 1px solid rgba(0,0,0,0.05);">
+                        <div class="imt-ref-item" style="background: {{ $bg }};">
                             <span class="fw-bold" style="color: {{ $color }}; min-width: 80px;">{{ $range }}</span>
                             <span style="color: {{ $color }};">{{ $label }}</span>
                         </div>
@@ -188,9 +179,9 @@
             </div>
         @else
             <div class="empty-state">
-                <i class="fas fa-weight fa-3x mb-3 opacity-20" style="color: var(--color-primary);"></i>
-                <h5 class="fw-bold text-muted mb-1">Belum Ada Data Antropometri</h5>
-                <p class="text-muted mb-0" style="font-size: 0.9rem;">Isi formulir di samping untuk menyimpan dan mengkalkulasi IMT secara otomatis.</p>
+                <i class="fas fa-weight fa-3x mb-3"></i>
+                <h5>Belum Ada Data Antropometri</h5>
+                <p>Isi formulir di samping untuk menyimpan dan mengkalkulasi IMT secara otomatis.</p>
             </div>
         @endif
     </div>
