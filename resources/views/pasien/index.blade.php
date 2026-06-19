@@ -1,39 +1,39 @@
 @extends('layouts.app')
+@section('title','Master Pasien')
+@section('breadcrumb','Pasien')
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold m-0" style="color: var(--color-text-primary);">Master Data Pasien</h3>
-    <button class="btn btn-primary-ncpms"><i class="fas fa-plus"></i> Pasien Baru</button>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Master Data Pasien</h1>
+        <p class="page-subtitle">MPI klinis. Identitas pada daftar ditampilkan tersamar.</p>
+    </div>
+    <a href="{{ route('pasien.create') }}" class="btn-primary-ncpms"><i class="fas fa-plus"></i> Pasien Baru</a>
 </div>
 
 <div class="ncpms-card">
     <div class="table-responsive">
-        <table class="table">
-            <thead style="background-color: var(--color-primary-subtle);">
-                <tr>
-                    <th>NO. RM</th>
-                    <th>NAMA PASIEN</th>
-                    <th>TANGGAL LAHIR</th>
-                    <th>JENIS KELAMIN</th>
-                    <th>AKSI</th>
-                </tr>
-            </thead>
+        <table class="table align-middle">
+            <thead><tr><th>NRM</th><th>Nama</th><th>Usia</th><th>JK</th><th>Status</th><th>Kunjungan Terakhir</th><th>Aksi</th></tr></thead>
             <tbody>
-                @foreach($pasiens as $p)
+            @forelse($pasiens as $p)
                 <tr>
-                    <td style="font-family: var(--font-mono); font-size: 0.8125rem;">{{ decrypt($p->nomor_rekam_medis) }}</td>
-                    <td class="fw-bold">{{ decrypt($p->nama_lengkap) }}</td>
-                    <td>{{ $p->tanggal_lahir->format('d M Y') }}</td>
-                    <td>{{ $p->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
-                    <td>
-                        <button class="btn btn-sm" style="background-color: var(--color-accent); color: white;">Detail</button>
+                    <td class="text-mono">{{ $p->nomor_rm_tersamar }}</td>
+                    <td class="fw-semibold">{{ $p->nama_tersamar }}</td>
+                    <td>{{ $p->tanggal_lahir?->age }} tahun</td>
+                    <td>{{ $p->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                    <td>{{ $p->status_aktif ? 'Aktif' : 'Nonaktif' }}</td>
+                    <td>{{ optional($p->kunjungans->first())->tanggal_kunjungan?->format('d/m/Y') ?? '-' }}</td>
+                    <td class="d-flex gap-1">
+                        <a href="{{ route('pasien.show', $p) }}" class="btn-outline-ncpms btn-sm-ncpms"><i class="fas fa-eye"></i> Detail</a>
+                        <a href="{{ route('pasien.edit', $p) }}" class="btn-outline-ncpms btn-sm-ncpms"><i class="fas fa-pen"></i></a>
                     </td>
                 </tr>
-                @endforeach
+            @empty
+                <tr><td colspan="7" class="text-center text-muted py-4">Belum ada data pasien.</td></tr>
+            @endforelse
             </tbody>
         </table>
     </div>
-    <div class="mt-3">
-        {{ $pasiens->links('pagination::bootstrap-5') }}
-    </div>
+    {{ $pasiens->links('pagination::bootstrap-5') }}
 </div>
 @endsection
