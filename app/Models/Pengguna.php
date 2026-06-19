@@ -15,6 +15,17 @@ class Pengguna extends Model implements \OwenIt\Auditing\Contracts\Auditable, \I
     protected $casts = ['password' => 'hashed'];
     protected $hidden = ['password'];
 
+    public function getNamaPeranAttribute()
+    {
+        return [
+            'spgk' => 'Dokter Spesialis Gizi Klinik',
+            'dietisien' => 'Dietisien Teregistrasi',
+            'nutrisionis' => 'Tenaga Nutrisionis',
+            'perawat' => 'Perawat Poliklinik',
+            'admin_ti' => 'Administrator TI',
+        ][$this->peran] ?? $this->peran;
+    }
+
     public function getAuthIdentifierName() { return 'id'; }
     public function getAuthIdentifier() { return $this->id; }
     public function getAuthPasswordName() { return 'password'; }
