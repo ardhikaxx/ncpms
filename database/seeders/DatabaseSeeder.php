@@ -245,7 +245,13 @@ class DatabaseSeeder extends Seeder
             $numVisits = rand(1, 4);
             
             for ($v = 0; $v < $numVisits; $v++) {
-                $tanggal = $now->copy()->subDays(rand(1, 300));
+                // Determine if this visit should be exactly today (e.g., last visit of the loop and a 10% chance overall)
+                if ($v === $numVisits - 1 && rand(1, 100) <= 15) {
+                    $tanggal = $now->copy(); // Today's visit
+                } else {
+                    $tanggal = $now->copy()->subDays(rand(1, 300));
+                }
+                
                 $kodeDx = $dxKeys[array_rand($dxKeys)];
                 $risiko = $risikos[array_rand($risikos)];
                 $bb = rand(400, 1200) / 10;
@@ -255,7 +261,7 @@ class DatabaseSeeder extends Seeder
                     'pasien_id' => $pasienId,
                     'nomor_kunjungan' => 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad($i, 3, '0', STR_PAD_LEFT).str_pad($v, 2, '0', STR_PAD_LEFT),
                     'tipe_kunjungan' => rand(0, 1) === 0 ? 'mandiri' : 'rujukan_internal',
-                    'status' => $v === 0 && $i < 20 ? 'dalam_pelayanan' : 'selesai',
+                    'status' => ($tanggal->isToday() && rand(1, 100) <= 60) ? 'dalam_pelayanan' : 'selesai',
                     'tanggal_kunjungan' => $tanggal->toDateString(),
                     'waktu_registrasi' => $tanggal->copy()->setTime(8, 0),
                     'perawat_id' => $pengguna['perawat'],
