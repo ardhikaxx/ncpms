@@ -14,8 +14,8 @@ class DatabaseSeeder extends Seeder
     private $firstNamesMale = ['Budi', 'Andi', 'Hendra', 'Eko', 'Agus', 'Dwi', 'Tri', 'Iwan', 'Rizal', 'Joko', 'Wahyu', 'Arif', 'Ahmad', 'Muhamad', 'Bayu', 'Rudi', 'Fajar', 'Deni', 'Yusuf', 'Ilham', 'Dimas', 'Reza', 'Fadli', 'Surya', 'Rama', 'Gilang', 'Rangga', 'Teguh', 'Bambang', 'Sigit'];
     private $firstNamesFemale = ['Siti', 'Ayu', 'Sri', 'Putri', 'Dewi', 'Nur', 'Rini', 'Dina', 'Sari', 'Indah', 'Lestari', 'Fitri', 'Rina', 'Wulan', 'Tari', 'Maya', 'Nita', 'Ratna', 'Lia', 'Rika', 'Ani', 'Yuni', 'Desi', 'Ika', 'Mega', 'Santi', 'Vina', 'Eka', 'Puspa', 'Dita'];
     private $lastNames = ['Pratama', 'Santoso', 'Wijaya', 'Kusuma', 'Saputra', 'Setiawan', 'Nugroho', 'Hidayat', 'Kurniawan', 'Ramadhan', 'Lestari', 'Wahyuni', 'Susanti', 'Purnama', 'Wibowo', 'Siregar', 'Hutagalung', 'Gunawan', 'Hartono', 'Halim', 'Putra', 'Firmansyah', 'Ardiansyah', 'Baskoro', 'Sutanto'];
-    private $cities = ['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Semarang', 'Makassar', 'Palembang', 'Depok', 'Tangerang', 'Bekasi', 'Bogor', 'Malang', 'Padang', 'Denpasar', 'Samarinda', 'Balikpapan', 'Banjarmasin', 'Pontianak', 'Cimahi', 'Surakarta'];
-    private $streets = ['Jl. Merdeka', 'Jl. Sudirman', 'Jl. Thamrin', 'Jl. Gatot Subroto', 'Jl. Ahmad Yani', 'Jl. Pahlawan', 'Jl. Diponegoro', 'Jl. Gajah Mada', 'Jl. Hayam Wuruk', 'Jl. Imam Bonjol', 'Jl. Pattimura', 'Jl. Veteran', 'Jl. Pemuda', 'Jl. Ki Hajar Dewantara', 'Jl. Sisingamangaraja'];
+    private $cities = ['Kaliwates, Jember', 'Sumbersari, Jember', 'Patrang, Jember', 'Arjasa, Jember', 'Ajung, Jember', 'Ambulu, Jember', 'Balung, Jember', 'Bangsalsari, Jember', 'Kencong, Jember', 'Puger, Jember', 'Rambipuji, Jember', 'Sukowono, Jember', 'Tanggul, Jember', 'Wuluhan, Jember', 'Pakusari, Jember', 'Tempurejo, Jember', 'Umbulsari, Jember', 'Jombang, Jember', 'Mayang, Jember', 'Mumbulsari, Jember'];
+    private $streets = ['Jl. PB Sudirman', 'Jl. Gajah Mada', 'Jl. Hayam Wuruk', 'Jl. Letjen Suprapto', 'Jl. Trunojoyo', 'Jl. Letjen S. Parman', 'Jl. Letjen Panjaitan', 'Jl. Kalimantan', 'Jl. Jawa', 'Jl. Mastrip', 'Jl. Riau', 'Jl. Sumatra', 'Jl. Letjen Haryono', 'Jl. Tidar', 'Jl. Ahmad Yani', 'Jl. Kartini', 'Jl. Basuki Rahmat', 'Jl. Brawijaya', 'Jl. KH. Shiddiq', 'Jl. Sultan Agung'];
 
     public function run(): void
     {
@@ -253,7 +253,7 @@ class DatabaseSeeder extends Seeder
                 
                 $kunjunganId = DB::table('kunjungans')->insertGetId([
                     'pasien_id' => $pasienId,
-                    'nomor_kunjungan' => 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT),
+                    'nomor_kunjungan' => 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad($i, 3, '0', STR_PAD_LEFT).str_pad($v, 2, '0', STR_PAD_LEFT),
                     'tipe_kunjungan' => rand(0, 1) === 0 ? 'mandiri' : 'rujukan_internal',
                     'status' => $v === 0 && $i < 20 ? 'dalam_pelayanan' : 'selesai',
                     'tanggal_kunjungan' => $tanggal->toDateString(),
