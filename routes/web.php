@@ -57,7 +57,11 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::post('/kunjungan/{kunjungan}/dokumen-edukasi', [KunjunganController::class, 'storeDokumenEdukasi'])->name('kunjungan.dokumen-edukasi.store');
         Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
         Route::post('/monitoring', [MonitoringController::class, 'store'])->name('monitoring.store');
-        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan', [App\Http\Controllers\Laporan\LaporanController::class, 'index'])->name('laporan.index');
+
+        // Dapur / Food Service
+        Route::get('/dapur/permintaan-makanan', [App\Http\Controllers\Dapur\FoodServiceController::class, 'index'])->name('dapur.index');
+        Route::get('/dapur/cetak-etiket/{id}', [App\Http\Controllers\Dapur\FoodServiceController::class, 'cetakEtiket'])->name('dapur.cetak');
         Route::resource('/bahan-makanan', \App\Http\Controllers\BahanMakananController::class)->except(['create','show','edit']);
     });
 
