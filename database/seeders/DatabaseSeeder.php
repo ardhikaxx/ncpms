@@ -333,13 +333,26 @@ class DatabaseSeeder extends Seeder
                         'updated_at' => $tanggal,
                     ]);
 
+                    $formulas = ['harris_benedict', 'mifflin_st_jeor', 'who', 'konsensus_dm', 'konsensus_ckd'];
+                    $acuans = ['aktual', 'ideal', 'adjusted'];
+                    $bentukMakans = ['biasa', 'lunak', 'saring', 'cair_penuh', 'cair_jernih', 'formula_medis'];
+                    $tujuanTerapis = [
+                        'Meningkatkan asupan oral secara bertahap',
+                        'Mencapai berat badan ideal',
+                        'Mengendalikan kadar glukosa darah',
+                        'Mengurangi retensi cairan',
+                        'Mendukung proses penyembuhan luka',
+                        'Mencegah malnutrisi lebih lanjut',
+                        'Menurunkan tekanan darah'
+                    ];
+
                     $preskripsiId = DB::table('preskripsi_diets')->insertGetId([
                         'kunjungan_id' => $kunjunganId,
-                        'formula_basal' => 'harris_benedict',
-                        'berat_badan_acuan' => 'aktual',
+                        'formula_basal' => $formulas[array_rand($formulas)],
+                        'berat_badan_acuan' => $acuans[array_rand($acuans)],
                         'kebutuhan_energi_basal_kkal' => rand(1200, 1500),
-                        'faktor_aktivitas' => 1.2,
-                        'faktor_stres' => 1.1,
+                        'faktor_aktivitas' => rand(11, 14) / 10,
+                        'faktor_stres' => rand(10, 15) / 10,
                         'total_kebutuhan_energi_kkal' => rand(1500, 2200),
                         'persen_karbohidrat' => 50,
                         'gram_karbohidrat' => rand(200, 300),
@@ -347,10 +360,10 @@ class DatabaseSeeder extends Seeder
                         'gram_protein' => rand(50, 80),
                         'persen_lemak' => 30,
                         'gram_lemak' => rand(40, 70),
-                        'bentuk_makanan' => 'lunak',
+                        'bentuk_makanan' => $bentukMakans[array_rand($bentukMakans)],
                         'frekuensi_makan_utama' => 3,
-                        'frekuensi_selingan' => 2,
-                        'tujuan_terapi' => 'Meningkatkan asupan oral secara bertahap',
+                        'frekuensi_selingan' => rand(1, 3),
+                        'tujuan_terapi' => $tujuanTerapis[array_rand($tujuanTerapis)],
                         'tanggal_mulai' => $tanggal->toDateString(),
                         'status' => 'selesai',
                         'dibuat_oleh' => $pengguna['dietisien'],
@@ -359,6 +372,7 @@ class DatabaseSeeder extends Seeder
                     ]);
 
                     $waktuMakan = ['makan_pagi', 'selingan_pagi', 'makan_siang', 'selingan_sore', 'makan_malam'];
+                    $pengolahans = ['Rebus', 'Kukus', 'Panggang', 'Tumis Sedikit Minyak', 'Bakar', 'Saring'];
                     foreach ($waktuMakan as $waktu) {
                         DB::table('detail_menu_harians')->insert([
                             'preskripsi_diet_id' => $preskripsiId,
@@ -369,19 +383,25 @@ class DatabaseSeeder extends Seeder
                             'protein_gram' => rand(5, 20),
                             'lemak_gram' => rand(5, 15),
                             'karbohidrat_gram' => rand(20, 50),
-                            'keterangan_penukar' => 'Rebus / Kukus',
+                            'keterangan_penukar' => $pengolahans[array_rand($pengolahans)],
                             'created_at' => $tanggal,
                             'updated_at' => $tanggal,
                         ]);
                     }
 
                     if (rand(1, 100) <= 50) {
+                        $topikEdukasis = ['Panduan Diet DM', 'Diet ETPT', 'Diet Rendah Garam', 'Edukasi Penurunan BB', 'Diet Penyakit Ginjal'];
+                        $tipes = ['leaflet_diet', 'panduan_makan', 'ringkasan_kalori', 'pantangan_alergi', 'rencana_makan'];
                         DB::table('dokumen_edukasiis')->insert([
                             'pasien_id' => $pasienId,
                             'kunjungan_id' => $kunjunganId,
-                            'judul_dokumen' => 'Panduan Edukasi Diet',
-                            'tipe' => 'leaflet_diet',
-                            'konten_json' => json_encode(['poin' => 'Kurangi garam', 'target' => 'BB ideal']),
+                            'judul_dokumen' => $topikEdukasis[array_rand($topikEdukasis)],
+                            'tipe' => $tipes[array_rand($tipes)],
+                            'konten_json' => json_encode([
+                                'poin_utama' => 'Tingkatkan konsumsi serat dan kurangi gula sederhana',
+                                'target' => 'Gula darah stabil dan BB ideal',
+                                'pantangan' => 'Gorengan, makanan cepat saji'
+                            ]),
                             'dibuat_oleh' => $pengguna['dietisien'],
                             'created_at' => $tanggal,
                             'updated_at' => $tanggal,
@@ -389,13 +409,16 @@ class DatabaseSeeder extends Seeder
                     }
 
                     if (rand(1, 100) <= 70) {
+                        $kepatuhans = ['patuh', 'cukup_patuh', 'tidak_patuh'];
+                        $evaluasiBb = ['BB stabil', 'Terjadi penurunan BB 0.5kg', 'BB naik 1kg', 'Masih underweight'];
+                        $kesimpulans = ['Kondisi klinis membaik', 'Asupan masih perlu ditingkatkan', 'Gula darah mulai terkontrol', 'Pasien kurang kooperatif', 'Tercapai target kalori >80%'];
                         DB::table('monitorings')->insert([
                             'kunjungan_id' => $kunjunganId,
-                            'parameter_dipantau' => json_encode(['Berat Badan', 'Asupan Energi']),
-                            'evaluasi_kepatuhan_diet' => 'patuh',
-                            'evaluasi_anthropometri' => 'BB stabil',
-                            'evaluasi_asupan' => 'Asupan membaik 80%',
-                            'kesimpulan' => 'Kondisi membaik',
+                            'parameter_dipantau' => json_encode(['Berat Badan', 'Asupan Energi', 'Kadar Glukosa', 'Tekanan Darah']),
+                            'evaluasi_kepatuhan_diet' => $kepatuhans[array_rand($kepatuhans)],
+                            'evaluasi_anthropometri' => $evaluasiBb[array_rand($evaluasiBb)],
+                            'evaluasi_asupan' => 'Asupan ' . rand(50, 100) . '% dari kebutuhan',
+                            'kesimpulan' => $kesimpulans[array_rand($kesimpulans)],
                             'dilakukan_oleh' => $pengguna['dietisien'],
                             'created_at' => $tanggal,
                             'updated_at' => $tanggal,
