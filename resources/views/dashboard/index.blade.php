@@ -2,10 +2,6 @@
 @section('title','Dashboard Klinis')
 @section('breadcrumb','Dashboard')
 @section('content')
-@extends('layouts.app')
-@section('title','Dashboard Klinis')
-@section('breadcrumb','Dashboard')
-@section('content')
 
 <!-- Welcome Banner -->
 <div class="welcome-banner mb-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, var(--color-primary-darker) 0%, var(--color-primary) 100%); border-radius: 20px; padding: 2.5rem 3rem; color: white; box-shadow: 0 10px 30px rgba(26,122,100,0.2);">
