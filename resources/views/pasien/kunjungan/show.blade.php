@@ -4,51 +4,19 @@
 
 @push('styles')
 <style>
-    .locked-banner {
-        background: linear-gradient(135deg, #e03131, #c92a2a);
-        color: white; border-radius: 12px; padding: 0.9rem 1.4rem;
-        display: flex; align-items: center; gap: 10px;
-        margin-bottom: 1.5rem; font-weight: 600; font-size: 0.9rem;
-    }
     .pagt-step {
         display: flex; align-items: center; gap: 8px;
-        padding: 9px 0; border-bottom: 1px solid var(--color-divider);
-        font-size: 0.88rem;
+        padding: 8px 0; border-bottom: 1px solid var(--color-divider);
+        font-size: 0.84rem;
     }
     .pagt-step:last-child { border-bottom: none; }
     .pagt-step .step-name { flex: 1; color: var(--color-text-secondary); }
-    .pagt-step .step-status { font-weight: 700; font-size: 0.78rem; }
-    .step-done { color: #059669; }
-    .step-pending { color: var(--color-text-muted); }
-
-    .section-card { margin-bottom: 1rem; }
-    .section-num {
-        display: inline-flex; align-items: center; justify-content: center;
-        width: 22px; height: 22px; border-radius: 50%;
-        background: var(--color-primary); color: white; font-size: 0.72rem; font-weight: 800;
-        flex-shrink: 0;
-    }
-    .section-card .card-title-custom { font-size: 0.95rem; }
-
-    .info-row-sm {
-        display: flex; align-items: baseline; gap: 8px;
-        padding: 6px 0; border-bottom: 1px solid var(--color-divider); font-size: 0.85rem;
-    }
-    .info-row-sm:last-child { border-bottom: none; }
-    .info-row-sm .lbl { color: var(--color-text-muted); font-weight: 600; min-width: 100px; font-size: 0.8rem; }
-    .info-row-sm .val { color: var(--color-text-primary); font-weight: 600; }
-
-    .warning-clinical {
-        background: #fff5f5; border: 1px solid #fecaca;
-        border-radius: 10px; padding: 0.9rem 1.1rem;
-        display: flex; align-items: flex-start; gap: 10px;
-        margin-bottom: 1.25rem; font-size: 0.88rem; color: #991b1b;
-    }
-    .menu-table thead th { background: #f8faf9; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding: 8px 10px; }
-    .menu-table td { padding: 8px 10px; font-size: 0.84rem; border-bottom: 1px solid var(--color-divider); vertical-align: middle; }
     .konseling-item { border-bottom: 1px solid var(--color-divider); padding: 10px 0; }
     .konseling-item:last-child { border-bottom: none; }
-    .permission-note { color: var(--color-text-muted); font-size: 0.83rem; font-style: italic; padding: 8px; background: #f8faf9; border-radius: 8px; }
+    .imt-display {
+        padding: 10px 14px; border-radius: var(--radius-sm); text-align: center;
+        background: var(--color-primary-subtle); border: 1px solid var(--color-primary-border);
+    }
 </style>
 @endpush
 
@@ -70,28 +38,26 @@
 
 <div class="page-header">
     <div>
-        <h1 class="page-title" style="font-size: 1.45rem; font-family: var(--font-mono);">{{ $kunjungan->nomor_kunjungan }}</h1>
+        <h1 class="page-title">{{ $kunjungan->nomor_kunjungan }}</h1>
         <p class="page-subtitle">{{ $kunjungan->pasien->nama_lengkap }} &bull; {{ $kunjungan->tanggal_kunjungan?->format('d M Y') }}</p>
     </div>
     <div class="d-flex gap-2">
         @if(!$kunjungan->dokumen_terkunci && Auth::user()->peran === 'spgk')
             <form method="POST" action="{{ route('kunjungan.kunci', $kunjungan) }}" data-confirm-lock>
                 @csrf
-                <button class="btn fw-bold px-3 py-2" style="background: #fff5f5; color: #e03131; border: 1.5px solid #fecaca; border-radius: 10px; font-size: 0.88rem;">
-                    <i class="fas fa-lock me-1"></i>Kunci Dokumen
+                <button class="btn-danger-ncpms">
+                    <i class="fas fa-lock"></i> Kunci Dokumen
                 </button>
             </form>
         @endif
-        <a href="{{ route('kunjungan.cetak-pagt', $kunjungan) }}" target="_blank"
-            class="btn fw-bold px-3 py-2"
-            style="background: var(--color-primary); color: white; border-radius: 10px; border: none; font-size: 0.88rem; text-decoration: none;">
-            <i class="fas fa-file-pdf me-1"></i>Cetak PAGT
+        <a href="{{ route('kunjungan.cetak-pagt', $kunjungan) }}" target="_blank" class="btn-ncpms" style="text-decoration: none;">
+            <i class="fas fa-file-pdf"></i> Cetak PAGT
         </a>
         @if($bisaSelesai)
             <form method="POST" action="{{ route('kunjungan.selesai', $kunjungan) }}">
                 @csrf
-                <button class="btn fw-bold px-3 py-2" style="background: transparent; border: 1.5px solid var(--color-primary); color: var(--color-primary); border-radius: 10px; font-size: 0.88rem;">
-                    <i class="fas fa-check me-1"></i>Selesai
+                <button class="btn-ncpms-outline">
+                    <i class="fas fa-check"></i> Selesai
                 </button>
             </form>
         @endif
@@ -104,7 +70,7 @@
 
 @if($risikoTinggi || count($komorbids) > 0)
     <div class="warning-clinical">
-        <i class="fas fa-exclamation-triangle mt-1" style="color: #e03131;"></i>
+        <i class="fas fa-exclamation-triangle mt-1"></i>
         <div>
             <strong>PERINGATAN KLINIS:</strong> Pasien ini
             @if($risikoTinggi) memiliki <strong>Risiko Malnutrisi Tinggi</strong> @endif
@@ -119,23 +85,53 @@
     {{-- Left Sidebar --}}
     <div class="col-lg-4">
         {{-- Patient Summary --}}
-        <div class="ncpms-card mb-3" style="border-top: 3px solid var(--color-primary);">
+        <div class="ncpms-card mb-3">
             <div class="card-title-custom">
-                <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-user"></i></span>
+                <i class="fas fa-user" style="color: var(--color-primary);"></i>
                 Ringkasan Pasien
             </div>
-            <div class="info-row-sm"><span class="lbl">Nama</span><span class="val">{{ $kunjungan->pasien->nama_lengkap }}</span></div>
-            <div class="info-row-sm"><span class="lbl">No. RM</span><span class="val" style="font-family: var(--font-mono);">{{ $kunjungan->pasien->nomor_rekam_medis }}</span></div>
-            <div class="info-row-sm"><span class="lbl">Usia</span><span class="val">{{ $kunjungan->pasien->tanggal_lahir?->age }} tahun</span></div>
-            <div class="info-row-sm"><span class="lbl">Diagnosis</span><span class="val" style="font-size: 0.82rem;">{{ $kunjungan->diagnosisMedisUtama->nama_diagnosis ?? '-' }}</span></div>
-            <div class="info-row-sm"><span class="lbl">Tipe</span><span class="val">{{ str_replace('_',' ', $kunjungan->tipe_kunjungan) }}</span></div>
-            <div class="info-row-sm"><span class="lbl">Dietisien</span><span class="val">{{ $kunjungan->dietisien->nama_lengkap ?? '-' }}</span></div>
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Nama</div>
+                    <div class="info-value">{{ $kunjungan->pasien->nama_lengkap }}</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div>
+                    <div class="info-label">No. RM</div>
+                    <div class="info-value">{{ $kunjungan->pasien->nomor_rekam_medis }}</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Usia</div>
+                    <div class="info-value">{{ $kunjungan->pasien->tanggal_lahir?->age }} tahun</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Diagnosis</div>
+                    <div class="info-value">{{ $kunjungan->diagnosisMedisUtama->nama_diagnosis ?? '-' }}</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Tipe</div>
+                    <div class="info-value">{{ str_replace('_',' ', $kunjungan->tipe_kunjungan) }}</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Dietisien</div>
+                    <div class="info-value">{{ $kunjungan->dietisien->nama_lengkap ?? '-' }}</div>
+                </div>
+            </div>
         </div>
 
         {{-- PAGT Progress --}}
         <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="card-title-icon"><i class="fas fa-flag"></i></span>
+                <i class="fas fa-flag" style="color: var(--color-primary);"></i>
                 Status Tahap PAGT
             </div>
             @php
@@ -164,10 +160,10 @@
             </div>
             @foreach($pagtSteps as [$label, $done, $icon])
             <div class="pagt-step">
-                <i class="fas {{ $icon }} {{ $done ? 'text-success' : 'text-muted' }}" style="width: 16px; font-size: 0.85rem;"></i>
+                <i class="fas {{ $icon }}" style="width: 16px; font-size: 0.82rem; color: {{ $done ? 'var(--color-risiko-rendah)' : 'var(--color-text-muted)' }};"></i>
                 <span class="step-name">{{ $label }}</span>
-                <span class="step-status {{ $done ? 'step-done' : 'step-pending' }}">
-                    {{ $done ? '✓ Selesai' : '— Belum' }}
+                <span class="badge-pill {{ $done ? 'badge-soft-success' : 'badge-soft-gray' }}">
+                    {{ $done ? '✓ Selesai' : 'Belum' }}
                 </span>
             </div>
             @endforeach
@@ -178,10 +174,9 @@
     <div class="col-lg-8">
 
         {{-- 1. Skrining --}}
-        <div class="ncpms-card section-card">
+        <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="section-num">1</span>
-                <span class="card-title-icon ms-1"><i class="fas fa-clipboard-check"></i></span>
+                <i class="fas fa-clipboard-check" style="color: var(--color-primary);"></i>
                 Skrining Gizi
             </div>
             @if($bisaSkrining)
@@ -210,8 +205,8 @@
                     <input name="rekomendasi_tindak_lanjut" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->rekomendasi_tindak_lanjut ?? '' }}">
                 </div>
                 <div class="col-12">
-                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
-                        <i class="fas fa-save me-1"></i>Simpan Skrining
+                    <button class="btn-ncpms">
+                        <i class="fas fa-save"></i> Simpan Skrining
                     </button>
                 </div>
             </form>
@@ -221,10 +216,9 @@
         </div>
 
         {{-- 2. Antropometri --}}
-        <div class="ncpms-card section-card">
+        <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="section-num">2</span>
-                <span class="card-title-icon ms-1"><i class="fas fa-weight-scale"></i></span>
+                <i class="fas fa-weight-scale" style="color: var(--color-primary);"></i>
                 Antropometri
             </div>
             @if($bisaAntropometri)
@@ -237,16 +231,16 @@
                 <div class="col-md-3"><label class="form-label-ncpms">Lingkar Perut (cm)</label><input type="number" step="0.1" name="lingkar_perut_cm" class="form-control-ncpms" value="{{ $kunjungan->antropometri?->lingkar_perut_cm ?? '' }}"></div>
                 @if($kunjungan->antropometri)
                     <div class="col-md-4">
-                        <div class="p-2 rounded text-center" style="background: var(--color-primary-subtle); border: 1px solid var(--color-primary-border);">
-                            <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">IMT</div>
+                        <div class="imt-display">
+                            <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">IMT</div>
                             <div style="font-size: 1.4rem; font-weight: 800; color: var(--color-primary);">{{ $kunjungan->antropometri?->imt }}</div>
                             <div style="font-size: 0.75rem; color: var(--color-text-secondary);">{{ $kunjungan->antropometri?->status_gizi_imt }}</div>
                         </div>
                     </div>
                 @endif
                 <div class="col-12">
-                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
-                        <i class="fas fa-save me-1"></i>Simpan Antropometri
+                    <button class="btn-ncpms">
+                        <i class="fas fa-save"></i> Simpan Antropometri
                     </button>
                 </div>
             </form>
@@ -256,10 +250,9 @@
         </div>
 
         {{-- 3. Fisik --}}
-        <div class="ncpms-card section-card">
+        <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="section-num">3</span>
-                <span class="card-title-icon ms-1"><i class="fas fa-heart-pulse"></i></span>
+                <i class="fas fa-heart-pulse" style="color: var(--color-primary);"></i>
                 Fisik Klinis &amp; Vital Sign
             </div>
             @if($bisaFisik)
@@ -275,8 +268,8 @@
                 <div class="col-md-6"><label class="form-label-ncpms">Gangguan GI (pisahkan koma)</label><input name="gangguan_gastrointestinal" class="form-control-ncpms" value="{{ isset($kunjungan->fisik) ? implode(',', $kunjungan->fisik?->gangguan_gastrointestinal ?? []) : '' }}"></div>
                 <div class="col-12"><label class="form-label-ncpms">Catatan Klinis</label><textarea name="catatan_klinis" class="form-control-ncpms" rows="2">{{ $kunjungan->fisik?->catatan_klinis ?? '' }}</textarea></div>
                 <div class="col-12">
-                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
-                        <i class="fas fa-save me-1"></i>Simpan Fisik
+                    <button class="btn-ncpms">
+                        <i class="fas fa-save"></i> Simpan Fisik
                     </button>
                 </div>
             </form>
@@ -286,10 +279,9 @@
         </div>
 
         {{-- 4. Biokimia --}}
-        <div class="ncpms-card section-card">
+        <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="section-num">4</span>
-                <span class="card-title-icon ms-1"><i class="fas fa-vial"></i></span>
+                <i class="fas fa-vial" style="color: var(--color-primary);"></i>
                 Biokimia
             </div>
             @if($bisaBiokimia)
@@ -302,8 +294,8 @@
                 <div class="col-md-2"><label class="form-label-ncpms">Albumin (g/dL)</label><input type="number" step="0.1" name="albumin" class="form-control-ncpms" value="{{ $kunjungan->biokimia?->albumin ?? '' }}"></div>
                 <div class="col-12"><label class="form-label-ncpms">Catatan Tambahan</label><textarea name="catatan_tambahan" class="form-control-ncpms" rows="2">{{ $kunjungan->biokimia?->catatan_tambahan ?? '' }}</textarea></div>
                 <div class="col-12">
-                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
-                        <i class="fas fa-save me-1"></i>Simpan Biokimia
+                    <button class="btn-ncpms">
+                        <i class="fas fa-save"></i> Simpan Biokimia
                     </button>
                 </div>
             </form>
@@ -313,10 +305,9 @@
         </div>
 
         {{-- 5. Asupan --}}
-        <div class="ncpms-card section-card">
+        <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="section-num">5</span>
-                <span class="card-title-icon ms-1"><i class="fas fa-bowl-food"></i></span>
+                <i class="fas fa-bowl-food" style="color: var(--color-primary);"></i>
                 Riwayat Asupan
             </div>
             @if($bisaAsupan)
@@ -330,8 +321,8 @@
                 <div class="col-12"><label class="form-label-ncpms">Detail Asupan</label><textarea name="detail_asupan" class="form-control-ncpms" rows="2" required>{{ $kunjungan->asupan?->detail_asupan[0]['catatan'] ?? '' }}</textarea></div>
                 <div class="col-12"><label class="form-label-ncpms">Kesimpulan</label><textarea name="kesimpulan_asupan" class="form-control-ncpms" rows="2">{{ $kunjungan->asupan?->kesimpulan_asupan ?? '' }}</textarea></div>
                 <div class="col-12">
-                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
-                        <i class="fas fa-save me-1"></i>Simpan Asupan
+                    <button class="btn-ncpms">
+                        <i class="fas fa-save"></i> Simpan Asupan
                     </button>
                 </div>
             </form>
@@ -341,20 +332,19 @@
         </div>
 
         {{-- 6. Detail Menu --}}
-        <div class="ncpms-card section-card">
+        <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="section-num">6</span>
-                <span class="card-title-icon ms-1"><i class="fas fa-utensils"></i></span>
+                <i class="fas fa-utensils" style="color: var(--color-primary);"></i>
                 Detail Menu Harian
             </div>
             @forelse($kunjungan->preskripsiDiets as $preskripsi)
-                <div class="p-3 mb-3 rounded" style="background: #f8faf9; border: 1px solid var(--color-border);">
+                <div class="mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="fw-bold" style="color: var(--color-primary); font-size: 1.05rem;">{{ number_format($preskripsi->total_kebutuhan_energi_kkal) }} <span style="font-size: 0.75rem; color: var(--color-text-muted);">kkal</span></span>
-                        <span class="text-muted" style="font-size: 0.78rem;"><i class="far fa-calendar me-1"></i>{{ $preskripsi->tanggal_mulai?->format('d/m/Y') }}</span>
+                        <span class="badge-pill badge-soft-gray"><i class="far fa-calendar me-1"></i>{{ $preskripsi->tanggal_mulai?->format('d/m/Y') }}</span>
                     </div>
-                    <div class="table-responsive mb-2" style="border-radius: 8px; border: 1px solid var(--color-border);">
-                        <table class="table menu-table mb-0">
+                    <div class="table-responsive" style="border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+                        <table class="data-table mb-0">
                             <thead><tr><th>Waktu</th><th>Bahan</th><th>Porsi</th><th>Energi</th><th>Makro</th></tr></thead>
                             <tbody>
                                 @forelse($preskripsi->detailMenuHarians as $menu)
@@ -372,42 +362,48 @@
                         </table>
                     </div>
                     @if($bisaDokumen)
-                        <form method="POST" action="{{ route('intervensi.menu.store', $preskripsi) }}" class="row g-2 mt-1">
+                        <form method="POST" action="{{ route('intervensi.menu.store', $preskripsi) }}" class="row g-2 mt-2">
                             @csrf
-                            <div class="col-md-3"><select name="waktu_makan" class="form-select form-control-ncpms form-select-sm"><option value="makan_pagi">Makan Pagi</option><option value="selingan_pagi">Selingan Pagi</option><option value="makan_siang">Makan Siang</option><option value="selingan_sore">Selingan Sore</option><option value="makan_malam">Makan Malam</option><option value="selingan_malam">Selingan Malam</option></select></div>
-                            <div class="col-md-4"><select name="bahan_makanan_id" class="form-select form-control-ncpms form-select-sm">@foreach($bahanMakanans as $bahan)<option value="{{ $bahan->id }}">{{ $bahan->nama_bahan }}</option>@endforeach</select></div>
+                            <div class="col-md-3"><select name="waktu_makan" class="form-control-ncpms"><option value="makan_pagi">Makan Pagi</option><option value="selingan_pagi">Selingan Pagi</option><option value="makan_siang">Makan Siang</option><option value="selingan_sore">Selingan Sore</option><option value="makan_malam">Makan Malam</option><option value="selingan_malam">Selingan Malam</option></select></div>
+                            <div class="col-md-4"><select name="bahan_makanan_id" class="form-control-ncpms">@foreach($bahanMakanans as $bahan)<option value="{{ $bahan->id }}">{{ $bahan->nama_bahan }}</option>@endforeach</select></div>
                             <div class="col-md-2"><input type="number" step="0.1" name="porsi_gram" class="form-control-ncpms" value="100" placeholder="Porsi (g)"></div>
                             <div class="col-md-3 d-flex gap-2">
                                 <input name="keterangan_penukar" class="form-control-ncpms" placeholder="Keterangan">
-                                <button class="btn fw-bold px-3" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; white-space: nowrap; font-size: 0.82rem;"><i class="fas fa-plus"></i></button>
+                                <button class="btn-ncpms btn-sm-ncpms"><i class="fas fa-plus"></i></button>
                             </div>
                         </form>
                     @endif
                 </div>
+                @if(!$loop->last)
+                    <div class="section-divider">Preskripsi Berikutnya</div>
+                @endif
             @empty
-                <p class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-info-circle me-1"></i>Preskripsi diet belum dibuat.</p>
+                <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Preskripsi diet belum dibuat.</p>
             @endforelse
         </div>
 
         {{-- 7. Konseling --}}
-        <div class="ncpms-card section-card">
+        <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="section-num">7</span>
-                <span class="card-title-icon ms-1"><i class="fas fa-comments"></i></span>
+                <i class="fas fa-comments" style="color: var(--color-primary);"></i>
                 Catatan Konseling
             </div>
             @if($kunjungan->catatanKonselings->count())
                 <div class="mb-3">
                     @foreach($kunjungan->catatanKonselings as $konseling)
                     <div class="konseling-item">
-                        <div class="fw-bold" style="font-size: 0.88rem;">{{ $konseling->tanggal_konseling?->format('d/m/Y') }} — {{ str_replace('_',' ', $konseling->metode) }}</div>
-                        <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 2px;">{{ $konseling->isi_konseling }}</div>
-                        <div class="text-muted" style="font-size: 0.75rem; margin-top: 3px;">Oleh {{ $konseling->pelaksana->nama_lengkap ?? '-' }} &bull; Pemahaman: <strong>{{ $konseling->tingkat_pemahaman_pasien ?? '-' }}</strong></div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="fw-bold" style="font-size: 0.88rem;">{{ $konseling->tanggal_konseling?->format('d/m/Y') }}</span>
+                            <span class="badge-pill badge-soft-primary">{{ str_replace('_',' ', $konseling->metode) }}</span>
+                        </div>
+                        <div style="font-size: 0.84rem; color: var(--color-text-secondary);">{{ $konseling->isi_konseling }}</div>
+                        <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 4px;">Oleh {{ $konseling->pelaksana->nama_lengkap ?? '-' }} &bull; Pemahaman: <strong>{{ $konseling->tingkat_pemahaman_pasien ?? '-' }}</strong></div>
                     </div>
                     @endforeach
                 </div>
             @endif
             @if($bisaKonseling)
+            <div class="section-divider">Tambah Konseling</div>
             <form method="POST" action="{{ route('kunjungan.konseling.store', $kunjungan) }}" class="row g-2">
                 @csrf
                 <div class="col-md-3"><label class="form-label-ncpms">Tanggal</label><input type="date" name="tanggal_konseling" class="form-control-ncpms" value="{{ date('Y-m-d') }}"></div>
@@ -419,8 +415,8 @@
                 <div class="col-md-6"><label class="form-label-ncpms">Hambatan Pasien</label><textarea name="hambatan_pasien" class="form-control-ncpms" rows="2"></textarea></div>
                 <div class="col-md-6"><label class="form-label-ncpms">Kesepakatan Tindak Lanjut</label><textarea name="kesepakatan_tindak_lanjut" class="form-control-ncpms" rows="2"></textarea></div>
                 <div class="col-12">
-                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
-                        <i class="fas fa-save me-1"></i>Simpan Konseling
+                    <button class="btn-ncpms">
+                        <i class="fas fa-save"></i> Simpan Konseling
                     </button>
                 </div>
             </form>
@@ -430,21 +426,20 @@
         </div>
 
         {{-- 8. Dokumen Edukasi --}}
-        <div class="ncpms-card section-card">
+        <div class="ncpms-card">
             <div class="card-title-custom">
-                <span class="section-num">8</span>
-                <span class="card-title-icon ms-1"><i class="fas fa-file-medical"></i></span>
+                <i class="fas fa-file-medical" style="color: var(--color-primary);"></i>
                 Dokumen Edukasi
             </div>
             @if($kunjungan->dokumenEdukasiis->count())
-                <div class="table-responsive mb-3" style="border-radius: 8px; border: 1px solid var(--color-border);">
-                    <table class="table menu-table mb-0">
+                <div class="table-responsive mb-3" style="border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+                    <table class="data-table mb-0">
                         <thead><tr><th>Judul</th><th>Tipe</th><th>Kedaluwarsa</th><th>Pembuat</th></tr></thead>
                         <tbody>
                         @foreach($kunjungan->dokumenEdukasiis as $dokumen)
                             <tr>
                                 <td class="fw-bold">{{ $dokumen->judul_dokumen }}</td>
-                                <td>{{ str_replace('_',' ', $dokumen->tipe) }}</td>
+                                <td><span class="badge-pill badge-soft-primary">{{ str_replace('_',' ', $dokumen->tipe) }}</span></td>
                                 <td>{{ $dokumen->token_expired_at?->format('d/m/Y H:i') }}</td>
                                 <td>{{ $dokumen->pembuat->nama_lengkap ?? '-' }}</td>
                             </tr>
@@ -454,6 +449,7 @@
                 </div>
             @endif
             @if($bisaDokumen)
+            <div class="section-divider">Buat Dokumen Baru</div>
             <form method="POST" action="{{ route('kunjungan.dokumen-edukasi.store', $kunjungan) }}" class="row g-2">
                 @csrf
                 <div class="col-md-5"><label class="form-label-ncpms">Judul</label><input name="judul_dokumen" class="form-control-ncpms" value="Rencana Makan dan Edukasi Gizi" required></div>
@@ -461,8 +457,8 @@
                 <div class="col-md-3"><label class="form-label-ncpms">Token Expired</label><input type="date" name="token_expired_at" class="form-control-ncpms" value="{{ now()->addDays(7)->format('Y-m-d') }}"></div>
                 <div class="col-12"><label class="form-label-ncpms">Ringkasan Konten</label><textarea name="ringkasan" class="form-control-ncpms" rows="2" required></textarea></div>
                 <div class="col-12">
-                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-accent); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
-                        <i class="fas fa-file-circle-plus me-1"></i>Buat Dokumen
+                    <button class="btn-ncpms">
+                        <i class="fas fa-file-circle-plus"></i> Buat Dokumen
                     </button>
                 </div>
             </form>
