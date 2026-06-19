@@ -33,6 +33,7 @@ class KunjunganController extends Controller
             'asupan',
             'diagnosaGizis',
             'preskripsiDiets.detailMenuHarians.bahanMakanan',
+            'preskripsiKritis',
             'monitoring',
             'catatanKonselings.pelaksana',
             'dokumenEdukasiis.pembuat',
@@ -79,6 +80,10 @@ class KunjunganController extends Controller
             'is_pediatri' => ['nullable', 'boolean'],
             'usia_tahun' => ['nullable', 'integer', 'between:0,18'],
             'usia_bulan' => ['nullable', 'integer', 'between:0,11'],
+            'zscore_bb_u' => ['nullable', 'numeric'],
+            'zscore_tb_u' => ['nullable', 'numeric'],
+            'zscore_imt_u' => ['nullable', 'numeric'],
+            'status_gizi_anak' => ['nullable', 'in:gizi_buruk,gizi_kurang,gizi_baik,gizi_lebih,obesitas'],
         ], $this->messages());
 
         $imt = $service->hitungIMT($data['berat_badan_kg'], $data['tinggi_badan_cm']);
@@ -240,16 +245,48 @@ class KunjunganController extends Controller
         return back()->with('swal_success', 'Dokumen edukasi berhasil dibuat.');
     }
 
-    public function kunci(Kunjungan $kunjungan)
+    public function storePreskripsiKritis(Request $request, Kunjungan $kunjungan)
+    {
+        $this->izinkan(['dietisien', 'spgk']);
+        $this->pastikanTidakTerkunci($kunjungan);
+
+        $data = $request->validate([
+            'jenis_nutrisi' => ['required', 'in:enteral,parenteral,kombinasi'],
+            'rute_pemberian' => ['required', 'max:100'],
+            'nama_formula' => ['required', 'max:200'],
+            'volume_ml' => ['required', 'numeric'],
+            'frekuensi_sehari' => ['required', 'integer'],
+            'kecepatan_pemberian' => ['nullable', 'numeric'],
+            'total_kalori_kkal' => ['required', 'numeric'],
+            'total_protein_gram' => ['required', 'numeric'],
+            'total_lemak_gram' => ['required', 'numeric'],
+            'total_karbohidrat_gram' => ['required', 'numeric'],
+            'instruksi_khusus' => ['nullable'],
+        ], $this->messages());
+
+        $data['dicatat_oleh'] = Auth::id();
+        \App\Models\PreskripsiKritis::updateOrCreate(['kunjungan_id' => $kunjungan->id], $data);
+        return back()->with('swal_success', 'Preskripsi nutrisi kritis (Enteral/Parenteral) berhasil disimpan.');
+    }
+
+    public function kunci(\Illuminate\Http\Request $request, Kunjungan $kunjungan)
     {
         abort_unless(Auth::user()->peran === 'spgk', 403, 'Hanya SpGK yang dapat mengunci dokumen klinis.');
+        
+        $request->validate([
+            'pin_tte' => ['required', 'string', 'min:6']
+        ], [
+            'pin_tte.required' => 'PIN Tanda Tangan Elektronik wajib diisi.',
+            'pin_tte.min' => 'PIN TTE minimal 6 karakter.'
+        ]);
+
         $kunjungan->update([
             'dokumen_terkunci' => true,
             'dikunci_oleh' => Auth::id(),
             'dikunci_pada' => now(),
         ]);
 
-        return back()->with('swal_success', 'Dokumen kunjungan berhasil dikunci.');
+        return back()->with('swal_success', 'Dokumen berhasil dikunci & diverifikasi dengan TTE Tersertifikasi.');
     }
 
     public function selesaikan(Kunjungan $kunjungan)
