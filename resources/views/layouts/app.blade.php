@@ -421,7 +421,178 @@
         
         .topbar .text-muted i { color: var(--color-primary-light); }
 
-        /* ... existing styles ... */
+        .ncpms-card {
+            background: var(--color-bg-card);
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            border: 1px solid var(--color-border);
+            transition: var(--transition-all);
+        }
+
+        .ncpms-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title-custom {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--color-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title-icon {
+            background: var(--color-primary-subtle);
+            color: var(--color-primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary-ncpms {
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            transition: var(--transition-all);
+            box-shadow: 0 4px 12px rgba(18, 130, 96, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary-ncpms:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(18, 130, 96, 0.3);
+            color: #fff;
+        }
+
+        .btn-outline-ncpms {
+            background: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary-border);
+            padding: 10px 20px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            transition: var(--transition-all);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-outline-ncpms:hover {
+            background: var(--color-primary-subtle);
+            border-color: var(--color-primary);
+            color: var(--color-primary-dark);
+        }
+
+        .btn-danger-ncpms {
+            background: #fff0f0;
+            color: var(--color-risiko-tinggi);
+            border: 1px solid #ffd8d8;
+            padding: 10px 20px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            transition: var(--transition-all);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-danger-ncpms:hover {
+            background: var(--color-risiko-tinggi);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(224, 49, 49, 0.2);
+            border-color: var(--color-risiko-tinggi);
+        }
+
+        .btn-sm-ncpms {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .form-control-ncpms {
+            background: #fafcfb;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-sm);
+            padding: 12px 16px;
+            color: var(--color-text-primary);
+            transition: var(--transition-all);
+            font-family: var(--font-secondary);
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .form-control-ncpms:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px var(--color-primary-subtle);
+        }
+
+        .form-label-ncpms {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            display: block;
+        }
+
+        .required-mark {
+            color: var(--color-risiko-tinggi);
+            margin-left: 2px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-text-primary);
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .page-subtitle {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+            margin-top: 4px;
+            margin-bottom: 0;
+            font-family: var(--font-secondary);
+        }
+
+        .badge-risk {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .risk-risiko_tinggi { background: #fff0f0; color: #e03131; border: 1px solid #ffd8d8; }
+        .risk-risiko_sedang { background: #fff8e6; color: #f08c00; border: 1px solid #ffecb3; }
+        .risk-risiko_rendah { background: #ebfbee; color: #2f9e44; border: 1px solid #d3f9d8; }
+        .risk-belum { background: #f8f9fa; color: #6c757d; border: 1px solid #e9ecef; }
+        
         .chart-wrap {
             height: 280px;
             position: relative;
