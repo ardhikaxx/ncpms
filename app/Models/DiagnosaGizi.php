@@ -13,6 +13,8 @@ class DiagnosaGizi extends Model implements \OwenIt\Auditing\Contracts\Auditable
     protected $table = 'diagnosa_gizis';
     protected $fillable = ['kunjungan_id', 'terminologi_id', 'domain', 'problem_masalah', 'etiologi_penyebab', 'signs_symptoms', 'narasi_pes', 'urutan_prioritas', 'status', 'divalidasi_oleh', 'divalidasi_pada', 'satusehat_condition_id', 'dicatat_oleh'];
     protected $casts = ['narasi_pes' => 'encrypted', 'divalidasi_pada' => 'datetime'];
-    
-
+    public function kunjungan() { return $this->belongsTo(Kunjungan::class); }
+    public function terminologi() { return $this->belongsTo(TerminologiDiagnosisGizi::class, 'terminologi_id'); }
+    public function pencatat() { return $this->belongsTo(Pengguna::class, 'dicatat_oleh'); }
+    public function validator() { return $this->belongsTo(Pengguna::class, 'divalidasi_oleh'); }
 }
