@@ -13,6 +13,6 @@ class DataBiokimia extends Model implements \OwenIt\Auditing\Contracts\Auditable
     protected $table = 'data_biokimias';
     protected $fillable = ['kunjungan_id', 'tanggal_pemeriksaan', 'sumber_data', 'gula_darah_sewaktu', 'gula_darah_puasa', 'gula_darah_2jpp', 'hba1c_persen', 'kolesterol_total', 'hdl', 'ldl', 'trigliserida', 'albumin', 'ureum', 'kreatinin', 'laju_filtrasi_gfr', 'hemoglobin', 'hematokrit', 'neutrofil', 'natrium', 'kalium', 'kalsium', 'fosfor', 'catatan_tambahan', 'dicatat_oleh'];
     protected $casts = ['tanggal_pemeriksaan' => 'date'];
-    
-
+    public function kunjungan() { return $this->belongsTo(Kunjungan::class); }
+    public function pencatat() { return $this->belongsTo(Pengguna::class, 'dicatat_oleh'); }
 }
