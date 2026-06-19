@@ -55,12 +55,20 @@
                 @csrf
                 <div class="col-12">
                     <label class="form-label-ncpms">Pilih Kunjungan / Pasien <span class="required-mark">*</span></label>
-                    <select name="kunjungan_id" class="form-select form-control-ncpms" required>
+                    <select name="kunjungan_id" class="form-select form-control-ncpms" required id="kunjungan_select">
                         <option value="">-- Pilih Pasien Terjadwal --</option>
                         @foreach($kunjungans as $k)
-                        <option value="{{ $k->id }}">{{ $k->nomor_kunjungan }} - {{ $k->pasien->nama_lengkap }} ({{ $k->pasien->nomor_rekam_medis }})</option>
+                        <option value="{{ $k->id }}" data-obat="{{ $k->obat_sedang_dikonsumsi }}">{{ $k->nomor_kunjungan }} - {{ $k->pasien->nama_lengkap }} ({{ $k->pasien->nomor_rekam_medis }})</option>
                         @endforeach
                     </select>
+                </div>
+                
+                <div class="col-12 d-none" id="obat_warning_container">
+                    <div class="alert border-0" style="background: #fff3cd; color: #856404; font-size: 0.85rem; padding: 10px; border-radius: 6px;">
+                        <i class="fas fa-pills me-2"></i><strong>Food-Drug Interaction Alert:</strong> Pasien sedang mengonsumsi: 
+                        <span id="obat_text" class="fw-bold"></span>. 
+                        <br><span class="text-muted"><small>Dietisien wajib mempertimbangkan interaksi zat gizi dengan obat-obatan ini saat merumuskan bentuk makanan dan pantangan.</small></span>
+                    </div>
                 </div>
 
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -340,6 +348,22 @@ document.addEventListener('DOMContentLoaded', function() {
         bootstrap.Modal.getInstance(document.getElementById('kalkulatorModal')).hide();
     });
     
+    // Food-Drug Interaction Warning Logic
+    document.getElementById('kunjungan_select').addEventListener('change', function() {
+        let selectedOption = this.options[this.selectedIndex];
+        let obat = selectedOption.getAttribute('data-obat');
+        let warningContainer = document.getElementById('obat_warning_container');
+        let obatText = document.getElementById('obat_text');
+        
+        if (obat && obat.trim() !== '') {
+            obatText.innerText = obat;
+            warningContainer.classList.remove('d-none');
+        } else {
+            warningContainer.classList.add('d-none');
+            obatText.innerText = '';
+        }
+    });
+
     hitungBEE();
 });
 </script>
