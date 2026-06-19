@@ -2,68 +2,28 @@
 @section('title','Monitoring & Evaluasi')
 @section('breadcrumb','Monitoring & Evaluasi')
 
-@push('styles')
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <style>
-        .page-banner {
-            background: var(--color-primary);
-            border-radius: 16px; padding: 1.75rem 2rem;
-            color: white; position: relative; overflow: hidden; margin-bottom: 1.5rem;
-        }
-        .page-banner::before { content: ''; position: absolute; right: -50px; top: -60px; width: 220px; height: 220px; background: rgba(255,255,255,0.05); border-radius: 50%; }
-        .page-banner::after { content: ''; position: absolute; right: 80px; bottom: -80px; width: 160px; height: 160px; background: rgba(255,255,255,0.04); border-radius: 50%; }
-        .page-banner h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em; position: relative; z-index: 1; margin-bottom: 0.3rem; }
-        .page-banner p { opacity: 0.8; position: relative; z-index: 1; margin: 0; font-size: 0.9rem; }
-
-        .section-divider {
-            display: flex; align-items: center; gap: 10px;
-            margin: 1.25rem 0 0.75rem; color: var(--color-primary); font-weight: 700; font-size: 0.85rem;
-        }
-        .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--color-border); }
-
-        .data-table thead th {
-            background: #f8faf9; font-size: 0.73rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.05em;
-            color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
-            padding: 10px 14px;
-        }
-        .data-table td { padding: 11px 14px; vertical-align: middle; border-bottom: 1px solid var(--color-divider); font-size: 0.88rem; }
-        .data-table tbody tr:hover { background: var(--color-primary-subtle); }
-
-        .kepatuhan-patuh { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-        .kepatuhan-cukup_patuh { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .kepatuhan-tidak_patuh { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        .kepatuhan-default { background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; }
-        .kepatuhan-badge { padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; }
-
-        .guide-box {
-            background: rgba(18,130,96,0.06); border: 1px solid var(--color-primary-border);
-            border-radius: 12px; padding: 1.25rem;
-        }
-        .guide-box h6 { font-weight: 700; color: var(--color-primary-dark); font-size: 0.9rem; }
-    </style>
-@endpush
-
 @section('content')
 
-<div class="page-banner" data-aos="fade-down">
-    <h1>Monitoring &amp; Evaluasi <span style="font-size: 1.4rem;">📈</span></h1>
-    <p>Pemantauan luaran klinis, kepatuhan diet pasien, dan tindak lanjut PAGT.</p>
+<div class="page-header">
+    <div>
+        <h1 class="page-title"><i class="fas fa-chart-line me-2" style="color: var(--color-primary);"></i>Monitoring & Evaluasi</h1>
+        <p class="page-subtitle">Pemantauan luaran klinis, kepatuhan diet pasien, dan tindak lanjut PAGT.</p>
+    </div>
 </div>
 
 <div class="row g-3 mb-4">
     {{-- Instruction Card --}}
-    <div class="col-xl-4" data-aos="fade-right" data-aos-delay="80">
+    <div class="col-xl-4">
         <div class="ncpms-card h-100 mb-0">
             <div class="card-title-custom">
-                <span class="card-title-icon" style="background: rgba(18,130,96,0.1); color: var(--color-primary);"><i class="fas fa-tasks"></i></span>
+                <span class="card-title-icon" style="background: var(--color-primary-subtle); color: var(--color-primary);"><i class="fas fa-tasks"></i></span>
                 Instruksi Evaluasi
             </div>
-            <div class="guide-box mb-3">
-                <h6><i class="fas fa-stethoscope me-2" style="color: var(--color-primary);"></i>Fokus Evaluasi</h6>
-                <p class="mt-2 mb-0" style="font-size: 0.85rem; color: var(--color-text-secondary);">Evaluasi kemajuan diet berdasarkan diagnosis awal dan preskripsi yang diberikan.</p>
+            <div class="p-3 rounded mb-3" style="background: var(--color-primary-subtle); border: 1px solid var(--color-primary-border);">
+                <h6 class="fw-bold mb-2" style="color: var(--color-primary-dark); font-size: 0.9rem;"><i class="fas fa-stethoscope me-2" style="color: var(--color-primary);"></i>Fokus Evaluasi</h6>
+                <p class="mb-0" style="font-size: 0.85rem; color: var(--color-text-secondary);">Evaluasi kemajuan diet berdasarkan diagnosis awal dan preskripsi yang diberikan.</p>
             </div>
-            <div class="p-3 rounded" style="background: #f8faf9; border: 1px solid var(--color-border);">
+            <div class="p-3 rounded mb-3" style="background: #f8faf9; border: 1px solid var(--color-border);">
                 <div class="fw-bold mb-2" style="font-size: 0.82rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em;">Panduan</div>
                 <ul class="ps-3 mb-0" style="font-size: 0.83rem; color: var(--color-text-secondary); line-height: 1.9;">
                     <li>Periksa persen sisa makanan (&lt; 20% dianggap baik).</li>
@@ -71,19 +31,19 @@
                     <li>Jadwalkan rujukan jika target asupan gagal tercapai.</li>
                 </ul>
             </div>
-            <div class="mt-3">
+            <div>
                 <div class="fw-bold mb-2" style="font-size: 0.82rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em;">Skala Kepatuhan</div>
-                <div class="d-flex flex-column gap-1">
+                <div class="d-flex flex-column gap-2">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="kepatuhan-badge kepatuhan-patuh">Patuh</span>
+                        <span class="badge-pill badge-soft-success">Patuh</span>
                         <span style="font-size: 0.78rem; color: var(--color-text-muted);">Asupan ≥ 80% target</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="kepatuhan-badge kepatuhan-cukup_patuh">Cukup Patuh</span>
+                        <span class="badge-pill badge-soft-warning">Cukup Patuh</span>
                         <span style="font-size: 0.78rem; color: var(--color-text-muted);">Asupan 50–79%</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="kepatuhan-badge kepatuhan-tidak_patuh">Tidak Patuh</span>
+                        <span class="badge-pill badge-soft-danger">Tidak Patuh</span>
                         <span style="font-size: 0.78rem; color: var(--color-text-muted);">Asupan &lt; 50%</span>
                     </div>
                 </div>
@@ -92,7 +52,7 @@
     </div>
 
     {{-- Monitoring Form --}}
-    <div class="col-xl-8" data-aos="fade-left" data-aos-delay="100">
+    <div class="col-xl-8">
         <div class="ncpms-card mb-0 h-100">
             <div class="card-title-custom">
                 <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-file-medical-alt"></i></span>
@@ -176,7 +136,7 @@
                 </div>
 
                 <div class="col-12 text-end mt-2">
-                    <button class="btn fw-bold px-4 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 10px; font-size: 0.95rem;">
+                    <button class="btn-ncpms">
                         <i class="fas fa-save me-2"></i>Rekam Data Monitoring
                     </button>
                 </div>
@@ -186,7 +146,7 @@
 </div>
 
 {{-- Monitoring History --}}
-<div class="ncpms-card mb-0" data-aos="fade-up" data-aos-delay="200">
+<div class="ncpms-card mb-0">
     <div class="card-title-custom border-bottom pb-3 mb-3">
         <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-table"></i></span>
         Riwayat Evaluasi Monitoring
@@ -220,9 +180,15 @@
                     </td>
                     <td>
                         @php $kep = $m->evaluasi_kepatuhan_diet ?? ''; @endphp
-                        <span class="kepatuhan-badge kepatuhan-{{ $kep ?: 'default' }}">
-                            {{ str_replace('_',' ', $kep ?: 'Belum dinilai') }}
-                        </span>
+                        @if($kep === 'patuh')
+                            <span class="badge-pill badge-soft-success">{{ str_replace('_',' ', $kep) }}</span>
+                        @elseif($kep === 'cukup_patuh')
+                            <span class="badge-pill badge-soft-warning">{{ str_replace('_',' ', $kep) }}</span>
+                        @elseif($kep === 'tidak_patuh')
+                            <span class="badge-pill badge-soft-danger">{{ str_replace('_',' ', $kep) }}</span>
+                        @else
+                            <span class="badge-pill" style="background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db;">Belum dinilai</span>
+                        @endif
                     </td>
                     <td>
                         <div class="fw-bold" style="color: var(--color-primary); font-size: 0.85rem;">
@@ -249,8 +215,3 @@
 </div>
 
 @endsection
-
-@push('scripts')
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>AOS.init({ duration: 700, once: true, offset: 40 });</script>
-@endpush
