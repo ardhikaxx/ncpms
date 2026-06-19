@@ -523,5 +523,32 @@ class DatabaseSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ]);
+
+        // Seed Audit Logs dummy
+        $models = ['App\Models\Kunjungan', 'App\Models\PreskripsiDiet', 'App\Models\Pasien'];
+        $actions = ['view', 'create', 'update', 'print', 'lock'];
+        for ($i=0; $i<20; $i++) {
+            $action = $actions[array_rand($actions)];
+            $model = $models[array_rand($models)];
+            
+            $desc = '';
+            if ($action === 'view') $desc = "Melihat detail data pasien/kunjungan";
+            elseif ($action === 'create') $desc = "Membuat data baru";
+            elseif ($action === 'update') $desc = "Memperbarui catatan medis";
+            elseif ($action === 'print') $desc = "Mencetak dokumen PAGT / Etiket";
+            elseif ($action === 'lock') $desc = "Mengunci dokumen menggunakan TTE";
+
+            DB::table('audit_logs')->insert([
+                'user_id' => array_rand(array_flip([1, 2, 3, 4, 5])),
+                'action' => $action,
+                'model_type' => $model,
+                'model_id' => rand(1, 50),
+                'deskripsi' => $desc,
+                'ip_address' => '192.168.1.' . rand(10, 100),
+                'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/119.0.0.0 Safari/537.36',
+                'created_at' => $now->copy()->subHours(rand(1, 72)),
+                'updated_at' => $now->copy()->subHours(rand(1, 72)),
+            ]);
+        }
     }
 }
