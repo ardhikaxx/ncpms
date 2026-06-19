@@ -34,7 +34,7 @@ class DashboardController extends Controller
         $kunjungans = Kunjungan::with(['pasien', 'skriningGizi', 'dietisien'])
             ->whereDate('tanggal_kunjungan', today())
             ->latest('waktu_registrasi')
-            ->get();
+            ->paginate(5);
 
         $grafikKunjungan = collect(range(6, 0))->map(function ($mundur) {
             $tanggal = today()->subDays($mundur);

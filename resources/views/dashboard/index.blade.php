@@ -48,6 +48,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="mt-3">
+                {{ $kunjungans->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 </div>
