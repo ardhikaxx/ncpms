@@ -744,12 +744,20 @@
                 <div class="sidebar-menu-item"><a href="{{ route('laporan.index') }}"
                         class="{{ request()->routeIs('laporan.*') ? 'active' : '' }}"><i
                             class="fas fa-file-waveform menu-icon"></i><span class="menu-text">Laporan</span></a></div>
+                <div class="sidebar-menu-item"><a href="{{ route('dapur.index') }}"
+                        class="{{ request()->routeIs('dapur.*') ? 'active' : '' }}"><i
+                            class="fas fa-concierge-bell menu-icon"></i><span class="menu-text">Dapur & Etiket</span></a></div>
             @endif
             @if (Auth::user()->peran === 'admin_ti')
                 <div class="sidebar-menu-label">Administrator</div>
                 <div class="sidebar-menu-item">
-                    <a href="{{ route('admin.pengguna') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.pengguna') }}" class="{{ request()->routeIs('admin.pengguna') ? 'active' : '' }}">
                         <i class="fas fa-users-cog menu-icon"></i> <span class="menu-text">Manajemen Akun</span>
+                    </a>
+                </div>
+                <div class="sidebar-menu-item">
+                    <a href="{{ route('admin.audit-logs') }}" class="{{ request()->routeIs('admin.audit-logs') ? 'active' : '' }}">
+                        <i class="fas fa-shield-alt menu-icon"></i> <span class="menu-text">Log Audit RME</span>
                     </a>
                 </div>
             @endif
