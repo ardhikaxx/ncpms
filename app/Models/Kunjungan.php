@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\AuditsActivity;
 
-class Kunjungan extends Model implements \OwenIt\Auditing\Contracts\Auditable
+class Kunjungan extends Model
 {
-    use HasFactory, \OwenIt\Auditing\Auditable;
+    use HasFactory, AuditsActivity;
 
     protected $table = 'kunjungans';
     protected $fillable = ['pasien_id', 'nomor_kunjungan', 'tipe_kunjungan', 'asal_rujukan', 'status', 'tanggal_kunjungan', 'waktu_registrasi', 'waktu_selesai', 'perawat_id', 'dietisien_id', 'spgk_id', 'diagnosis_medis_utama_id', 'diagnosis_medis_penyerta', 'satusehat_encounter_id', 'dokumen_terkunci', 'dikunci_oleh', 'dikunci_pada'];
