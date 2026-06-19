@@ -2,224 +2,136 @@
 @section('title','Dashboard Administrator')
 @section('breadcrumb','Dashboard / Administrator')
 
-@push('styles')
-    <!-- Animate.css for premium entrance animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <!-- AOS Animation CSS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <style>
-        .admin-banner {
-            background-color: var(--color-primary);
-            border-radius: 20px;
-            padding: 2.5rem 3rem;
-            color: white;
-            box-shadow: 0 15px 35px rgba(15,32,39,0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        .admin-banner::before {
-            content: ''; position: absolute; right: -5%; top: -20%; width: 300px; height: 300px;
-            background-color: rgba(255,255,255,0.05); border-radius: 50%;
-        }
-        .admin-banner::after {
-            content: ''; position: absolute; right: 15%; bottom: -50%; width: 250px; height: 250px;
-            background-color: rgba(255,255,255,0.05); border-radius: 50%;
-        }
-        
-        .stat-card-admin {
-            background: #fff;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            height: 100%;
-        }
-        .stat-card-admin:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(15,32,39,0.1);
-        }
-        .stat-card-admin::before {
-            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
-        }
-        
-        .sca-blue::before { background: #007bff; }
-        .sca-cyan::before { background: #17a2b8; }
-        .sca-purple::before { background: #6f42c1; }
-        .sca-orange::before { background: #fd7e14; }
-        .sca-red::before { background: #dc3545; }
-
-        .table-hover-admin tbody tr { transition: all 0.2s; }
-        .table-hover-admin tbody tr:hover { background-color: rgba(44, 83, 100, 0.04) !important; transform: scale(1.002); }
-        
-        .event-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-        }
-    </style>
-@endpush
-
 @section('content')
 
-<!-- Welcome Banner -->
-<div class="admin-banner mb-5 animate__animated animate__fadeInDown">
-    <div class="row align-items-center position-relative z-index-1">
+<div class="page-banner">
+    <div class="row align-items-center">
         <div class="col-lg-8">
-            <h1 class="fw-bold mb-2" style="font-size: 2.5rem; letter-spacing: -0.02em;">
-                Administrator TI <span style="font-size: 2rem;">🛡️</span>
-            </h1>
-            <p class="fs-5 opacity-75 mb-0" style="font-family: var(--font-secondary);">Pemantauan sistem, aktivitas log, dan manajemen akun tanpa akses data klinis.</p>
+            <h1 class="mb-1">Administrator TI 🛡️</h1>
+            <p>Pemantauan sistem, aktivitas log, dan manajemen akun tanpa akses data klinis.</p>
         </div>
-        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
-            <a href="{{ route('admin.pengguna.index') }}" class="btn btn-light fw-bold px-4 py-3" style="border-radius: 50px; color: var(--color-primary); box-shadow: 0 8px 15px rgba(0,0,0,0.2); transition: transform 0.2s;">
-                <i class="fas fa-user-shield me-2 fs-5"></i> Manajemen Akun
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0 banner-cta">
+            <a href="{{ route('admin.pengguna.index') }}"
+               class="btn btn-light fw-bold px-4 py-2"
+               style="border-radius: 50px; color: var(--color-primary-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
+                <i class="fas fa-user-shield me-2"></i>Manajemen Akun
             </a>
         </div>
     </div>
 </div>
 
-<!-- Stat Cards -->
-<div class="row g-4 mb-5">
-    <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
-        <div class="stat-card-admin sca-blue">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Total Akun</div>
-                    <div class="fs-2 fw-bold text-dark">{{ $totalPengguna }}</div>
-                </div>
-                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 54px; height: 54px; background: rgba(0,123,255,0.1); color: var(--color-primary); font-size: 1.5rem;">
-                    <i class="fas fa-users"></i>
-                </div>
+{{-- Stat Cards --}}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-card-accent" style="background: #3b82f6;"></div>
+            <div class="d-flex justify-content-between align-items-start ps-1">
+                <div><div class="stat-label">Total Akun</div><div class="stat-value">{{ $totalPengguna }}</div></div>
+                <div class="stat-icon" style="background: #eff6ff; color: #3b82f6;"><i class="fas fa-users"></i></div>
             </div>
         </div>
     </div>
-    <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
-        <div class="stat-card-admin sca-cyan">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Akun Aktif</div>
-                    <div class="fs-2 fw-bold text-dark">{{ $penggunaAktif }}</div>
-                </div>
-                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 54px; height: 54px; background: rgba(23,162,184,0.1); color: var(--color-primary); font-size: 1.5rem;">
-                    <i class="fas fa-user-check"></i>
-                </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-card-accent" style="background: var(--color-primary);"></div>
+            <div class="d-flex justify-content-between align-items-start ps-1">
+                <div><div class="stat-label">Akun Aktif</div><div class="stat-value">{{ $penggunaAktif }}</div></div>
+                <div class="stat-icon" style="background: var(--color-primary-subtle); color: var(--color-primary);"><i class="fas fa-user-check"></i></div>
             </div>
         </div>
     </div>
-    <div class="col-md-2" data-aos="fade-up" data-aos-delay="300">
-        <div class="stat-card-admin sca-purple">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em;">Login Hari Ini</div>
-                    <div class="fs-3 fw-bold text-dark">{{ $loginHariIni }}</div>
-                </div>
-                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 44px; height: 44px; background: rgba(111,66,193,0.1); color: var(--color-primary); font-size: 1.2rem;">
-                    <i class="fas fa-sign-in-alt"></i>
-                </div>
+    <div class="col-6 col-md-2">
+        <div class="stat-card">
+            <div class="stat-card-accent" style="background: #8b5cf6;"></div>
+            <div class="d-flex justify-content-between align-items-start ps-1">
+                <div><div class="stat-label">Login Hari Ini</div><div class="stat-value">{{ $loginHariIni }}</div></div>
+                <div class="stat-icon" style="background: #f5f3ff; color: #8b5cf6;"><i class="fas fa-sign-in-alt"></i></div>
             </div>
         </div>
     </div>
-    <div class="col-md-2" data-aos="fade-up" data-aos-delay="400">
-        <div class="stat-card-admin sca-orange">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-warning fw-bold text-uppercase mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em;">Login Gagal</div>
-                    <div class="fs-3 fw-bold text-warning">{{ $loginGagalHariIni }}</div>
-                </div>
-                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 44px; height: 44px; background: rgba(253,126,20,0.1); color: var(--color-primary); font-size: 1.2rem;">
-                    <i class="fas fa-ban"></i>
-                </div>
+    <div class="col-6 col-md-2">
+        <div class="stat-card">
+            <div class="stat-card-accent" style="background: #f59f00;"></div>
+            <div class="d-flex justify-content-between align-items-start ps-1">
+                <div><div class="stat-label">Login Gagal</div><div class="stat-value" style="color: #f59f00;">{{ $loginGagalHariIni }}</div></div>
+                <div class="stat-icon" style="background: #fef3c7; color: #f59f00;"><i class="fas fa-ban"></i></div>
             </div>
         </div>
     </div>
-    <div class="col-md-2" data-aos="fade-up" data-aos-delay="500">
-        <div class="stat-card-admin sca-red">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-danger fw-bold text-uppercase mb-1" style="font-size: 0.7rem; letter-spacing: 0.05em;">Timeout</div>
-                    <div class="fs-3 fw-bold text-danger">{{ $timeoutHariIni }}</div>
-                </div>
-                <div class="d-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 44px; height: 44px; background: #dc3545; color: var(--color-primary); font-size: 1.2rem; {{ $timeoutHariIni > 0 ? 'animation: pulse 2s infinite;' : '' }}">
-                    <i class="fas fa-clock-rotate-left"></i>
-                </div>
+    <div class="col-6 col-md-2">
+        <div class="stat-card">
+            <div class="stat-card-accent" style="background: var(--color-risiko-tinggi);"></div>
+            <div class="d-flex justify-content-between align-items-start ps-1">
+                <div><div class="stat-label">Session Timeout</div><div class="stat-value" style="color: var(--color-risiko-tinggi);">{{ $timeoutHariIni }}</div></div>
+                <div class="stat-icon" style="background: #fee2e2; color: var(--color-risiko-tinggi);"><i class="fas fa-clock-rotate-left"></i></div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Table Section -->
-<div class="ncpms-card mb-0 shadow-sm" style="border-radius: 20px;" data-aos="fade-up" data-aos-delay="600">
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-        <h2 class="card-title-custom border-0 mb-0 pb-0">
-            <span class="card-title-icon" style="background-color: var(--color-primary); color: white;">
-                <i class="fas fa-server"></i>
-            </span> 
+{{-- Auth Log Table --}}
+<div class="ncpms-card mb-0">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="card-title-custom mb-0 pb-0 border-0">
+            <span class="card-title-icon" style="background: var(--color-primary); color: #fff;"><i class="fas fa-server"></i></span>
             Aktivitas Autentikasi Terakhir
-        </h2>
-        <div class="badge bg-light text-dark border px-3 py-2 fs-6 rounded-pill">
-            <i class="fas fa-history me-1"></i> Log Keamanan
         </div>
+        <span class="badge-pill badge-soft-gray"><i class="fas fa-history me-1"></i>Log Keamanan</span>
     </div>
-    
-    <div class="table-responsive" style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
-        <table class="table align-middle table-hover-admin mb-0">
-            <thead style="background: rgba(15,32,39,0.03);">
+    <div class="table-responsive" style="border-radius: 10px; border: 1px solid var(--color-border);">
+        <table class="table data-table mb-0">
+            <thead>
                 <tr>
-                    <th class="ps-4">Waktu</th>
+                    <th style="padding-left: 16px;">Waktu</th>
                     <th>Pengguna</th>
                     <th>Event</th>
                     <th>Alamat IP</th>
-                    <th class="pe-4">User Agent</th>
+                    <th style="padding-right: 16px;">User Agent</th>
                 </tr>
             </thead>
             <tbody>
-            @forelse($loginTerakhir as $log)
+                @forelse($loginTerakhir as $log)
                 <tr>
-                    <td class="ps-4">
-                        <div class="fw-bold text-dark">{{ $log->created_at?->format('d M Y') }}</div>
-                        <div class="text-muted small"><i class="far fa-clock"></i> {{ $log->created_at?->format('H:i:s') }} WIB</div>
+                    <td style="padding-left: 16px;">
+                        <div class="fw-bold" style="font-size: 0.87rem;">{{ $log->created_at?->format('d M Y') }}</div>
+                        <div class="text-muted" style="font-size: 0.74rem;"><i class="far fa-clock me-1"></i>{{ $log->created_at?->format('H:i:s') }}</div>
                     </td>
                     <td>
-                        <div class="d-flex align-items-center gap-3">
-                            <div style="width: 38px; height: 38px; border-radius: 50%; background-color: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem;">
-                                {{ substr($log->pengguna->nama_lengkap ?? '?', 0, 1) }}
-                            </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar-circle" style="font-size: 0.85rem;">{{ substr($log->pengguna->nama_lengkap ?? '?', 0, 1) }}</div>
                             <div>
-                                <div class="fw-bold text-dark">{{ $log->pengguna->nama_lengkap ?? 'Tidak diketahui' }}</div>
-                                <div class="text-muted small" style="font-size: 0.7rem;">ID: {{ $log->pengguna_id ?? '-' }}</div>
+                                <div class="fw-bold" style="font-size: 0.87rem;">{{ $log->pengguna->nama_lengkap ?? 'Tidak diketahui' }}</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">ID: {{ $log->pengguna_id ?? '-' }}</div>
                             </div>
                         </div>
                     </td>
                     <td>
                         @php $ev = $log->tipe_event; @endphp
-                        <span class="event-badge @if($ev=='login_sukses') bg-success-subtle text-success border border-success-subtle @elseif($ev=='login_gagal') bg-warning-subtle text-warning border-warning-subtle @elseif($ev=='logout') bg-secondary-subtle text-secondary border-secondary-subtle @elseif($ev=='session_timeout') bg-danger-subtle text-danger border-danger-subtle @else bg-light text-dark @endif">
+                        <span class="badge-pill
+                            @if($ev=='login_sukses') badge-soft-success
+                            @elseif($ev=='login_gagal') badge-soft-warning
+                            @elseif($ev=='logout') badge-soft-gray
+                            @elseif($ev=='session_timeout') badge-soft-danger
+                            @else badge-soft-gray @endif">
                             {{ str_replace('_',' ', strtoupper($ev)) }}
                         </span>
                     </td>
-                    <td>
-                        <div class="text-mono fw-bold text-primary" style="font-size: 0.85rem; background: rgba(0,123,255,0.05); padding: 4px 8px; border-radius: 6px; display: inline-block;">
-                            {{ $log->ip_address }}
-                        </div>
-                    </td>
-                    <td class="pe-4">
-                        <div class="text-muted small" style="font-size: 0.75rem; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $log->user_agent }}">
-                            <i class="fas fa-desktop opacity-50 me-1"></i> {{ \Illuminate\Support\Str::limit($log->user_agent, 45) }}
-                        </div>
+                    <td><span class="rm-badge">{{ $log->ip_address }}</span></td>
+                    <td style="padding-right: 16px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.78rem; color: var(--color-text-muted);" title="{{ $log->user_agent }}">
+                        <i class="fas fa-desktop opacity-50 me-1"></i>{{ \Illuminate\Support\Str::limit($log->user_agent, 40) }}
                     </td>
                 </tr>
-            @empty
+                @empty
                 <tr>
-                    <td colspan="5" class="text-center text-muted py-5">
-                        <i class="fas fa-shield-alt fa-3x mb-3 opacity-25"></i><br>
-                        Belum ada aktivitas autentikasi tercatat.
+                    <td colspan="5">
+                        <div class="empty-state py-4">
+                            <i class="fas fa-shield-alt fa-2x d-block"></i>
+                            <h5 class="mt-2">Belum Ada Log</h5>
+                            <p>Belum ada aktivitas autentikasi tercatat.</p>
+                        </div>
                     </td>
                 </tr>
-            @endforelse
+                @endforelse
             </tbody>
         </table>
     </div>
@@ -228,14 +140,6 @@
 @endsection
 
 @push('scripts')
-<!-- AOS Script -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    AOS.init({
-        duration: 800,
-        easing: 'ease-out-cubic',
-        once: true,
-        offset: 50
-    });
-</script>
+<script>AOS.init({ duration: 600, once: true });</script>
 @endpush

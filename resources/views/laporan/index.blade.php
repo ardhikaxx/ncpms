@@ -1,229 +1,203 @@
 @extends('layouts.app')
-@section('title','Laporan')
+@section('title','Laporan Statistik')
 @section('breadcrumb','Laporan Statistik')
 
 @push('styles')
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <!-- AOS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        .laporan-banner {
-            background-color: var(--color-primary);
-            border-radius: 20px;
-            padding: 2.5rem 3rem;
-            color: white;
-            box-shadow: 0 10px 30px rgba(201, 75, 75, 0.2);
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 2rem;
+        .page-banner {
+            background: var(--color-primary);
+            border-radius: 16px; padding: 1.75rem 2rem;
+            color: white; position: relative; overflow: hidden; margin-bottom: 1.5rem;
         }
-        .laporan-banner::before {
-            content: ''; position: absolute; right: -5%; top: -20%; width: 300px; height: 300px;
-            background-color: rgba(255,255,255,0.05); border-radius: 50%;
-        }
-        .laporan-banner::after {
-            content: ''; position: absolute; right: 15%; bottom: -50%; width: 250px; height: 250px;
-            background-color: rgba(255,255,255,0.05); border-radius: 50%;
-        }
+        .page-banner::before { content: ''; position: absolute; right: -50px; top: -60px; width: 220px; height: 220px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .page-banner::after { content: ''; position: absolute; right: 80px; bottom: -80px; width: 160px; height: 160px; background: rgba(255,255,255,0.04); border-radius: 50%; }
+        .page-banner h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em; position: relative; z-index: 1; margin-bottom: 0.3rem; }
+        .page-banner p { opacity: 0.8; position: relative; z-index: 1; margin: 0; font-size: 0.9rem; }
+
         .btn-export-pdf {
-            background: #fff;
-            color: var(--color-primary);
-            border: 1px solid #fff;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            background: white; color: var(--color-primary-dark);
+            border: 1px solid white; border-radius: 50px; font-weight: 700;
+            padding: 8px 20px; font-size: 0.88rem;
+            transition: all 0.25s; position: relative; z-index: 1;
         }
-        .btn-export-pdf:hover {
-            background: rgba(255,255,255,0.9);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            color: var(--color-primary);
-        }
+        .btn-export-pdf:hover { background: rgba(255,255,255,0.92); transform: translateY(-2px); color: var(--color-primary-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .btn-export-excel {
-            background: rgba(0,0,0,0.2);
-            color: var(--color-primary);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 50px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            background: rgba(0,0,0,0.18); color: white;
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; font-weight: 700;
+            padding: 8px 20px; font-size: 0.88rem;
+            transition: all 0.25s; position: relative; z-index: 1;
         }
-        .btn-export-excel:hover {
-            background: rgba(0,0,0,0.3);
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-            transform: translateY(-2px);
+        .btn-export-excel:hover { background: rgba(0,0,0,0.28); transform: translateY(-2px); color: white; }
+
+        /* Stat cards */
+        .laporan-stat-card {
+            background: #fff; border-radius: 13px; padding: 1.25rem 1.4rem;
+            border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);
+            transition: var(--transition-all); position: relative; overflow: hidden; height: 100%;
         }
-        
-        .stat-card-laporan {
-            background: #fff;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            height: 100%;
+        .laporan-stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+        .laporan-stat-card::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--color-primary); border-radius: 13px 0 0 13px;
         }
-        .stat-card-laporan:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(201, 75, 75, 0.1);
+        .laporan-stat-card .stat-icon {
+            width: 44px; height: 44px; border-radius: 11px;
+            background: rgba(18,130,96,0.1); color: var(--color-primary);
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
         }
-        .stat-card-laporan::before {
-            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
-            background: #c94b4b;
-        }
-        
+        .laporan-stat-card .stat-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); }
+        .laporan-stat-card .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--color-text-primary); line-height: 1; }
+
         .json-preview {
-            background: #282c34;
-            color: var(--color-primary);
-            padding: 1.5rem;
-            border-radius: 12px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
-            overflow-x: auto;
+            background: #1e2432; color: #a8d8a8;
+            padding: 1.5rem; border-radius: 10px;
+            font-family: var(--font-mono); font-size: 0.82rem;
+            overflow-x: auto; line-height: 1.7;
         }
-        .json-key { color: var(--color-primary); }
-        .json-value { color: var(--color-primary); }
+        .json-key { color: #7dd3fc; }
+        .json-value { color: #86efac; }
+
+        .filter-card {
+            background: #fff; border-radius: 14px; padding: 1.5rem;
+            border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); margin-bottom: 1.5rem;
+        }
+        .period-info-block {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; background: #f8faf9;
+            border: 1px solid var(--color-border); border-radius: 10px;
+        }
+        .period-info-block i { font-size: 1.4rem; color: var(--color-text-muted); }
+        .period-info-block .label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); }
+        .period-info-block .value { font-weight: 700; color: var(--color-text-primary); font-size: 0.92rem; }
     </style>
 @endpush
 
 @section('content')
 
-<!-- Welcome Banner -->
-<div class="laporan-banner animate__animated animate__fadeInDown">
-    <div class="row align-items-center position-relative z-index-1">
+<div class="page-banner" data-aos="fade-down">
+    <div class="row align-items-center">
         <div class="col-lg-7">
-            <h1 class="fw-bold mb-2" style="font-size: 2.2rem; letter-spacing: -0.02em;">
-                Laporan Statistik <span style="font-size: 1.8rem;">📊</span>
-            </h1>
-            <p class="fs-6 opacity-75 mb-0" style="font-family: var(--font-secondary);">Audit mutu, SPM gizi, dan kinerja harian berbasis periode.</p>
+            <h1>Laporan Statistik <span style="font-size: 1.4rem;">📊</span></h1>
+            <p>Audit mutu, SPM gizi, dan kinerja harian berbasis periode.</p>
         </div>
-        <div class="col-lg-5 text-lg-end mt-4 mt-lg-0">
-            <a href="{{ route('export.pasien.pdf') }}" target="_blank" class="btn btn-export-pdf px-4 py-2 me-2">
-                <i class="fas fa-file-pdf me-1"></i> Export Pasien (PDF)
+        <div class="col-lg-5 text-lg-end mt-3 mt-lg-0">
+            <a href="{{ route('export.pasien.pdf') }}" target="_blank" class="btn-export-pdf me-2">
+                <i class="fas fa-file-pdf me-1"></i>Export Pasien (PDF)
             </a>
-            <a href="{{ route('export.laporan.excel') }}" target="_blank" class="btn btn-export-excel px-4 py-2">
-                <i class="fas fa-file-excel me-1"></i> Export Laporan (Excel)
+            <a href="{{ route('export.laporan.excel') }}" target="_blank" class="btn-export-excel">
+                <i class="fas fa-file-excel me-1"></i>Export Laporan (Excel)
             </a>
         </div>
     </div>
 </div>
 
-<div class="ncpms-card shadow-sm mb-4" data-aos="fade-up" data-aos-delay="100">
-    <h2 class="card-title-custom border-bottom pb-3 mb-4">
-        <span class="card-title-icon" style="color: white; background-color: var(--color-primary);">
-            <i class="fas fa-filter"></i>
-        </span> 
+{{-- Filter --}}
+<div class="filter-card" data-aos="fade-up" data-aos-delay="80">
+    <div class="card-title-custom mb-3">
+        <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-filter"></i></span>
         Filter Laporan
-    </h2>
+    </div>
     <form method="GET" action="{{ route('laporan.index') }}" class="row g-3">
         <div class="col-md-3">
             <label class="form-label-ncpms">Tipe Laporan</label>
-            <select name="tipe_laporan" class="form-select form-control-ncpms" style="border-radius: 10px;">
-                <option value="kinerja_harian" {{ request('tipe_laporan') == 'kinerja_harian' ? 'selected' : '' }}>Kinerja Harian</option>
-                <option value="demografi_patologi" {{ request('tipe_laporan') == 'demografi_patologi' ? 'selected' : '' }}>Demografi Patologi</option>
-                <option value="rasio_intervensi" {{ request('tipe_laporan') == 'rasio_intervensi' ? 'selected' : '' }}>Rasio Intervensi</option>
-                <option value="spm_gizi" {{ request('tipe_laporan') == 'spm_gizi' ? 'selected' : '' }}>SPM Gizi</option>
-                <option value="audit_mutu" {{ request('tipe_laporan') == 'audit_mutu' ? 'selected' : '' }}>Audit Mutu</option>
+            <select name="tipe_laporan" class="form-select form-control-ncpms">
+                <option value="kinerja_harian" {{ request('tipe_laporan')=='kinerja_harian'?'selected':'' }}>Kinerja Harian</option>
+                <option value="demografi_patologi" {{ request('tipe_laporan')=='demografi_patologi'?'selected':'' }}>Demografi Patologi</option>
+                <option value="rasio_intervensi" {{ request('tipe_laporan')=='rasio_intervensi'?'selected':'' }}>Rasio Intervensi</option>
+                <option value="spm_gizi" {{ request('tipe_laporan')=='spm_gizi'?'selected':'' }}>SPM Gizi</option>
+                <option value="audit_mutu" {{ request('tipe_laporan')=='audit_mutu'?'selected':'' }}>Audit Mutu</option>
             </select>
         </div>
         <div class="col-md-3">
             <label class="form-label-ncpms">Periode Dari</label>
-            <input type="date" name="periode_dari" value="{{ $dari->format('Y-m-d') }}" class="form-control-ncpms" style="border-radius: 10px;">
+            <input type="date" name="periode_dari" value="{{ $dari->format('Y-m-d') }}" class="form-control-ncpms">
         </div>
         <div class="col-md-3">
             <label class="form-label-ncpms">Periode Sampai</label>
-            <input type="date" name="periode_sampai" value="{{ $sampai->format('Y-m-d') }}" class="form-control-ncpms" style="border-radius: 10px;">
+            <input type="date" name="periode_sampai" value="{{ $sampai->format('Y-m-d') }}" class="form-control-ncpms">
         </div>
         <div class="col-md-3 d-flex align-items-end">
-            <button class="btn btn-primary-ncpms w-100 py-2" style="border-radius: 10px; font-weight: bold;">
-                <i class="fas fa-sync-alt me-2"></i> Buat Laporan
+            <button class="btn fw-bold w-100 py-2" style="background: var(--color-primary); color: white; border-radius: 10px; border: none; font-size: 0.9rem;">
+                <i class="fas fa-sync-alt me-2"></i>Buat Laporan
             </button>
         </div>
     </form>
 </div>
 
-<div class="row g-4 mb-4">
-    @php $delay = 200; @endphp
+{{-- Stats Grid --}}
+<div class="row g-3 mb-4">
+    @php $icons = ['fa-users','fa-hospital-user','fa-stethoscope','fa-utensils','fa-heart-pulse','fa-file-medical-alt']; $i = 0; @endphp
     @foreach($ringkasan as $label => $nilai)
-        <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="{{ $delay }}">
-            <div class="stat-card-laporan">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">{{ str_replace('_',' ', $label) }}</div>
-                        <div class="fs-2 fw-bold text-dark">{{ $nilai }}</div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 50px; height: 50px; background: rgba(201, 75, 75, 0.1); color: var(--color-primary); font-size: 1.4rem;">
-                        <i class="fas fa-chart-pie"></i>
-                    </div>
+    <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="{{ 80 + ($i * 50) }}">
+        <div class="laporan-stat-card">
+            <div class="d-flex justify-content-between align-items-center ps-1">
+                <div>
+                    <div class="stat-label">{{ str_replace('_',' ', $label) }}</div>
+                    <div class="stat-value mt-1">{{ $nilai }}</div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas {{ $icons[$i % count($icons)] }}"></i>
                 </div>
             </div>
         </div>
-        @php $delay += 100; @endphp
+    </div>
+    @php $i++; @endphp
     @endforeach
 </div>
 
-<div class="ncpms-card shadow-sm" data-aos="fade-up" data-aos-delay="400">
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-        <h2 class="card-title-custom border-0 mb-0 pb-0">
-            <span class="card-title-icon" style="color: white; background-color: var(--color-primary);">
-                <i class="fas fa-file-medical"></i>
-            </span> 
+{{-- Preview --}}
+<div class="ncpms-card" data-aos="fade-up" data-aos-delay="200">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="card-title-custom mb-0">
+            <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-file-medical"></i></span>
             Preview Laporan Data
-        </h2>
-        <div class="badge bg-light text-dark border px-3 py-2 fs-6 rounded-pill">
-            <i class="fas fa-hashtag me-1"></i> LAP-{{ str_pad($laporan->id ?? 1, 5, '0', STR_PAD_LEFT) }}
         </div>
+        <span class="badge bg-light border text-dark px-3 py-2 rounded-pill">
+            <i class="fas fa-hashtag me-1"></i>LAP-{{ str_pad($laporan->id ?? 1, 5, '0', STR_PAD_LEFT) }}
+        </span>
     </div>
-    
-    <div class="row mb-4">
+
+    <div class="row g-3 mb-4">
         <div class="col-md-6">
-            <div class="d-flex align-items-center p-3 bg-light rounded-3 border">
-                <i class="far fa-calendar-check fs-2 text-muted me-3"></i>
+            <div class="period-info-block">
+                <i class="far fa-calendar-check"></i>
                 <div>
-                    <div class="text-muted small fw-bold text-uppercase">Periode Audit</div>
-                    <div class="fw-bold text-dark">{{ $dari->format('d F Y') }} <span class="text-muted mx-1">s/d</span> {{ $sampai->format('d F Y') }}</div>
+                    <div class="label">Periode Audit</div>
+                    <div class="value">{{ $dari->format('d F Y') }} <span class="text-muted mx-1">s/d</span> {{ $sampai->format('d F Y') }}</div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="d-flex align-items-center p-3 bg-light rounded-3 border mt-3 mt-md-0">
-                <i class="fas fa-tags fs-2 text-muted me-3"></i>
+            <div class="period-info-block">
+                <i class="fas fa-tags"></i>
                 <div>
-                    <div class="text-muted small fw-bold text-uppercase">Tipe Laporan</div>
-                    <div class="fw-bold text-dark">{{ ucwords(str_replace('_',' ', request('tipe_laporan', 'kinerja_harian'))) }}</div>
+                    <div class="label">Tipe Laporan</div>
+                    <div class="value">{{ ucwords(str_replace('_',' ', request('tipe_laporan', 'kinerja_harian'))) }}</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mt-2">
-        <h5 class="fw-bold mb-3 fs-6"><i class="fas fa-code text-muted me-2"></i>Raw Data Output (JSON)</h5>
+    <div>
+        <h6 class="fw-bold mb-2" style="font-size: 0.82rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em;">
+            <i class="fas fa-code me-1"></i>Raw Data Output (JSON)
+        </h6>
         <div class="json-preview shadow-sm">
             @php
                 $json = json_encode($ringkasan, JSON_PRETTY_PRINT);
-                // Simple highlight trick for aesthetic
                 $json = preg_replace('/"([^"]+)"\s*:/', '<span class="json-key">"$1"</span>:', $json);
                 $json = preg_replace('/: \d+/', ': <span class="json-value">$0</span>', $json);
-                // fix the space matched in the value regex
                 $json = str_replace(': <span class="json-value">: ', ': <span class="json-value">', $json);
             @endphp
-            <pre class="mb-0">{!! $json !!}</pre>
+            <pre class="mb-0" style="color: inherit;">{!! $json !!}</pre>
         </div>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    AOS.init({
-        duration: 800,
-        easing: 'ease-out-cubic',
-        once: true,
-        offset: 50
-    });
-</script>
+<script>AOS.init({ duration: 700, once: true, offset: 40 });</script>
 @endpush

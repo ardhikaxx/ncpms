@@ -1,6 +1,57 @@
 @extends('layouts.app')
 @section('title','Kunjungan PAGT')
 @section('breadcrumb','Pasien / Kunjungan')
+
+@push('styles')
+<style>
+    .locked-banner {
+        background: linear-gradient(135deg, #e03131, #c92a2a);
+        color: white; border-radius: 12px; padding: 0.9rem 1.4rem;
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 1.5rem; font-weight: 600; font-size: 0.9rem;
+    }
+    .pagt-step {
+        display: flex; align-items: center; gap: 8px;
+        padding: 9px 0; border-bottom: 1px solid var(--color-divider);
+        font-size: 0.88rem;
+    }
+    .pagt-step:last-child { border-bottom: none; }
+    .pagt-step .step-name { flex: 1; color: var(--color-text-secondary); }
+    .pagt-step .step-status { font-weight: 700; font-size: 0.78rem; }
+    .step-done { color: #059669; }
+    .step-pending { color: var(--color-text-muted); }
+
+    .section-card { margin-bottom: 1rem; }
+    .section-num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 22px; height: 22px; border-radius: 50%;
+        background: var(--color-primary); color: white; font-size: 0.72rem; font-weight: 800;
+        flex-shrink: 0;
+    }
+    .section-card .card-title-custom { font-size: 0.95rem; }
+
+    .info-row-sm {
+        display: flex; align-items: baseline; gap: 8px;
+        padding: 6px 0; border-bottom: 1px solid var(--color-divider); font-size: 0.85rem;
+    }
+    .info-row-sm:last-child { border-bottom: none; }
+    .info-row-sm .lbl { color: var(--color-text-muted); font-weight: 600; min-width: 100px; font-size: 0.8rem; }
+    .info-row-sm .val { color: var(--color-text-primary); font-weight: 600; }
+
+    .warning-clinical {
+        background: #fff5f5; border: 1px solid #fecaca;
+        border-radius: 10px; padding: 0.9rem 1.1rem;
+        display: flex; align-items: flex-start; gap: 10px;
+        margin-bottom: 1.25rem; font-size: 0.88rem; color: #991b1b;
+    }
+    .menu-table thead th { background: #f8faf9; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding: 8px 10px; }
+    .menu-table td { padding: 8px 10px; font-size: 0.84rem; border-bottom: 1px solid var(--color-divider); vertical-align: middle; }
+    .konseling-item { border-bottom: 1px solid var(--color-divider); padding: 10px 0; }
+    .konseling-item:last-child { border-bottom: none; }
+    .permission-note { color: var(--color-text-muted); font-size: 0.83rem; font-style: italic; padding: 8px; background: #f8faf9; border-radius: 8px; }
+</style>
+@endpush
+
 @section('content')
 @php
     $peran = Auth::user()->peran;
@@ -13,81 +64,171 @@
     $bisaKonseling = !$terkunci && in_array($peran, ['nutrisionis','dietisien','spgk'], true);
     $bisaDokumen = !$terkunci && in_array($peran, ['dietisien','spgk'], true);
     $bisaSelesai = !$terkunci && in_array($peran, ['dietisien','spgk'], true);
-@endphp
-<div class="page-header">
-    <div>
-        <h1 class="page-title">{{ $kunjungan->nomor_kunjungan }}</h1>
-        <p class="page-subtitle">{{ $kunjungan->pasien->nama_lengkap }} - {{ $kunjungan->tanggal_kunjungan?->format('d/m/Y') }}</p>
-    </div>
-    <div class="d-flex gap-2">
-        @if(!$kunjungan->dokumen_terkunci && Auth::user()->peran === 'spgk')
-            <form method="POST" action="{{ route('kunjungan.kunci', $kunjungan) }}" data-confirm-lock>@csrf<button class="btn-danger-ncpms"><i class="fas fa-lock"></i> Kunci Dokumen</button></form>
-        @endif
-        <a href="{{ route('kunjungan.cetak-pagt', $kunjungan) }}" target="_blank" class="btn-primary-ncpms" style="text-decoration:none;"><i class="fas fa-file-pdf"></i> Cetak PAGT</a>
-        @if($bisaSelesai)
-            <form method="POST" action="{{ route('kunjungan.selesai', $kunjungan) }}">@csrf<button class="btn-outline-ncpms"><i class="fas fa-check"></i> Selesai</button></form>
-        @endif
-    </div>
-</div>
-@if($kunjungan->dokumen_terkunci)
-    <div class="locked-banner"><i class="fas fa-lock me-2"></i> DOKUMEN TERKUNCI - data klinis tidak dapat diubah.</div>
-@endif
-
-@php
     $komorbids = json_decode($kunjungan->diagnosis_medis_penyerta ?? '[]', true);
     $risikoTinggi = $kunjungan->skriningGizi?->kategori_risiko === 'risiko_tinggi';
 @endphp
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title" style="font-size: 1.45rem; font-family: var(--font-mono);">{{ $kunjungan->nomor_kunjungan }}</h1>
+        <p class="page-subtitle">{{ $kunjungan->pasien->nama_lengkap }} &bull; {{ $kunjungan->tanggal_kunjungan?->format('d M Y') }}</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if(!$kunjungan->dokumen_terkunci && Auth::user()->peran === 'spgk')
+            <form method="POST" action="{{ route('kunjungan.kunci', $kunjungan) }}" data-confirm-lock>
+                @csrf
+                <button class="btn fw-bold px-3 py-2" style="background: #fff5f5; color: #e03131; border: 1.5px solid #fecaca; border-radius: 10px; font-size: 0.88rem;">
+                    <i class="fas fa-lock me-1"></i>Kunci Dokumen
+                </button>
+            </form>
+        @endif
+        <a href="{{ route('kunjungan.cetak-pagt', $kunjungan) }}" target="_blank"
+            class="btn fw-bold px-3 py-2"
+            style="background: var(--color-primary); color: white; border-radius: 10px; border: none; font-size: 0.88rem; text-decoration: none;">
+            <i class="fas fa-file-pdf me-1"></i>Cetak PAGT
+        </a>
+        @if($bisaSelesai)
+            <form method="POST" action="{{ route('kunjungan.selesai', $kunjungan) }}">
+                @csrf
+                <button class="btn fw-bold px-3 py-2" style="background: transparent; border: 1.5px solid var(--color-primary); color: var(--color-primary); border-radius: 10px; font-size: 0.88rem;">
+                    <i class="fas fa-check me-1"></i>Selesai
+                </button>
+            </form>
+        @endif
+    </div>
+</div>
+
+@if($kunjungan->dokumen_terkunci)
+    <div class="locked-banner"><i class="fas fa-lock"></i> DOKUMEN TERKUNCI — data klinis tidak dapat diubah.</div>
+@endif
+
 @if($risikoTinggi || count($komorbids) > 0)
-    <div class="alert alert-danger d-flex align-items-center" role="alert" style="background-color: var(--color-primary); color: var(--color-primary); border: 1px solid #f5c2c7; border-radius: 8px; font-weight: 500;">
-        <i class="fas fa-exclamation-triangle fs-4 me-3"></i>
+    <div class="warning-clinical">
+        <i class="fas fa-exclamation-triangle mt-1" style="color: #e03131;"></i>
         <div>
-            <strong>PERINGATAN KLINIS:</strong> Pasien ini 
+            <strong>PERINGATAN KLINIS:</strong> Pasien ini
             @if($risikoTinggi) memiliki <strong>Risiko Malnutrisi Tinggi</strong> @endif
             @if($risikoTinggi && count($komorbids) > 0) dan @endif
             @if(count($komorbids) > 0) memiliki <strong>{{ count($komorbids) }} komorbid penyerta</strong> @endif.
-            Perhatikan interaksi obat-makanan dan batasan makronutrien saat meresepkan diet!
+            Perhatikan interaksi obat-makanan saat meresepkan diet!
         </div>
     </div>
 @endif
 
 <div class="row g-3">
+    {{-- Left Sidebar --}}
     <div class="col-lg-4">
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-user"></i></span> Ringkasan Pasien</h2>
-            <div class="mb-2"><strong>Nama:</strong> {{ $kunjungan->pasien->nama_lengkap }}</div>
-            <div class="mb-2"><strong>NRM:</strong> <span class="text-mono">{{ $kunjungan->pasien->nomor_rekam_medis }}</span></div>
-            <div class="mb-2"><strong>Usia:</strong> {{ $kunjungan->pasien->tanggal_lahir?->age }} tahun</div>
-            <div><strong>Diagnosis medis:</strong> {{ $kunjungan->diagnosisMedisUtama->nama_diagnosis ?? '-' }}</div>
+        {{-- Patient Summary --}}
+        <div class="ncpms-card mb-3" style="border-top: 3px solid var(--color-primary);">
+            <div class="card-title-custom">
+                <span class="card-title-icon" style="background: var(--color-primary); color: white;"><i class="fas fa-user"></i></span>
+                Ringkasan Pasien
+            </div>
+            <div class="info-row-sm"><span class="lbl">Nama</span><span class="val">{{ $kunjungan->pasien->nama_lengkap }}</span></div>
+            <div class="info-row-sm"><span class="lbl">No. RM</span><span class="val" style="font-family: var(--font-mono);">{{ $kunjungan->pasien->nomor_rekam_medis }}</span></div>
+            <div class="info-row-sm"><span class="lbl">Usia</span><span class="val">{{ $kunjungan->pasien->tanggal_lahir?->age }} tahun</span></div>
+            <div class="info-row-sm"><span class="lbl">Diagnosis</span><span class="val" style="font-size: 0.82rem;">{{ $kunjungan->diagnosisMedisUtama->nama_diagnosis ?? '-' }}</span></div>
+            <div class="info-row-sm"><span class="lbl">Tipe</span><span class="val">{{ str_replace('_',' ', $kunjungan->tipe_kunjungan) }}</span></div>
+            <div class="info-row-sm"><span class="lbl">Dietisien</span><span class="val">{{ $kunjungan->dietisien->nama_lengkap ?? '-' }}</span></div>
         </div>
+
+        {{-- PAGT Progress --}}
         <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-flag"></i></span> Status Tahap PAGT</h2>
-            @foreach(['Skrining'=>$kunjungan->skriningGizi, 'Antropometri'=>$kunjungan->antropometri, 'Fisik'=>$kunjungan->fisik, 'Biokimia'=>$kunjungan->biokimia, 'Asupan'=>$kunjungan->asupan, 'Diagnosis'=>$kunjungan->diagnosaGizis->count(), 'Preskripsi'=>$kunjungan->preskripsiDiets->count(), 'Konseling'=>$kunjungan->catatanKonselings->count(), 'Dokumen Edukasi'=>$kunjungan->dokumenEdukasiis->count(), 'Monitoring'=>$kunjungan->monitoring] as $label => $done)
-                <div class="d-flex justify-content-between border-bottom py-2"><span>{{ $label }}</span><strong style="color:{{ $done ? 'var(--color-risiko-rendah)' : 'var(--color-text-muted)' }}">{{ $done ? 'Selesai' : 'Belum' }}</strong></div>
+            <div class="card-title-custom">
+                <span class="card-title-icon"><i class="fas fa-flag"></i></span>
+                Status Tahap PAGT
+            </div>
+            @php
+                $pagtSteps = [
+                    ['Skrining Gizi', (bool)$kunjungan->skriningGizi, 'fa-clipboard-check'],
+                    ['Antropometri', (bool)$kunjungan->antropometri, 'fa-ruler-vertical'],
+                    ['Fisik Klinis', (bool)$kunjungan->fisik, 'fa-heart-pulse'],
+                    ['Biokimia', (bool)$kunjungan->biokimia, 'fa-vial'],
+                    ['Riwayat Asupan', (bool)$kunjungan->asupan, 'fa-bowl-food'],
+                    ['Diagnosis Gizi', (bool)$kunjungan->diagnosaGizis->count(), 'fa-stethoscope'],
+                    ['Preskripsi Diet', (bool)$kunjungan->preskripsiDiets->count(), 'fa-utensils'],
+                    ['Konseling', (bool)$kunjungan->catatanKonselings->count(), 'fa-comments'],
+                    ['Dokumen Edukasi', (bool)$kunjungan->dokumenEdukasiis->count(), 'fa-file-medical'],
+                    ['Monitoring', (bool)$kunjungan->monitoring, 'fa-heart-pulse'],
+                ];
+                $doneCount = collect($pagtSteps)->where(1, true)->count();
+                $totalCount = count($pagtSteps);
+            @endphp
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1" style="font-size: 0.78rem; font-weight: 600; color: var(--color-text-muted);">
+                    <span>Progress PAGT</span><span>{{ $doneCount }}/{{ $totalCount }}</span>
+                </div>
+                <div class="progress" style="height: 6px; border-radius: 3px; background: var(--color-primary-subtle);">
+                    <div class="progress-bar" style="width: {{ ($doneCount/$totalCount)*100 }}%; background: var(--color-primary); border-radius: 3px;"></div>
+                </div>
+            </div>
+            @foreach($pagtSteps as [$label, $done, $icon])
+            <div class="pagt-step">
+                <i class="fas {{ $icon }} {{ $done ? 'text-success' : 'text-muted' }}" style="width: 16px; font-size: 0.85rem;"></i>
+                <span class="step-name">{{ $label }}</span>
+                <span class="step-status {{ $done ? 'step-done' : 'step-pending' }}">
+                    {{ $done ? '✓ Selesai' : '— Belum' }}
+                </span>
+            </div>
             @endforeach
         </div>
     </div>
+
+    {{-- Right Forms --}}
     <div class="col-lg-8">
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-clipboard-check"></i></span> 1. Skrining Gizi</h2>
+
+        {{-- 1. Skrining --}}
+        <div class="ncpms-card section-card">
+            <div class="card-title-custom">
+                <span class="section-num">1</span>
+                <span class="card-title-icon ms-1"><i class="fas fa-clipboard-check"></i></span>
+                Skrining Gizi
+            </div>
             @if($bisaSkrining)
-            <form method="POST" action="{{ route('kunjungan.skrining.store', $kunjungan) }}" class="row g-3">
+            <form method="POST" action="{{ route('kunjungan.skrining.store', $kunjungan) }}" class="row g-2">
                 @csrf
-                <div class="col-md-3"><label class="form-label-ncpms">Metode</label><select name="metode_skrining" class="form-control-ncpms"><option>MST</option><option>MNA</option><option>NRS2002</option><option>MUST</option><option>STAMP</option></select></div>
-                <div class="col-md-2"><label class="form-label-ncpms">Skor BB</label><input type="number" name="skor_penurunan_bb" min="0" max="3" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->skor_penurunan_bb ?? 0 }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">Skor Asupan</label><input type="number" name="skor_penurunan_asupan" min="0" max="3" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->skor_penurunan_asupan ?? 0 }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">Penyakit</label><input type="number" name="skor_keparahan_penyakit" min="0" max="3" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->skor_keparahan_penyakit ?? 0 }}"></div>
-                <div class="col-md-3"><label class="form-label-ncpms">Rekomendasi</label><input name="rekomendasi_tindak_lanjut" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->rekomendasi_tindak_lanjut ?? '' }}"></div>
-                <div class="col-12"><button class="btn-primary-ncpms"><i class="fas fa-save"></i> Simpan Skrining</button></div>
+                <div class="col-md-3">
+                    <label class="form-label-ncpms">Metode</label>
+                    <select name="metode_skrining" class="form-control-ncpms">
+                        <option>MST</option><option>MNA</option><option>NRS2002</option><option>MUST</option><option>STAMP</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label-ncpms">Skor BB</label>
+                    <input type="number" name="skor_penurunan_bb" min="0" max="3" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->skor_penurunan_bb ?? 0 }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label-ncpms">Skor Asupan</label>
+                    <input type="number" name="skor_penurunan_asupan" min="0" max="3" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->skor_penurunan_asupan ?? 0 }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label-ncpms">Penyakit</label>
+                    <input type="number" name="skor_keparahan_penyakit" min="0" max="3" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->skor_keparahan_penyakit ?? 0 }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label-ncpms">Rekomendasi</label>
+                    <input name="rekomendasi_tindak_lanjut" class="form-control-ncpms" value="{{ $kunjungan->skriningGizi?->rekomendasi_tindak_lanjut ?? '' }}">
+                </div>
+                <div class="col-12">
+                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
+                        <i class="fas fa-save me-1"></i>Simpan Skrining
+                    </button>
+                </div>
             </form>
             @else
-                <div class="text-muted">Skrining hanya dapat dicatat oleh perawat atau SpGK selama dokumen belum terkunci.</div>
+                <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Skrining hanya dapat dicatat oleh perawat atau SpGK selama dokumen belum terkunci.</p>
             @endif
         </div>
 
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-weight-scale"></i></span> 2. Antropometri</h2>
+        {{-- 2. Antropometri --}}
+        <div class="ncpms-card section-card">
+            <div class="card-title-custom">
+                <span class="section-num">2</span>
+                <span class="card-title-icon ms-1"><i class="fas fa-weight-scale"></i></span>
+                Antropometri
+            </div>
             @if($bisaAntropometri)
-            <form method="POST" action="{{ route('kunjungan.antropometri.store', $kunjungan) }}" class="row g-3">
+            <form method="POST" action="{{ route('kunjungan.antropometri.store', $kunjungan) }}" class="row g-2">
                 @csrf
                 <div class="col-md-3"><label class="form-label-ncpms">Tanggal</label><input type="date" name="tanggal_pengukuran" class="form-control-ncpms" value="{{ $kunjungan->antropometri?->tanggal_pengukuran?->format('Y-m-d') ?? date('Y-m-d') }}"></div>
                 <div class="col-md-3"><label class="form-label-ncpms">Berat Badan (kg)</label><input type="number" step="0.1" name="berat_badan_kg" class="form-control-ncpms" value="{{ $kunjungan->antropometri?->berat_badan_kg ?? '' }}" required></div>
@@ -95,173 +236,242 @@
                 <div class="col-md-3"><label class="form-label-ncpms">LiLA (cm)</label><input type="number" step="0.1" name="lingkar_lengan_atas_cm" class="form-control-ncpms" value="{{ $kunjungan->antropometri?->lingkar_lengan_atas_cm ?? '' }}"></div>
                 <div class="col-md-3"><label class="form-label-ncpms">Lingkar Perut (cm)</label><input type="number" step="0.1" name="lingkar_perut_cm" class="form-control-ncpms" value="{{ $kunjungan->antropometri?->lingkar_perut_cm ?? '' }}"></div>
                 @if($kunjungan->antropometri)
-                    <div class="col-md-3"><label class="form-label-ncpms">IMT</label><div class="stat-card py-2"><div class="stat-value fs-4">{{ $kunjungan->antropometri?->imt }}</div><div class="stat-label">{{ $kunjungan->antropometri?->status_gizi_imt }}</div></div></div>
+                    <div class="col-md-4">
+                        <div class="p-2 rounded text-center" style="background: var(--color-primary-subtle); border: 1px solid var(--color-primary-border);">
+                            <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">IMT</div>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: var(--color-primary);">{{ $kunjungan->antropometri?->imt }}</div>
+                            <div style="font-size: 0.75rem; color: var(--color-text-secondary);">{{ $kunjungan->antropometri?->status_gizi_imt }}</div>
+                        </div>
+                    </div>
                 @endif
-                <div class="col-12"><button class="btn-primary-ncpms"><i class="fas fa-save"></i> Simpan Antropometri</button></div>
+                <div class="col-12">
+                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
+                        <i class="fas fa-save me-1"></i>Simpan Antropometri
+                    </button>
+                </div>
             </form>
             @else
-                <div class="text-muted">Antropometri hanya dapat dicatat oleh nutrisionis, dietisien, atau SpGK selama dokumen belum terkunci.</div>
+                <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Antropometri hanya dapat dicatat oleh nutrisionis, dietisien, atau SpGK selama dokumen belum terkunci.</p>
             @endif
         </div>
 
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-heart-pulse"></i></span> 3. Fisik Klinis & Vital Sign</h2>
+        {{-- 3. Fisik --}}
+        <div class="ncpms-card section-card">
+            <div class="card-title-custom">
+                <span class="section-num">3</span>
+                <span class="card-title-icon ms-1"><i class="fas fa-heart-pulse"></i></span>
+                Fisik Klinis &amp; Vital Sign
+            </div>
             @if($bisaFisik)
-            <form method="POST" action="{{ route('kunjungan.fisik.store', $kunjungan) }}" class="row g-3">
+            <form method="POST" action="{{ route('kunjungan.fisik.store', $kunjungan) }}" class="row g-2">
                 @csrf
                 <div class="col-md-2"><label class="form-label-ncpms">Sistolik</label><input type="number" name="tekanan_darah_sistolik" class="form-control-ncpms" value="{{ $kunjungan->fisik?->tekanan_darah_sistolik ?? '' }}"></div>
                 <div class="col-md-2"><label class="form-label-ncpms">Diastolik</label><input type="number" name="tekanan_darah_diastolik" class="form-control-ncpms" value="{{ $kunjungan->fisik?->tekanan_darah_diastolik ?? '' }}"></div>
                 <div class="col-md-2"><label class="form-label-ncpms">Nadi</label><input type="number" name="nadi_per_menit" class="form-control-ncpms" value="{{ $kunjungan->fisik?->nadi_per_menit ?? '' }}"></div>
                 <div class="col-md-2"><label class="form-label-ncpms">RR</label><input type="number" name="respirasi_per_menit" class="form-control-ncpms" value="{{ $kunjungan->fisik?->respirasi_per_menit ?? '' }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">Suhu</label><input type="number" step="0.1" name="suhu_celsius" class="form-control-ncpms" value="{{ $kunjungan->fisik?->suhu_celsius ?? '' }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">SpO2</label><input type="number" name="saturasi_oksigen_persen" class="form-control-ncpms" value="{{ $kunjungan->fisik?->saturasi_oksigen_persen ?? '' }}"></div>
+                <div class="col-md-2"><label class="form-label-ncpms">Suhu (°C)</label><input type="number" step="0.1" name="suhu_celsius" class="form-control-ncpms" value="{{ $kunjungan->fisik?->suhu_celsius ?? '' }}"></div>
+                <div class="col-md-2"><label class="form-label-ncpms">SpO₂ (%)</label><input type="number" name="saturasi_oksigen_persen" class="form-control-ncpms" value="{{ $kunjungan->fisik?->saturasi_oksigen_persen ?? '' }}"></div>
                 <div class="col-md-6"><label class="form-label-ncpms">Defisiensi (pisahkan koma)</label><input name="tanda_defisiensi" class="form-control-ncpms" value="{{ isset($kunjungan->fisik) ? implode(',', $kunjungan->fisik?->tanda_defisiensi ?? []) : '' }}"></div>
                 <div class="col-md-6"><label class="form-label-ncpms">Gangguan GI (pisahkan koma)</label><input name="gangguan_gastrointestinal" class="form-control-ncpms" value="{{ isset($kunjungan->fisik) ? implode(',', $kunjungan->fisik?->gangguan_gastrointestinal ?? []) : '' }}"></div>
-                <div class="col-12"><label class="form-label-ncpms">Catatan Klinis</label><textarea name="catatan_klinis" class="form-control-ncpms">{{ $kunjungan->fisik?->catatan_klinis ?? '' }}</textarea></div>
-                <div class="col-12"><button class="btn-primary-ncpms"><i class="fas fa-save"></i> Simpan Fisik</button></div>
+                <div class="col-12"><label class="form-label-ncpms">Catatan Klinis</label><textarea name="catatan_klinis" class="form-control-ncpms" rows="2">{{ $kunjungan->fisik?->catatan_klinis ?? '' }}</textarea></div>
+                <div class="col-12">
+                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
+                        <i class="fas fa-save me-1"></i>Simpan Fisik
+                    </button>
+                </div>
             </form>
             @else
-                <div class="text-muted">Vital sign dan pemeriksaan fisik hanya dapat dicatat oleh perawat, dietisien, atau SpGK selama dokumen belum terkunci.</div>
+                <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Vital sign hanya dapat dicatat oleh perawat, dietisien, atau SpGK selama dokumen belum terkunci.</p>
             @endif
         </div>
 
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-vial"></i></span> 4. Biokimia</h2>
+        {{-- 4. Biokimia --}}
+        <div class="ncpms-card section-card">
+            <div class="card-title-custom">
+                <span class="section-num">4</span>
+                <span class="card-title-icon ms-1"><i class="fas fa-vial"></i></span>
+                Biokimia
+            </div>
             @if($bisaBiokimia)
-            <form method="POST" action="{{ route('kunjungan.biokimia.store', $kunjungan) }}" class="row g-3">
+            <form method="POST" action="{{ route('kunjungan.biokimia.store', $kunjungan) }}" class="row g-2">
                 @csrf
                 <div class="col-md-3"><label class="form-label-ncpms">Tanggal</label><input type="date" name="tanggal_pemeriksaan" class="form-control-ncpms" value="{{ $kunjungan->biokimia?->tanggal_pemeriksaan?->format('Y-m-d') ?? date('Y-m-d') }}"></div>
-                <div class="col-md-3"><label class="form-label-ncpms">Sumber</label><select name="sumber_data" class="form-control-ncpms"><option value="lab_internal">Lab Internal</option><option value="input_manual">Input Manual</option><option value="satusehat">SATUSEHAT</option></select></div>
-                <div class="col-md-2"><label class="form-label-ncpms">GDP</label><input type="number" step="0.1" name="gula_darah_puasa" class="form-control-ncpms" value="{{ $kunjungan->biokimia?->gula_darah_puasa ?? '' }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">HbA1c</label><input type="number" step="0.1" name="hba1c_persen" class="form-control-ncpms" value="{{ $kunjungan->biokimia?->hba1c_persen ?? '' }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">Albumin</label><input type="number" step="0.1" name="albumin" class="form-control-ncpms" value="{{ $kunjungan->biokimia?->albumin ?? '' }}"></div>
-                <div class="col-12"><label class="form-label-ncpms">Catatan</label><textarea name="catatan_tambahan" class="form-control-ncpms">{{ $kunjungan->biokimia?->catatan_tambahan ?? '' }}</textarea></div>
-                <div class="col-12"><button class="btn-primary-ncpms"><i class="fas fa-save"></i> Simpan Biokimia</button></div>
+                <div class="col-md-3"><label class="form-label-ncpms">Sumber Data</label><select name="sumber_data" class="form-control-ncpms"><option value="lab_internal">Lab Internal</option><option value="input_manual">Input Manual</option><option value="satusehat">SATUSEHAT</option></select></div>
+                <div class="col-md-2"><label class="form-label-ncpms">GDP (mg/dL)</label><input type="number" step="0.1" name="gula_darah_puasa" class="form-control-ncpms" value="{{ $kunjungan->biokimia?->gula_darah_puasa ?? '' }}"></div>
+                <div class="col-md-2"><label class="form-label-ncpms">HbA1c (%)</label><input type="number" step="0.1" name="hba1c_persen" class="form-control-ncpms" value="{{ $kunjungan->biokimia?->hba1c_persen ?? '' }}"></div>
+                <div class="col-md-2"><label class="form-label-ncpms">Albumin (g/dL)</label><input type="number" step="0.1" name="albumin" class="form-control-ncpms" value="{{ $kunjungan->biokimia?->albumin ?? '' }}"></div>
+                <div class="col-12"><label class="form-label-ncpms">Catatan Tambahan</label><textarea name="catatan_tambahan" class="form-control-ncpms" rows="2">{{ $kunjungan->biokimia?->catatan_tambahan ?? '' }}</textarea></div>
+                <div class="col-12">
+                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
+                        <i class="fas fa-save me-1"></i>Simpan Biokimia
+                    </button>
+                </div>
             </form>
             @else
-                <div class="text-muted">Data biokimia hanya dapat dicatat oleh dietisien atau SpGK selama dokumen belum terkunci.</div>
+                <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Data biokimia hanya dapat dicatat oleh dietisien atau SpGK selama dokumen belum terkunci.</p>
             @endif
         </div>
 
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-bowl-food"></i></span> 5. Riwayat Asupan</h2>
+        {{-- 5. Asupan --}}
+        <div class="ncpms-card section-card">
+            <div class="card-title-custom">
+                <span class="section-num">5</span>
+                <span class="card-title-icon ms-1"><i class="fas fa-bowl-food"></i></span>
+                Riwayat Asupan
+            </div>
             @if($bisaAsupan)
-            <form method="POST" action="{{ route('kunjungan.asupan.store', $kunjungan) }}" class="row g-3">
+            <form method="POST" action="{{ route('kunjungan.asupan.store', $kunjungan) }}" class="row g-2">
                 @csrf
                 <div class="col-md-3"><label class="form-label-ncpms">Metode</label><select name="metode" class="form-control-ncpms"><option value="food_recall_24h">Food Recall 24 jam</option><option value="food_recall_48h">Food Recall 48 jam</option><option value="food_recall_72h">Food Recall 72 jam</option><option value="ffq_semi_kuantitatif">FFQ Semi Kuantitatif</option></select></div>
                 <div class="col-md-3"><label class="form-label-ncpms">Tanggal</label><input type="date" name="tanggal_recall" class="form-control-ncpms" value="{{ $kunjungan->asupan?->tanggal_recall?->format('Y-m-d') ?? date('Y-m-d') }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">Energi</label><input type="number" step="0.1" name="total_energi_kkal" class="form-control-ncpms" value="{{ $kunjungan->asupan?->total_energi_kkal ?? '' }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">Protein</label><input type="number" step="0.1" name="total_protein_gram" class="form-control-ncpms" value="{{ $kunjungan->asupan?->total_protein_gram ?? '' }}"></div>
-                <div class="col-md-2"><label class="form-label-ncpms">Lemak</label><input type="number" step="0.1" name="total_lemak_gram" class="form-control-ncpms" value="{{ $kunjungan->asupan?->total_lemak_gram ?? '' }}"></div>
-                <div class="col-12"><label class="form-label-ncpms">Detail Asupan</label><textarea name="detail_asupan" class="form-control-ncpms" required>{{ $kunjungan->asupan?->detail_asupan[0]['catatan'] ?? '' }}</textarea></div>
-                <div class="col-12"><label class="form-label-ncpms">Kesimpulan</label><textarea name="kesimpulan_asupan" class="form-control-ncpms">{{ $kunjungan->asupan?->kesimpulan_asupan ?? '' }}</textarea></div>
-                <div class="col-12"><button class="btn-primary-ncpms"><i class="fas fa-save"></i> Simpan Asupan</button></div>
+                <div class="col-md-2"><label class="form-label-ncpms">Energi (kkal)</label><input type="number" step="0.1" name="total_energi_kkal" class="form-control-ncpms" value="{{ $kunjungan->asupan?->total_energi_kkal ?? '' }}"></div>
+                <div class="col-md-2"><label class="form-label-ncpms">Protein (g)</label><input type="number" step="0.1" name="total_protein_gram" class="form-control-ncpms" value="{{ $kunjungan->asupan?->total_protein_gram ?? '' }}"></div>
+                <div class="col-md-2"><label class="form-label-ncpms">Lemak (g)</label><input type="number" step="0.1" name="total_lemak_gram" class="form-control-ncpms" value="{{ $kunjungan->asupan?->total_lemak_gram ?? '' }}"></div>
+                <div class="col-12"><label class="form-label-ncpms">Detail Asupan</label><textarea name="detail_asupan" class="form-control-ncpms" rows="2" required>{{ $kunjungan->asupan?->detail_asupan[0]['catatan'] ?? '' }}</textarea></div>
+                <div class="col-12"><label class="form-label-ncpms">Kesimpulan</label><textarea name="kesimpulan_asupan" class="form-control-ncpms" rows="2">{{ $kunjungan->asupan?->kesimpulan_asupan ?? '' }}</textarea></div>
+                <div class="col-12">
+                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
+                        <i class="fas fa-save me-1"></i>Simpan Asupan
+                    </button>
+                </div>
             </form>
             @else
-                <div class="text-muted">Riwayat asupan hanya dapat dicatat oleh nutrisionis, dietisien, atau SpGK selama dokumen belum terkunci.</div>
+                <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Riwayat asupan hanya dapat dicatat oleh nutrisionis, dietisien, atau SpGK selama dokumen belum terkunci.</p>
             @endif
         </div>
 
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-utensils"></i></span> 6. Detail Menu Harian</h2>
+        {{-- 6. Detail Menu --}}
+        <div class="ncpms-card section-card">
+            <div class="card-title-custom">
+                <span class="section-num">6</span>
+                <span class="card-title-icon ms-1"><i class="fas fa-utensils"></i></span>
+                Detail Menu Harian
+            </div>
             @forelse($kunjungan->preskripsiDiets as $preskripsi)
-                <div class="border rounded-3 p-3 mb-3">
+                <div class="p-3 mb-3 rounded" style="background: #f8faf9; border: 1px solid var(--color-border);">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <strong>{{ number_format($preskripsi->total_kebutuhan_energi_kkal) }} kkal</strong>
-                        <span class="text-muted small">{{ $preskripsi->tanggal_mulai?->format('d/m/Y') }}</span>
+                        <span class="fw-bold" style="color: var(--color-primary); font-size: 1.05rem;">{{ number_format($preskripsi->total_kebutuhan_energi_kkal) }} <span style="font-size: 0.75rem; color: var(--color-text-muted);">kkal</span></span>
+                        <span class="text-muted" style="font-size: 0.78rem;"><i class="far fa-calendar me-1"></i>{{ $preskripsi->tanggal_mulai?->format('d/m/Y') }}</span>
                     </div>
-                    <div class="table-responsive mb-3">
-                        <table class="table table-sm align-middle">
+                    <div class="table-responsive mb-2" style="border-radius: 8px; border: 1px solid var(--color-border);">
+                        <table class="table menu-table mb-0">
                             <thead><tr><th>Waktu</th><th>Bahan</th><th>Porsi</th><th>Energi</th><th>Makro</th></tr></thead>
                             <tbody>
-                            @forelse($preskripsi->detailMenuHarians as $menu)
-                                <tr>
-                                    <td>{{ str_replace('_',' ', $menu->waktu_makan) }}</td>
-                                    <td>{{ $menu->bahanMakanan->nama_bahan ?? '-' }}</td>
-                                    <td>{{ $menu->porsi_gram }} g</td>
-                                    <td>{{ $menu->energi_kkal }} kkal</td>
-                                    <td>KH {{ $menu->karbohidrat_gram }}g / P {{ $menu->protein_gram }}g / L {{ $menu->lemak_gram }}g</td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="5" class="text-muted">Belum ada detail menu.</td></tr>
-                            @endforelse
+                                @forelse($preskripsi->detailMenuHarians as $menu)
+                                    <tr>
+                                        <td>{{ str_replace('_',' ', $menu->waktu_makan) }}</td>
+                                        <td class="fw-bold">{{ $menu->bahanMakanan->nama_bahan ?? '-' }}</td>
+                                        <td>{{ $menu->porsi_gram }} g</td>
+                                        <td>{{ $menu->energi_kkal }} kkal</td>
+                                        <td><span style="color: var(--color-primary); font-size: 0.78rem;">KH {{ $menu->karbohidrat_gram }}g / P {{ $menu->protein_gram }}g / L {{ $menu->lemak_gram }}g</span></td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="5" class="text-muted text-center py-2" style="font-size: 0.83rem;">Belum ada detail menu.</td></tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                     @if($bisaDokumen)
-                        <form method="POST" action="{{ route('intervensi.menu.store', $preskripsi) }}" class="row g-3">
+                        <form method="POST" action="{{ route('intervensi.menu.store', $preskripsi) }}" class="row g-2 mt-1">
                             @csrf
-                            <div class="col-md-3"><label class="form-label-ncpms">Waktu</label><select name="waktu_makan" class="form-control-ncpms"><option value="makan_pagi">Makan Pagi</option><option value="selingan_pagi">Selingan Pagi</option><option value="makan_siang">Makan Siang</option><option value="selingan_sore">Selingan Sore</option><option value="makan_malam">Makan Malam</option><option value="selingan_malam">Selingan Malam</option></select></div>
-                            <div class="col-md-4"><label class="form-label-ncpms">Bahan Makanan</label><select name="bahan_makanan_id" class="form-control-ncpms">@foreach($bahanMakanans as $bahan)<option value="{{ $bahan->id }}">{{ $bahan->nama_bahan }}</option>@endforeach</select></div>
-                            <div class="col-md-2"><label class="form-label-ncpms">Porsi (g)</label><input type="number" step="0.1" name="porsi_gram" class="form-control-ncpms" value="100"></div>
-                            <div class="col-md-3"><label class="form-label-ncpms">Keterangan</label><input name="keterangan_penukar" class="form-control-ncpms"></div>
-                            <div class="col-12"><button class="btn-primary-ncpms btn-sm-ncpms"><i class="fas fa-plus"></i> Tambah Menu</button></div>
+                            <div class="col-md-3"><select name="waktu_makan" class="form-select form-control-ncpms form-select-sm"><option value="makan_pagi">Makan Pagi</option><option value="selingan_pagi">Selingan Pagi</option><option value="makan_siang">Makan Siang</option><option value="selingan_sore">Selingan Sore</option><option value="makan_malam">Makan Malam</option><option value="selingan_malam">Selingan Malam</option></select></div>
+                            <div class="col-md-4"><select name="bahan_makanan_id" class="form-select form-control-ncpms form-select-sm">@foreach($bahanMakanans as $bahan)<option value="{{ $bahan->id }}">{{ $bahan->nama_bahan }}</option>@endforeach</select></div>
+                            <div class="col-md-2"><input type="number" step="0.1" name="porsi_gram" class="form-control-ncpms" value="100" placeholder="Porsi (g)"></div>
+                            <div class="col-md-3 d-flex gap-2">
+                                <input name="keterangan_penukar" class="form-control-ncpms" placeholder="Keterangan">
+                                <button class="btn fw-bold px-3" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; white-space: nowrap; font-size: 0.82rem;"><i class="fas fa-plus"></i></button>
+                            </div>
                         </form>
                     @endif
                 </div>
             @empty
-                <div class="text-muted">Preskripsi diet belum dibuat.</div>
+                <p class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-info-circle me-1"></i>Preskripsi diet belum dibuat.</p>
             @endforelse
         </div>
 
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-comments"></i></span> 7. Catatan Konseling</h2>
+        {{-- 7. Konseling --}}
+        <div class="ncpms-card section-card">
+            <div class="card-title-custom">
+                <span class="section-num">7</span>
+                <span class="card-title-icon ms-1"><i class="fas fa-comments"></i></span>
+                Catatan Konseling
+            </div>
             @if($kunjungan->catatanKonselings->count())
                 <div class="mb-3">
                     @foreach($kunjungan->catatanKonselings as $konseling)
-                        <div class="border-bottom py-2">
-                            <div class="fw-bold">{{ $konseling->tanggal_konseling?->format('d/m/Y') }} - {{ str_replace('_',' ', $konseling->metode) }}</div>
-                            <div>{{ $konseling->isi_konseling }}</div>
-                            <div class="small text-muted">Oleh {{ $konseling->pelaksana->nama_lengkap ?? '-' }}; pemahaman {{ $konseling->tingkat_pemahaman_pasien ?? '-' }}</div>
-                        </div>
+                    <div class="konseling-item">
+                        <div class="fw-bold" style="font-size: 0.88rem;">{{ $konseling->tanggal_konseling?->format('d/m/Y') }} — {{ str_replace('_',' ', $konseling->metode) }}</div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 2px;">{{ $konseling->isi_konseling }}</div>
+                        <div class="text-muted" style="font-size: 0.75rem; margin-top: 3px;">Oleh {{ $konseling->pelaksana->nama_lengkap ?? '-' }} &bull; Pemahaman: <strong>{{ $konseling->tingkat_pemahaman_pasien ?? '-' }}</strong></div>
+                    </div>
                     @endforeach
                 </div>
             @endif
             @if($bisaKonseling)
-                <form method="POST" action="{{ route('kunjungan.konseling.store', $kunjungan) }}" class="row g-3">
-                    @csrf
-                    <div class="col-md-3"><label class="form-label-ncpms">Tanggal</label><input type="date" name="tanggal_konseling" class="form-control-ncpms" value="{{ date('Y-m-d') }}"></div>
-                    <div class="col-md-2"><label class="form-label-ncpms">Durasi</label><input type="number" name="durasi_menit" class="form-control-ncpms" value="30"></div>
-                    <div class="col-md-3"><label class="form-label-ncpms">Metode</label><select name="metode" class="form-control-ncpms"><option value="tatap_muka">Tatap Muka</option><option value="telepon">Telepon</option><option value="video_call">Video Call</option></select></div>
-                    <div class="col-md-4"><label class="form-label-ncpms">Pemahaman</label><select name="tingkat_pemahaman_pasien" class="form-control-ncpms"><option value="baik">Baik</option><option value="cukup">Cukup</option><option value="kurang">Kurang</option></select></div>
-                    <div class="col-12"><label class="form-label-ncpms">Topik (pisahkan koma)</label><input name="topik_konseling" class="form-control-ncpms" required></div>
-                    <div class="col-12"><label class="form-label-ncpms">Isi Konseling</label><textarea name="isi_konseling" class="form-control-ncpms" required></textarea></div>
-                    <div class="col-md-6"><label class="form-label-ncpms">Hambatan Pasien</label><textarea name="hambatan_pasien" class="form-control-ncpms"></textarea></div>
-                    <div class="col-md-6"><label class="form-label-ncpms">Kesepakatan Tindak Lanjut</label><textarea name="kesepakatan_tindak_lanjut" class="form-control-ncpms"></textarea></div>
-                    <div class="col-12"><button class="btn-primary-ncpms"><i class="fas fa-save"></i> Simpan Konseling</button></div>
-                </form>
+            <form method="POST" action="{{ route('kunjungan.konseling.store', $kunjungan) }}" class="row g-2">
+                @csrf
+                <div class="col-md-3"><label class="form-label-ncpms">Tanggal</label><input type="date" name="tanggal_konseling" class="form-control-ncpms" value="{{ date('Y-m-d') }}"></div>
+                <div class="col-md-2"><label class="form-label-ncpms">Durasi (mnt)</label><input type="number" name="durasi_menit" class="form-control-ncpms" value="30"></div>
+                <div class="col-md-3"><label class="form-label-ncpms">Metode</label><select name="metode" class="form-control-ncpms"><option value="tatap_muka">Tatap Muka</option><option value="telepon">Telepon</option><option value="video_call">Video Call</option></select></div>
+                <div class="col-md-4"><label class="form-label-ncpms">Pemahaman Pasien</label><select name="tingkat_pemahaman_pasien" class="form-control-ncpms"><option value="baik">Baik</option><option value="cukup">Cukup</option><option value="kurang">Kurang</option></select></div>
+                <div class="col-12"><label class="form-label-ncpms">Topik (pisahkan koma)</label><input name="topik_konseling" class="form-control-ncpms" required></div>
+                <div class="col-12"><label class="form-label-ncpms">Isi Konseling</label><textarea name="isi_konseling" class="form-control-ncpms" rows="2" required></textarea></div>
+                <div class="col-md-6"><label class="form-label-ncpms">Hambatan Pasien</label><textarea name="hambatan_pasien" class="form-control-ncpms" rows="2"></textarea></div>
+                <div class="col-md-6"><label class="form-label-ncpms">Kesepakatan Tindak Lanjut</label><textarea name="kesepakatan_tindak_lanjut" class="form-control-ncpms" rows="2"></textarea></div>
+                <div class="col-12">
+                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-primary); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
+                        <i class="fas fa-save me-1"></i>Simpan Konseling
+                    </button>
+                </div>
+            </form>
             @else
-                <div class="text-muted">Konseling hanya dapat dicatat oleh nutrisionis, dietisien, atau SpGK selama dokumen belum terkunci.</div>
+                <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Konseling hanya dapat dicatat oleh nutrisionis, dietisien, atau SpGK selama dokumen belum terkunci.</p>
             @endif
         </div>
 
-        <div class="ncpms-card">
-            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-file-medical"></i></span> 8. Dokumen Edukasi</h2>
+        {{-- 8. Dokumen Edukasi --}}
+        <div class="ncpms-card section-card">
+            <div class="card-title-custom">
+                <span class="section-num">8</span>
+                <span class="card-title-icon ms-1"><i class="fas fa-file-medical"></i></span>
+                Dokumen Edukasi
+            </div>
             @if($kunjungan->dokumenEdukasiis->count())
-                <div class="table-responsive mb-3">
-                    <table class="table table-sm align-middle">
+                <div class="table-responsive mb-3" style="border-radius: 8px; border: 1px solid var(--color-border);">
+                    <table class="table menu-table mb-0">
                         <thead><tr><th>Judul</th><th>Tipe</th><th>Kedaluwarsa</th><th>Pembuat</th></tr></thead>
                         <tbody>
                         @foreach($kunjungan->dokumenEdukasiis as $dokumen)
-                            <tr><td>{{ $dokumen->judul_dokumen }}</td><td>{{ str_replace('_',' ', $dokumen->tipe) }}</td><td>{{ $dokumen->token_expired_at?->format('d/m/Y H:i') }}</td><td>{{ $dokumen->pembuat->nama_lengkap ?? '-' }}</td></tr>
+                            <tr>
+                                <td class="fw-bold">{{ $dokumen->judul_dokumen }}</td>
+                                <td>{{ str_replace('_',' ', $dokumen->tipe) }}</td>
+                                <td>{{ $dokumen->token_expired_at?->format('d/m/Y H:i') }}</td>
+                                <td>{{ $dokumen->pembuat->nama_lengkap ?? '-' }}</td>
+                            </tr>
                         @endforeach
                         </tbody>
                     </table>
                 </div>
             @endif
             @if($bisaDokumen)
-                <form method="POST" action="{{ route('kunjungan.dokumen-edukasi.store', $kunjungan) }}" class="row g-3">
-                    @csrf
-                    <div class="col-md-5"><label class="form-label-ncpms">Judul</label><input name="judul_dokumen" class="form-control-ncpms" value="Rencana Makan dan Edukasi Gizi" required></div>
-                    <div class="col-md-4"><label class="form-label-ncpms">Tipe</label><select name="tipe" class="form-control-ncpms"><option value="rencana_makan">Rencana Makan</option><option value="ringkasan_kalori">Ringkasan Kalori</option><option value="pantangan_alergi">Pantangan Alergi</option><option value="panduan_makan">Panduan Makan</option><option value="leaflet_diet">Leaflet Diet</option></select></div>
-                    <div class="col-md-3"><label class="form-label-ncpms">Token Expired</label><input type="date" name="token_expired_at" class="form-control-ncpms" value="{{ now()->addDays(7)->format('Y-m-d') }}"></div>
-                    <div class="col-12"><label class="form-label-ncpms">Ringkasan Konten</label><textarea name="ringkasan" class="form-control-ncpms" required></textarea></div>
-                    <div class="col-12"><button class="btn-accent-ncpms"><i class="fas fa-file-circle-plus"></i> Buat Dokumen</button></div>
-                </form>
+            <form method="POST" action="{{ route('kunjungan.dokumen-edukasi.store', $kunjungan) }}" class="row g-2">
+                @csrf
+                <div class="col-md-5"><label class="form-label-ncpms">Judul</label><input name="judul_dokumen" class="form-control-ncpms" value="Rencana Makan dan Edukasi Gizi" required></div>
+                <div class="col-md-4"><label class="form-label-ncpms">Tipe</label><select name="tipe" class="form-control-ncpms"><option value="rencana_makan">Rencana Makan</option><option value="ringkasan_kalori">Ringkasan Kalori</option><option value="pantangan_alergi">Pantangan Alergi</option><option value="panduan_makan">Panduan Makan</option><option value="leaflet_diet">Leaflet Diet</option></select></div>
+                <div class="col-md-3"><label class="form-label-ncpms">Token Expired</label><input type="date" name="token_expired_at" class="form-control-ncpms" value="{{ now()->addDays(7)->format('Y-m-d') }}"></div>
+                <div class="col-12"><label class="form-label-ncpms">Ringkasan Konten</label><textarea name="ringkasan" class="form-control-ncpms" rows="2" required></textarea></div>
+                <div class="col-12">
+                    <button class="btn fw-bold px-3 py-2" style="background: var(--color-accent); color: white; border: none; border-radius: 8px; font-size: 0.88rem;">
+                        <i class="fas fa-file-circle-plus me-1"></i>Buat Dokumen
+                    </button>
+                </div>
+            </form>
             @else
-                <div class="text-muted">Dokumen edukasi hanya dapat dibuat oleh dietisien atau SpGK selama dokumen belum terkunci.</div>
+                <p class="permission-note"><i class="fas fa-info-circle me-1"></i>Dokumen edukasi hanya dapat dibuat oleh dietisien atau SpGK selama dokumen belum terkunci.</p>
             @endif
         </div>
+
     </div>
 </div>
+
 @endsection

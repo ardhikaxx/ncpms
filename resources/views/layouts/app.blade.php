@@ -666,6 +666,205 @@
             }
         }
     </style>
+        /* ===================================================
+           GLOBAL PAGE COMPONENTS (used across all pages)
+        =================================================== */
+
+        /* --- Page Banner (hijau) --- */
+        .page-banner {
+            background: var(--color-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 1.75rem 2rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        .page-banner::before {
+            content: ''; position: absolute;
+            right: -50px; top: -60px;
+            width: 220px; height: 220px;
+            background: rgba(255,255,255,0.05); border-radius: 50%;
+        }
+        .page-banner::after {
+            content: ''; position: absolute;
+            right: 80px; bottom: -80px;
+            width: 160px; height: 160px;
+            background: rgba(255,255,255,0.04); border-radius: 50%;
+        }
+        .page-banner h1 {
+            font-size: 1.75rem; font-weight: 800;
+            letter-spacing: -0.02em;
+            position: relative; z-index: 1; margin-bottom: 0.25rem;
+        }
+        .page-banner p {
+            opacity: 0.8; position: relative; z-index: 1;
+            margin: 0; font-size: 0.88rem;
+        }
+        .page-banner .banner-cta { position: relative; z-index: 1; }
+
+        /* --- Stat Card --- */
+        .stat-card {
+            background: #fff; border-radius: 13px;
+            padding: 1.1rem 1.25rem;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-all);
+            position: relative; overflow: hidden; height: 100%;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .stat-card-accent {
+            position: absolute; left: 0; top: 0; bottom: 0;
+            width: 4px; border-radius: 13px 0 0 13px;
+        }
+        .stat-label {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--color-text-muted); margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.9rem; font-weight: 800;
+            color: var(--color-text-primary); line-height: 1;
+        }
+        .stat-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+        }
+
+        /* --- Data Table --- */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead th {
+            background: #f8faf9;
+            font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            color: var(--color-text-muted);
+            border-bottom: 1px solid var(--color-border);
+            padding: 10px 14px; white-space: nowrap;
+        }
+        .data-table tbody tr { transition: background 0.15s; }
+        .data-table tbody tr:hover { background: var(--color-primary-subtle); }
+        .data-table td {
+            padding: 11px 14px; vertical-align: middle;
+            border-bottom: 1px solid var(--color-divider); font-size: 0.87rem;
+        }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        /* --- Avatar Circle --- */
+        .avatar-circle {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--color-primary); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.95rem; flex-shrink: 0;
+        }
+
+        /* --- RM / Code Badge --- */
+        .rm-badge {
+            font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;
+            background: var(--color-primary-subtle); color: var(--color-primary);
+            padding: 2px 8px; border-radius: 5px; display: inline-block;
+        }
+
+        /* --- Section Divider --- */
+        .section-divider {
+            display: flex; align-items: center; gap: 10px;
+            margin: 1.25rem 0 0.75rem;
+            color: var(--color-primary); font-weight: 700; font-size: 0.83rem;
+        }
+        .section-divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--color-border);
+        }
+
+        /* --- Info Row --- */
+        .info-row {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 9px 0; border-bottom: 1px solid var(--color-divider);
+            font-size: 0.87rem;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-row .info-icon {
+            width: 28px; height: 28px; flex-shrink: 0;
+            background: var(--color-primary-subtle); color: var(--color-primary);
+            border-radius: 7px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.82rem;
+        }
+        .info-row .info-label {
+            font-size: 0.7rem; font-weight: 700; color: var(--color-text-muted);
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .info-row .info-value {
+            font-size: 0.88rem; color: var(--color-text-primary); font-weight: 600; margin-top: 1px;
+        }
+
+        /* --- Locked Banner --- */
+        .locked-banner {
+            background: #fff5f5; border: 1px solid #fecaca; color: #991b1b;
+            border-radius: 10px; padding: 0.75rem 1.1rem;
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 1.25rem; font-weight: 600; font-size: 0.88rem;
+        }
+
+        /* --- Clinical Warning --- */
+        .warning-clinical {
+            background: #fff5f5; border: 1px solid #fecaca;
+            border-radius: 10px; padding: 0.9rem 1.1rem;
+            display: flex; align-items: flex-start; gap: 10px;
+            margin-bottom: 1.25rem; font-size: 0.87rem; color: #991b1b;
+        }
+
+        /* --- Btn Primary (global shorthand) --- */
+        .btn-ncpms {
+            background: var(--color-primary); color: #fff;
+            border: none; border-radius: var(--border-radius-md);
+            padding: 10px 20px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+            transition: var(--transition-all);
+            box-shadow: 0 4px 12px rgba(18,130,96,0.2);
+        }
+        .btn-ncpms:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(18,130,96,0.28);
+            color: #fff;
+        }
+        .btn-ncpms-outline {
+            background: transparent; color: var(--color-text-secondary);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            padding: 9px 18px; font-weight: 700; font-size: 0.88rem;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+            transition: var(--transition-all);
+        }
+        .btn-ncpms-outline:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+        /* --- Permission Note --- */
+        .permission-note {
+            color: var(--color-text-muted); font-size: 0.83rem; font-style: italic;
+            padding: 10px 14px; background: #f8faf9;
+            border-radius: 8px; border: 1px solid var(--color-border); margin: 0;
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center; padding: 3rem 1rem;
+            background: rgba(18,130,96,0.02);
+            border: 1px dashed var(--color-primary-border);
+            border-radius: 12px;
+        }
+        .empty-state i { color: var(--color-primary); opacity: 0.2; margin-bottom: 0.75rem; }
+        .empty-state h5 { font-weight: 700; color: var(--color-text-muted); }
+        .empty-state p { font-size: 0.88rem; color: var(--color-text-muted); margin: 0; }
+
+        /* --- Pill Badge Helpers --- */
+        .badge-soft-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .badge-soft-warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .badge-soft-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .badge-soft-gray    { background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; }
+        .badge-soft-primary { background: var(--color-primary-subtle); color: var(--color-primary-dark); border: 1px solid var(--color-primary-border); }
+        .badge-pill {
+            padding: 4px 11px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.04em; display: inline-block;
+        }
+
     @stack('styles')
 </head>
 
