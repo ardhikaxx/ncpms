@@ -22,6 +22,7 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
     
     Route::middleware('role:perawat,nutrisionis,dietisien,spgk')->group(function() {
         Route::resource('pasien', PasienController::class);
+        Route::get('/pasien/{pasien}/cppt', [PasienController::class, 'cppt'])->name('pasien.cppt');
         Route::post('/pasien/{pasien}/kunjungan', [PasienController::class, 'storeKunjungan'])->name('pasien.kunjungan.store');
         Route::get('/kunjungan/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.show');
         Route::get('/kunjungan/{kunjungan}/cetak-pagt', [App\Http\Controllers\Export\ExportController::class, 'cetakPagt'])->name('kunjungan.cetak-pagt');
@@ -44,6 +45,7 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
     Route::middleware('role:dietisien,spgk')->group(function() {
         Route::post('/kunjungan/{kunjungan}/biokimia', [KunjunganController::class, 'storeBiokimia'])->name('kunjungan.biokimia.store');
         Route::post('/kunjungan/{kunjungan}/selesai', [KunjunganController::class, 'selesaikan'])->name('kunjungan.selesai');
+        Route::post('/kunjungan/{kunjungan}/kritis', [KunjunganController::class, 'storePreskripsiKritis'])->name('kunjungan.kritis.store');
     });
 
     Route::middleware('role:dietisien,spgk')->group(function() {
@@ -56,6 +58,7 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
         Route::post('/monitoring', [MonitoringController::class, 'store'])->name('monitoring.store');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::resource('/bahan-makanan', \App\Http\Controllers\BahanMakananController::class)->except(['create','show','edit']);
     });
 
     Route::middleware('role:spgk')->group(function() {
