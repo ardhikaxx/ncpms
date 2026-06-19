@@ -22,7 +22,12 @@
     @foreach($diagnosas as $d)
         <tr><td class="text-mono">{{ $d->kunjungan->nomor_kunjungan }}</td><td>{{ $d->kunjungan->pasien->nama_tersamar }}</td><td>{{ $d->narasi_pes }}</td><td>{{ $d->status }}</td><td>
             @if($d->divalidasi_pada) <span class="badge text-bg-success">Valid</span>
-            @elseif(Auth::user()->peran === 'spgk') <form method="POST" action="{{ route('diagnosis.validasi', $d) }}">@csrf<button class="btn-primary-ncpms btn-sm-ncpms">Validasi</button></form>
+            @elseif(Auth::user()->peran === 'spgk') 
+                @if($d->kunjungan?->dokumen_terkunci)
+                    <span class="text-danger"><i class="fas fa-lock"></i> Terkunci</span>
+                @else
+                    <form method="POST" action="{{ route('diagnosis.validasi', $d) }}">@csrf<button class="btn-primary-ncpms btn-sm-ncpms">Validasi</button></form>
+                @endif
             @else <span class="text-muted">Menunggu SpGK</span>@endif
         </td></tr>
     @endforeach
