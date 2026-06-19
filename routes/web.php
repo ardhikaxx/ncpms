@@ -24,6 +24,7 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::resource('pasien', PasienController::class);
         Route::post('/pasien/{pasien}/kunjungan', [PasienController::class, 'storeKunjungan'])->name('pasien.kunjungan.store');
         Route::get('/kunjungan/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.show');
+        Route::get('/kunjungan/{kunjungan}/cetak-pagt', [App\Http\Controllers\Export\ExportController::class, 'cetakPagt'])->name('kunjungan.cetak-pagt');
     });
 
     Route::middleware('role:perawat,spgk')->group(function() {

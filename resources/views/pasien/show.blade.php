@@ -39,6 +39,13 @@
             </form>
         </div>
         <div class="ncpms-card">
+            <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-chart-line"></i></span> Tren Antropometri</h2>
+            <div class="chart-wrap">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="ncpms-card">
             <h2 class="card-title-custom"><span class="card-title-icon"><i class="fas fa-timeline"></i></span> Riwayat Kunjungan</h2>
             <div class="table-responsive">
                 <table class="table align-middle">
@@ -62,9 +69,70 @@
         </div>
     </div>
 </div>
-@if($pasien->riwayatAlergi->count())
 @push('scripts')
-<script>NCPMS_SWAL.peringatanKlinis('Peringatan Alergi Pasien', 'Pasien memiliki alergi tercatat. Periksa profil alergi sebelum menyusun menu atau preskripsi diet.');</script>
-@endpush
+<script>
+@if($pasien->riwayatAlergi->count())
+    NCPMS_SWAL.peringatanKlinis('Peringatan Alergi Pasien', 'Pasien memiliki alergi tercatat. Periksa profil alergi sebelum menyusun menu atau preskripsi diet.');
 @endif
+
+    // Siapkan data untuk grafik tren antropometri (BB dan IMT)
+    @php
+        $kunjungansChart = $pasien->kunjungans->reverse()->filter(function($k) {
+            return $k->antropometri !== null;
+        })->values();
+        $labels = $kunjungansChart->map(fn($k) => $k->tanggal_kunjungan->format('d/m/Y'))->toJson();
+        $bbData = $kunjungansChart->map(fn($k) => $k->antropometri->berat_badan_kg)->toJson();
+        $imtData = $kunjungansChart->map(fn($k) => $k->antropometri->indeks_massa_tubuh)->toJson();
+    @endphp
+
+    const ctxTrend = document.getElementById('trendChart');
+    if(ctxTrend) {
+        new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: {!! $labels !!},
+                datasets: [
+                    {
+                        label: 'Berat Badan (kg)',
+                        data: {!! $bbData !!},
+                        borderColor: '#1A7A64',
+                        backgroundColor: 'rgba(26, 122, 100, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'IMT',
+                        data: {!! $imtData !!},
+                        borderColor: '#ff9800',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.3,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { 
+                        type: 'linear', display: true, position: 'left',
+                        title: { display: true, text: 'Berat Badan (kg)' }
+                    },
+                    y1: { 
+                        type: 'linear', display: true, position: 'right',
+                        title: { display: true, text: 'Indeks Massa Tubuh' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+    }
+</script>
+@endpush
 @endsection

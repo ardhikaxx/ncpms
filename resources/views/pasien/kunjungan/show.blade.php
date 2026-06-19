@@ -23,6 +23,7 @@
         @if(!$kunjungan->dokumen_terkunci && Auth::user()->peran === 'spgk')
             <form method="POST" action="{{ route('kunjungan.kunci', $kunjungan) }}" data-confirm-lock>@csrf<button class="btn-danger-ncpms"><i class="fas fa-lock"></i> Kunci Dokumen</button></form>
         @endif
+        <a href="{{ route('kunjungan.cetak-pagt', $kunjungan) }}" target="_blank" class="btn-primary-ncpms" style="text-decoration:none;"><i class="fas fa-file-pdf"></i> Cetak PAGT</a>
         @if($bisaSelesai)
             <form method="POST" action="{{ route('kunjungan.selesai', $kunjungan) }}">@csrf<button class="btn-outline-ncpms"><i class="fas fa-check"></i> Selesai</button></form>
         @endif
@@ -30,6 +31,23 @@
 </div>
 @if($kunjungan->dokumen_terkunci)
     <div class="locked-banner"><i class="fas fa-lock me-2"></i> DOKUMEN TERKUNCI - data klinis tidak dapat diubah.</div>
+@endif
+
+@php
+    $komorbids = json_decode($kunjungan->diagnosis_medis_penyerta ?? '[]', true);
+    $risikoTinggi = $kunjungan->skriningGizi?->kategori_risiko === 'risiko_tinggi';
+@endphp
+@if($risikoTinggi || count($komorbids) > 0)
+    <div class="alert alert-danger d-flex align-items-center" role="alert" style="background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; border-radius: 8px; font-weight: 500;">
+        <i class="fas fa-exclamation-triangle fs-4 me-3"></i>
+        <div>
+            <strong>PERINGATAN KLINIS:</strong> Pasien ini 
+            @if($risikoTinggi) memiliki <strong>Risiko Malnutrisi Tinggi</strong> @endif
+            @if($risikoTinggi && count($komorbids) > 0) dan @endif
+            @if(count($komorbids) > 0) memiliki <strong>{{ count($komorbids) }} komorbid penyerta</strong> @endif.
+            Perhatikan interaksi obat-makanan dan batasan makronutrien saat meresepkan diet!
+        </div>
+    </div>
 @endif
 
 <div class="row g-3">

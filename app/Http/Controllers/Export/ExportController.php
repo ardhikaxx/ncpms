@@ -17,6 +17,13 @@ class ExportController extends Controller
         return $pdf->download('Data_Pasien_NCPMS.pdf');
     }
 
+    public function cetakPagt(Kunjungan $kunjungan)
+    {
+        $kunjungan->load(['pasien', 'skriningGizi', 'dataAntropometris', 'dataBiokimias', 'pemeriksaanFisikGizis', 'riwayatAsupanGizis', 'diagnosaGizis', 'preskripsiDiets', 'monitorings']);
+        $pdf = Pdf::loadView('exports.pagt_pdf', compact('kunjungan'));
+        return $pdf->download('Resume_PAGT_'.$kunjungan->nomor_kunjungan.'.pdf');
+    }
+
     public function exportLaporanExcel()
     {
         $pasiens = Pasien::with('kunjungans')->latest()->take(100)->get();
