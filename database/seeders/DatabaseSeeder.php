@@ -260,6 +260,14 @@ class DatabaseSeeder extends Seeder
                 $bb = rand(400, 1200) / 10;
                 $tb = rand(1400, 1850) / 10;
                 
+                $utamaId = $diagnosisMedis[$kodeDx];
+                $penyertas = [];
+                if (rand(1, 100) <= 60) {
+                    $availablePenyerta = array_values(array_filter($diagnosisMedis, fn($id) => $id !== $utamaId));
+                    $numPenyerta = rand(1, 2);
+                    $penyertas = array_map(fn($k) => $availablePenyerta[$k], (array) array_rand($availablePenyerta, $numPenyerta));
+                }
+
                 $kunjunganId = DB::table('kunjungans')->insertGetId([
                     'pasien_id' => $pasienId,
                     'nomor_kunjungan' => 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad($i, 3, '0', STR_PAD_LEFT).str_pad($v, 2, '0', STR_PAD_LEFT),
@@ -270,8 +278,8 @@ class DatabaseSeeder extends Seeder
                     'perawat_id' => $pengguna['perawat'],
                     'dietisien_id' => $pengguna['dietisien'],
                     'spgk_id' => $pengguna['spgk'],
-                    'diagnosis_medis_utama_id' => $diagnosisMedis[$kodeDx],
-                    'diagnosis_medis_penyerta' => json_encode([]),
+                    'diagnosis_medis_utama_id' => $utamaId,
+                    'diagnosis_medis_penyerta' => json_encode($penyertas),
                     'dokumen_terkunci' => $v !== 0,
                     'dikunci_oleh' => $v !== 0 ? $pengguna['spgk'] : null,
                     'created_at' => $tanggal,
@@ -392,7 +400,7 @@ class DatabaseSeeder extends Seeder
                     if (rand(1, 100) <= 50) {
                         $topikEdukasis = ['Panduan Diet DM', 'Diet ETPT', 'Diet Rendah Garam', 'Edukasi Penurunan BB', 'Diet Penyakit Ginjal'];
                         $tipes = ['leaflet_diet', 'panduan_makan', 'ringkasan_kalori', 'pantangan_alergi', 'rencana_makan'];
-                        DB::table('dokumen_edukasiis')->insert([
+                        $edukasiId = DB::table('dokumen_edukasiis')->insertGetId([
                             'pasien_id' => $pasienId,
                             'kunjungan_id' => $kunjunganId,
                             'judul_dokumen' => $topikEdukasis[array_rand($topikEdukasis)],
@@ -403,6 +411,24 @@ class DatabaseSeeder extends Seeder
                                 'pantangan' => 'Gorengan, makanan cepat saji'
                             ]),
                             'dibuat_oleh' => $pengguna['dietisien'],
+                            'created_at' => $tanggal,
+                            'updated_at' => $tanggal,
+                        ]);
+
+                        $metodes = ['tatap_muka', 'telepon', 'video_call'];
+                        $tingkats = ['baik', 'cukup', 'kurang'];
+                        DB::table('catatan_konselings')->insert([
+                            'kunjungan_id' => $kunjunganId,
+                            'tanggal_konseling' => $tanggal->toDateString(),
+                            'durasi_menit' => rand(15, 60),
+                            'metode' => $metodes[array_rand($metodes)],
+                            'topik_konseling' => json_encode(['Pemahaman Diet', 'Cara Pengolahan Makanan']),
+                            'isi_konseling' => 'Menjelaskan prinsip diet dan bahan makanan penukar. Pasien bertanya mengenai batasan buah-buahan.',
+                            'hambatan_pasien' => rand(0, 1) === 1 ? 'Kurang motivasi untuk mengubah kebiasaan' : null,
+                            'kesepakatan_tindak_lanjut' => 'Keluarga akan membantu mengawasi asupan di rumah',
+                            'tingkat_pemahaman_pasien' => $tingkats[array_rand($tingkats)],
+                            'dokumen_edukasi_id' => $edukasiId,
+                            'dilakukan_oleh' => $pengguna['dietisien'],
                             'created_at' => $tanggal,
                             'updated_at' => $tanggal,
                         ]);
