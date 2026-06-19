@@ -4,21 +4,16 @@
 
 @section('content')
 
-{{-- Welcome Banner --}}
-<div class="page-banner">
-    <div class="row align-items-center">
-        <div class="col-lg-8">
-            <h1 class="mb-1">Selamat datang, {{ explode(' ', Auth::user()->nama_lengkap)[0] }}! 👋</h1>
-            <p>Ringkasan analitik gizi klinis hari ini &mdash; {{ date('l, d F Y') }}</p>
-        </div>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Selamat datang, {{ Auth::user()->nama_lengkap }}</h1>
+        <p class="page-subtitle">Ringkasan analitik gizi klinis — {{ date('l, d F Y') }}</p>
+    </div>
+    <div class="d-flex gap-2">
         @if(in_array(Auth::user()->peran, ['perawat','spgk']))
-        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0 banner-cta">
-            <a href="{{ route('pasien.create') }}"
-               class="btn btn-light fw-bold px-4 py-2"
-               style="border-radius: 50px; color: var(--color-primary-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
-                <i class="fas fa-plus me-2"></i>Registrasi Pasien
-            </a>
-        </div>
+        <a href="{{ route('pasien.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Registrasi Pasien
+        </a>
         @endif
     </div>
 </div>
@@ -27,55 +22,51 @@
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
         <div class="stat-card">
-            <div class="stat-card-accent" style="background: var(--color-primary);"></div>
-            <div class="d-flex justify-content-between align-items-start ps-1">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Total Pasien</div>
                     <div class="stat-value">{{ $totalPasien }}</div>
                 </div>
                 <div class="stat-icon" style="background: var(--color-primary-subtle); color: var(--color-primary);">
-                    <i class="fas fa-hospital-user"></i>
+                    <i class="fas fa-users"></i>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card">
-            <div class="stat-card-accent" style="background: #f59f00;"></div>
-            <div class="d-flex justify-content-between align-items-start ps-1">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Kunjungan Hari Ini</div>
                     <div class="stat-value">{{ $totalKunjunganHariIni }}</div>
                 </div>
-                <div class="stat-icon" style="background: #fef3c7; color: #f59f00;">
-                    <i class="fas fa-calendar-check"></i>
+                <div class="stat-icon" style="background: var(--color-primary-subtle); color: var(--color-primary);">
+                    <i class="fas fa-calendar-day"></i>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card">
-            <div class="stat-card-accent" style="background: var(--color-risiko-tinggi);"></div>
-            <div class="d-flex justify-content-between align-items-start ps-1">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Risiko Tinggi</div>
                     <div class="stat-value" style="color: var(--color-risiko-tinggi);">{{ $risikoTinggi }}</div>
                 </div>
-                <div class="stat-icon" style="background: #fee2e2; color: var(--color-risiko-tinggi);">
-                    <i class="fas fa-exclamation-triangle"></i>
+                <div class="stat-icon" style="background: var(--color-primary-subtle); color: var(--color-primary);">
+                    <i class="fas fa-triangle-exclamation"></i>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card">
-            <div class="stat-card-accent" style="background: #868e96;"></div>
-            <div class="d-flex justify-content-between align-items-start ps-1">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Menunggu Asesmen</div>
                     <div class="stat-value">{{ $menungguAsesmen }}</div>
                 </div>
-                <div class="stat-icon" style="background: #f3f4f6; color: #868e96;">
+                <div class="stat-icon" style="background: var(--color-primary-subtle); color: var(--color-primary);">
                     <i class="fas fa-hourglass-half"></i>
                 </div>
             </div>
@@ -83,7 +74,7 @@
     </div>
 </div>
 
-{{-- Charts + Table Row --}}
+{{-- Charts + Table --}}
 <div class="row g-3 mb-3">
     <div class="col-lg-5">
         <div class="ncpms-card mb-0 h-100">
@@ -98,35 +89,33 @@
         <div class="ncpms-card mb-0 h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="card-title-custom mb-0 pb-0 border-0">
-                    <span class="card-title-icon" style="background: var(--color-primary); color: #fff;"><i class="fas fa-list-check"></i></span>
+                    <span class="card-title-icon"><i class="fas fa-list-check"></i></span>
                     Manifes Pasien Hari Ini
                 </div>
-                <span class="badge-pill badge-soft-gray">
-                    <i class="far fa-calendar-alt me-1"></i>{{ date('d M Y') }}
-                </span>
+                <span class="badge-pill badge-soft-gray">{{ date('d M Y') }}</span>
             </div>
-            <div class="table-responsive" style="border-radius: 10px; border: 1px solid var(--color-border);">
+            <div class="table-responsive">
                 <table class="table data-table mb-0">
                     <thead>
                         <tr>
-                            <th style="padding-left: 16px;">Kunjungan</th>
+                            <th>No. Kunjungan</th>
                             <th>Pasien</th>
                             <th>Risiko</th>
                             <th>Status</th>
-                            <th class="text-end" style="padding-right: 16px;"></th>
+                            <th class="text-end"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($kunjungans as $k)
                         <tr>
-                            <td style="padding-left: 16px;">
+                            <td>
                                 <div class="rm-badge">{{ $k->nomor_kunjungan }}</div>
-                                <div class="text-muted mt-1" style="font-size: 0.74rem;"><i class="far fa-clock me-1"></i>{{ $k->tanggal_kunjungan->format('H:i') }}</div>
+                                <div class="text-muted mt-1" style="font-size: 0.74rem;">{{ $k->tanggal_kunjungan->format('H:i') }}</div>
                             </td>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="avatar-circle" style="font-size: 0.85rem;">{{ substr($k->pasien->nama_tersamar, 0, 1) }}</div>
-                                    <span class="fw-bold" style="font-size: 0.88rem;">{{ $k->pasien->nama_tersamar }}</span>
+                                    <div class="avatar-circle">{{ substr($k->pasien->nama_tersamar, 0, 1) }}</div>
+                                    <span class="fw-semibold">{{ $k->pasien->nama_tersamar }}</span>
                                 </div>
                             </td>
                             <td>
@@ -140,9 +129,9 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="fw-bold" style="font-size: 0.82rem; color: var(--color-text-secondary);">{{ str_replace('_',' ', strtoupper($k->status)) }}</div>
+                                <span class="text-muted fw-semibold" style="font-size: 0.82rem;">{{ str_replace('_',' ', strtoupper($k->status)) }}</span>
                             </td>
-                            <td class="text-end" style="padding-right: 16px;">
+                            <td class="text-end">
                                 <a href="{{ route('kunjungan.show', $k) }}" class="btn btn-sm btn-light border" style="border-radius: 7px; width: 28px; height: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-chevron-right" style="font-size: 0.7rem; color: var(--color-primary);"></i>
                                 </a>
@@ -151,7 +140,7 @@
                         @empty
                         <tr>
                             <td colspan="5" class="py-4 text-center text-muted" style="font-size: 0.87rem;">
-                                <i class="fas fa-bed d-block mb-1 opacity-25 fa-lg"></i>Tidak ada pasien terjadwal hari ini.
+                                Tidak ada pasien terjadwal hari ini.
                             </td>
                         </tr>
                         @endforelse
@@ -167,8 +156,8 @@
     <div class="col-lg-5">
         <div class="ncpms-card mb-0 h-100">
             <div class="card-title-custom">
-                <span class="card-title-icon" style="background: var(--color-primary); color: #fff;"><i class="fas fa-chart-pie"></i></span>
-                Proporsi Risiko
+                <span class="card-title-icon"><i class="fas fa-chart-pie"></i></span>
+                Proporsi Risiko Gizi
             </div>
             <div class="chart-wrap pt-2"><canvas id="chartRisiko"></canvas></div>
         </div>
@@ -176,7 +165,7 @@
     <div class="col-lg-7">
         <div class="ncpms-card mb-0 h-100">
             <div class="card-title-custom">
-                <span class="card-title-icon" style="background: var(--color-primary); color: #fff;"><i class="fas fa-chart-bar"></i></span>
+                <span class="card-title-icon"><i class="fas fa-chart-bar"></i></span>
                 Top 5 Penyakit Rujukan
             </div>
             <div class="chart-wrap pt-2"><canvas id="chartDiagnosis"></canvas></div>
@@ -196,7 +185,7 @@
         data: {
             labels: @json($grafikKunjungan->pluck('label')),
             datasets: [{ label: 'Kunjungan', data: @json($grafikKunjungan->pluck('total')),
-                borderColor: '#128260', backgroundColor: 'rgba(18,130,96,0.10)',
+                borderColor: '#128260', backgroundColor: 'rgba(18,130,96,0.08)',
                 fill: true, tension: 0.4, borderWidth: 2.5,
                 pointBackgroundColor: '#fff', pointBorderColor: '#128260',
                 pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 6 }]
