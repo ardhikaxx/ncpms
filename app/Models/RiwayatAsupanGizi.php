@@ -13,6 +13,6 @@ class RiwayatAsupanGizi extends Model implements \OwenIt\Auditing\Contracts\Audi
     protected $table = 'riwayat_asupan_gizis';
     protected $fillable = ['kunjungan_id', 'metode', 'tanggal_recall', 'detail_asupan', 'total_energi_kkal', 'total_protein_gram', 'total_lemak_gram', 'total_karbohidrat_gram', 'total_serat_gram', 'total_natrium_mg', 'persen_pemenuhan_energi', 'persen_pemenuhan_protein', 'persen_pemenuhan_lemak', 'persen_pemenuhan_karbohidrat', 'kesimpulan_asupan', 'dicatat_oleh'];
     protected $casts = ['tanggal_recall' => 'date', 'detail_asupan' => 'array'];
-    
-
+    public function kunjungan() { return $this->belongsTo(Kunjungan::class); }
+    public function pencatat() { return $this->belongsTo(Pengguna::class, 'dicatat_oleh'); }
 }
