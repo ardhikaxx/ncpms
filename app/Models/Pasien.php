@@ -13,6 +13,27 @@ class Pasien extends Model implements \OwenIt\Auditing\Contracts\Auditable
     protected $table = 'pasiens';
     protected $fillable = ['nomor_rekam_medis', 'nik', 'nama_lengkap', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'golongan_darah', 'nomor_telepon', 'alamat', 'nomor_bpjs', 'status_aktif', 'satusehat_patient_id'];
     protected $casts = ['nomor_rekam_medis' => 'encrypted', 'nik' => 'encrypted', 'nama_lengkap' => 'encrypted', 'nomor_telepon' => 'encrypted', 'alamat' => 'encrypted', 'nomor_bpjs' => 'encrypted', 'tanggal_lahir' => 'date'];
-    
 
+    public function kunjungans()
+    {
+        return $this->hasMany(Kunjungan::class)->latest('tanggal_kunjungan');
+    }
+
+    public function riwayatAlergi()
+    {
+        return $this->hasMany(RiwayatAlergiPasien::class);
+    }
+
+    public function getNamaTersamarAttribute()
+    {
+        $nama = trim((string) $this->nama_lengkap);
+        $bagian = preg_split('/\s+/', $nama);
+        return ($bagian[0] ?? 'Pasien').' '.str_repeat('*', 4);
+    }
+
+    public function getNomorRmTersamarAttribute()
+    {
+        $rm = (string) $this->nomor_rekam_medis;
+        return strlen($rm) > 4 ? substr($rm, 0, 2).'***'.substr($rm, -2) : '***';
+    }
 }
