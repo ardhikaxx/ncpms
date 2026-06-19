@@ -11,9 +11,9 @@ use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
-    private $firstNamesMale = ['Budi', 'Andi', 'Hendra', 'Eko', 'Agus', 'Dwi', 'Tri', 'Iwan', 'Rizal', 'Joko', 'Wahyu', 'Arif', 'Ahmad', 'Muhamad', 'Bayu', 'Rudi', 'Fajar', 'Deni', 'Yusuf', 'Ilham', 'Dimas', 'Reza', 'Fadli', 'Surya', 'Rama', 'Gilang', 'Rangga', 'Teguh', 'Bambang', 'Sigit'];
-    private $firstNamesFemale = ['Siti', 'Ayu', 'Sri', 'Putri', 'Dewi', 'Nur', 'Rini', 'Dina', 'Sari', 'Indah', 'Lestari', 'Fitri', 'Rina', 'Wulan', 'Tari', 'Maya', 'Nita', 'Ratna', 'Lia', 'Rika', 'Ani', 'Yuni', 'Desi', 'Ika', 'Mega', 'Santi', 'Vina', 'Eka', 'Puspa', 'Dita'];
-    private $lastNames = ['Pratama', 'Santoso', 'Wijaya', 'Kusuma', 'Saputra', 'Setiawan', 'Nugroho', 'Hidayat', 'Kurniawan', 'Ramadhan', 'Lestari', 'Wahyuni', 'Susanti', 'Purnama', 'Wibowo', 'Siregar', 'Hutagalung', 'Gunawan', 'Hartono', 'Halim', 'Putra', 'Firmansyah', 'Ardiansyah', 'Baskoro', 'Sutanto'];
+    private $firstNamesMale = ['Budi', 'Andi', 'Hendra', 'Eko', 'Agus', 'Dwi', 'Tri', 'Iwan', 'Rizal', 'Joko', 'Wahyu', 'Arif', 'Ahmad', 'Muhamad', 'Bayu', 'Rudi', 'Fajar', 'Deni', 'Yusuf', 'Ilham', 'Dimas', 'Reza', 'Fadli', 'Surya', 'Rama', 'Gilang', 'Rangga', 'Teguh', 'Bambang', 'Sigit', 'Hasan', 'Ali', 'Umar', 'Farhan', 'Rizki', 'Taufik', 'Iqbal', 'Lukman', 'Rahmat', 'Iman', 'Darmawan', 'Adi', 'Bagas', 'Satria', 'Wira', 'Cipto', 'Bowo', 'Gede', 'Made', 'Ketut'];
+    private $firstNamesFemale = ['Siti', 'Ayu', 'Sri', 'Putri', 'Dewi', 'Nur', 'Rini', 'Dina', 'Sari', 'Indah', 'Lestari', 'Fitri', 'Rina', 'Wulan', 'Tari', 'Maya', 'Nita', 'Ratna', 'Lia', 'Rika', 'Ani', 'Yuni', 'Desi', 'Ika', 'Mega', 'Santi', 'Vina', 'Eka', 'Puspa', 'Dita', 'Intan', 'Tiara', 'Mutiara', 'Amira', 'Salma', 'Dinda', 'Nanda', 'Salsabila', 'Nadia', 'Risma', 'Aulia', 'Zahra', 'Kirana', 'Melati', 'Mawar', 'Anggun', 'Sekar', 'Kadek', 'Niuh', 'Gusti'];
+    private $lastNames = ['Pratama', 'Santoso', 'Wijaya', 'Kusuma', 'Saputra', 'Setiawan', 'Nugroho', 'Hidayat', 'Kurniawan', 'Ramadhan', 'Lestari', 'Wahyuni', 'Susanti', 'Purnama', 'Wibowo', 'Siregar', 'Hutagalung', 'Gunawan', 'Hartono', 'Halim', 'Putra', 'Firmansyah', 'Ardiansyah', 'Baskoro', 'Sutanto', 'Subagyo', 'Suryono', 'Sudarsono', 'Wahyono', 'Nasution', 'Simanjuntak', 'Sitompul', 'Lubis', 'Harahap', 'Ginting', 'Sembiring', 'Tarigan', 'Mahendra', 'Widyanto', 'Susanto', 'Irawan', 'Budiarto', 'Rahman', 'Hakim', 'Fauzi', 'Setiadi', 'Sanjaya', 'Hermansyah', 'Sulaeman', 'Mulyadi'];
     private $cities = ['Kaliwates, Jember', 'Sumbersari, Jember', 'Patrang, Jember', 'Arjasa, Jember', 'Ajung, Jember', 'Ambulu, Jember', 'Balung, Jember', 'Bangsalsari, Jember', 'Kencong, Jember', 'Puger, Jember', 'Rambipuji, Jember', 'Sukowono, Jember', 'Tanggul, Jember', 'Wuluhan, Jember', 'Pakusari, Jember', 'Tempurejo, Jember', 'Umbulsari, Jember', 'Jombang, Jember', 'Mayang, Jember', 'Mumbulsari, Jember'];
     private $streets = ['Jl. PB Sudirman', 'Jl. Gajah Mada', 'Jl. Hayam Wuruk', 'Jl. Letjen Suprapto', 'Jl. Trunojoyo', 'Jl. Letjen S. Parman', 'Jl. Letjen Panjaitan', 'Jl. Kalimantan', 'Jl. Jawa', 'Jl. Mastrip', 'Jl. Riau', 'Jl. Sumatra', 'Jl. Letjen Haryono', 'Jl. Tidar', 'Jl. Ahmad Yani', 'Jl. Kartini', 'Jl. Basuki Rahmat', 'Jl. Brawijaya', 'Jl. KH. Shiddiq', 'Jl. Sultan Agung'];
 
@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         $bahan = $this->seedBahanMakanan($now);
         $terminologi = $this->seedTerminologi($now);
         
-        $pasienIds = $this->seedPasienBulkCustom($now, $pengguna, 300);
+        $pasienIds = $this->seedPasienBulkCustom($now, $pengguna, 1000);
 
         $this->seedKlinisBulkCustom($now, $pengguna, $pasienIds, $diagnosisMedis, $terminologi, $bahan);
         $this->seedLaporan($now, $pengguna);
