@@ -94,17 +94,7 @@
         </div>
         @endif
 
-        <div class="sidebar-menu-label" style="font-size: 0.625rem; color: rgba(255,255,255,0.35); padding: 20px 20px 8px; text-transform: uppercase; font-weight: bold;">Enterprise</div>
-        <div class="sidebar-menu-item">
-            <a href="{{ route('export.pasien.pdf') }}" target="_blank">
-                <i class="fas fa-file-pdf menu-icon"></i> Export Pasien (PDF)
-            </a>
-        </div>
-        <div class="sidebar-menu-item">
-            <a href="{{ route('export.laporan.excel') }}" target="_blank">
-                <i class="fas fa-file-excel menu-icon"></i> Export Laporan (Excel)
-            </a>
-        </div>
+
     <div class="sidebar-user-info">
             <div class="fw-bold">{{ Auth::user()->nama_lengkap }}</div>
             <div class="small text-white-50">{{ Auth::user()->nama_peran }}</div>

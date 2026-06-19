@@ -2,7 +2,7 @@
 @section('title','Laporan')
 @section('breadcrumb','Laporan Statistik')
 @section('content')
-<div class="page-header"><div><h1 class="page-title">Laporan Statistik</h1><p class="page-subtitle">Laporan kinerja, SPM gizi, dan audit mutu berbasis periode.</p></div><button onclick="window.print()" class="btn-outline-ncpms"><i class="fas fa-print"></i> Cetak</button></div>
+<div class="page-header"><div><h1 class="page-title">Laporan Statistik</h1><p class="page-subtitle">Laporan kinerja, SPM gizi, dan audit mutu berbasis periode.</p></div><div><a href="{{ route('export.pasien.pdf') }}" target="_blank" class="btn-danger-ncpms" style="margin-right: 8px;"><i class="fas fa-file-pdf"></i> Export Pasien (PDF)</a><a href="{{ route('export.laporan.excel') }}" target="_blank" class="btn-primary-ncpms"><i class="fas fa-file-excel"></i> Export Laporan (Excel)</a></div></div>
 <div class="ncpms-card">
     <form method="GET" action="{{ route('laporan.index') }}" class="row g-3">
         <div class="col-md-3"><label class="form-label-ncpms">Tipe Laporan</label><select name="tipe_laporan" class="form-control-ncpms"><option value="kinerja_harian">Kinerja Harian</option><option value="demografi_patologi">Demografi Patologi</option><option value="rasio_intervensi">Rasio Intervensi</option><option value="spm_gizi">SPM Gizi</option><option value="audit_mutu">Audit Mutu</option></select></div>
