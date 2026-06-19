@@ -20,6 +20,14 @@ class ExportController extends Controller
     public function cetakPagt(Kunjungan $kunjungan)
     {
         $kunjungan->load(['pasien', 'skriningGizi', 'antropometri', 'biokimia', 'fisik', 'asupan', 'diagnosaGizis', 'preskripsiDiets', 'monitoring']);
+        
+        $user = auth()->user();
+        if (!in_array($user->peran, ['perawat', 'nutrisionis', 'dietisien', 'spgk'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        \App\Traits\AuditsActivity::logCustomAction('print', 'App\Models\Kunjungan', $kunjungan->id, 'Mencetak dokumen PAGT (Rekam Medis) pasien');
+
         $pdf = Pdf::loadView('exports.pagt_pdf', compact('kunjungan'));
         return $pdf->download('Resume_PAGT_'.$kunjungan->nomor_kunjungan.'.pdf');
     }
