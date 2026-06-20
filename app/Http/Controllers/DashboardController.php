@@ -31,6 +31,8 @@ class DashboardController extends Controller
         $menungguAsesmen = Kunjungan::doesntHave('antropometri')->whereIn('status', ['terdaftar', 'dalam_pelayanan'])->count();
         $totalPreskripsiAktif = PreskripsiDiet::where('status', 'aktif')->count();
         
+        $pasienPuasa = Kunjungan::where('status', 'aktif')->where('status_puasa', true)->with('pasien')->get();
+        
         $kunjungans = Kunjungan::with(['pasien', 'skriningGizi', 'dietisien'])
             ->whereDate('tanggal_kunjungan', today())
             ->latest('waktu_registrasi')
@@ -63,7 +65,8 @@ class DashboardController extends Controller
             'kunjungans',
             'grafikKunjungan',
             'proporsiRisiko',
-            'topDiagnosis'
+            'topDiagnosis',
+            'pasienPuasa'
         ));
     }
 }

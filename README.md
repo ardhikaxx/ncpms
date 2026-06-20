@@ -38,10 +38,15 @@ NCPMS dibangun berlandaskan 3 pilar regulasi dan pedoman nasional:
 ### 🍳 3. Modul Dapur & Penyelenggaraan Makanan (PGRS 2013)
 *   **Dashboard Instalasi Gizi (Dapur):** Melihat *real-time* permintaan preskripsi diet dari ruang rawat.
 *   **Cetak Etiket Label Makanan:** Pembuatan dan pencetakan etiket label pasien yang siap ditempel pada *food tray*, lengkap dengan detail bentuk makanan, kalori, dan alergi/pantangan.
+*   **Pemindai Keselamatan Makanan (QR Code):** Fitur khusus perawat/pramusaji untuk memindai label makanan dan memastikan diet disajikan pada pasien yang tepat tanpa risiko silang-alergen (Standar JCI).
+*   **Pemantauan Sisa Makanan (Comstock Scale):** Fasilitas pencatatan persentase sisa piring (0%, 25%, 50%, 75%, 100%) untuk mengevaluasi daya terima dan keefektifan diet.
+*   **Alarm Status Puasa Darurat (NPO):** Sirine visual *real-time* di Dashboard Dapur yang menginstruksikan penyetopan penyajian makanan ketika pasien mendadak diinstruksikan puasa operasi medis.
 *   **Master Data Bahan Makanan:** Basis data nilai tukar/kandungan zat gizi bahan makanan untuk formulasi diet.
 
-### 🤝 4. Catatan Perkembangan Pasien Terintegrasi (CPPT)
-*   **Monitoring & Evaluasi:** Pemantauan perkembangan luaran klinis pasien.
+### 🤝 4. Pelayanan Lintas Pengaturan (ICU & Rawat Jalan)
+*   **Modul Enteral & Parenteral (ICU):** Kalkulasi laju makanan cair (drip/jam), osmolaritas, dan formulasi diet enteral spesifik untuk pasien kritis.
+*   **Modul Rawat Jalan (Poliklinik):** Penjadwalan perjanjian konsultasi (Appointment) dan edukasi diet preskriptif rawat jalan (Mandiri/Rujukan).
+*   **Monitoring & Evaluasi:** Pemantauan perkembangan luaran klinis pasien (CPPT).
 *   **Catatan Edukasi & Konseling:** Pencatatan durasi, metode, topik, dan tingkat pemahaman pasien atas edukasi gizi.
 *   **Cetak Dokumen Medis PDF:** Ekspor rekaman asuhan gizi ke dalam format PDF yang tersertifikasi.
 

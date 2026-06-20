@@ -747,6 +747,9 @@
                 <div class="sidebar-menu-item"><a href="{{ route('dapur.index') }}"
                         class="{{ request()->routeIs('dapur.*') ? 'active' : '' }}"><i
                             class="fas fa-concierge-bell menu-icon"></i><span class="menu-text">Dapur & Etiket</span></a></div>
+                <div class="sidebar-menu-item"><a href="{{ route('scanner') }}"
+                        class="{{ request()->routeIs('scanner') ? 'active' : '' }}"><i
+                            class="fas fa-qrcode menu-icon"></i><span class="menu-text">Pemindai Makanan</span></a></div>
             @endif
             @if (Auth::user()->peran === 'admin_ti')
                 <div class="sidebar-menu-label">Administrator</div>

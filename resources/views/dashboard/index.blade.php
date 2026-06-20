@@ -18,6 +18,28 @@
     </div>
 </div>
 
+@if($pasienPuasa->count() > 0)
+<div class="alert alert-danger shadow-sm border-0 d-flex align-items-center mb-4" style="animation: pulse-danger 2s infinite; background: #fee2e2;">
+    <i class="fas fa-exclamation-triangle fa-2x me-3 text-danger"></i>
+    <div>
+        <h5 class="fw-bold mb-1 text-danger">⚠️ STATUS PUASA DARURAT (NPO)</h5>
+        <p class="mb-0 text-danger" style="font-size: 0.9rem;">
+            Hentikan persiapan / penyajian makanan untuk <strong>{{ $pasienPuasa->count() }}</strong> pasien berikut:
+            @foreach($pasienPuasa as $p)
+                <span class="badge bg-danger ms-1">{{ $p->pasien->nama_lengkap }} ({{ $p->asal_rujukan }})</span>
+            @endforeach
+        </p>
+    </div>
+</div>
+<style>
+    @keyframes pulse-danger {
+        0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+</style>
+@endif
+
 {{-- Stat Cards --}}
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">

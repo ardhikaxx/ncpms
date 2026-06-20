@@ -295,7 +295,10 @@ class DatabaseSeeder extends Seeder
 
                 $kunjunganNum = 'KGZ-'.$tanggal->format('Ymd').'-'.str_pad($i, 3, '0', STR_PAD_LEFT).str_pad($v, 2, '0', STR_PAD_LEFT);
                 $tipeKunjungan = rand(0, 1) === 0 ? 'mandiri' : 'rujukan_internal';
-                $asal = $tipeKunjungan === 'rujukan_internal' ? 'IGD' : 'Poli Umum';
+                $isRawatJalan = ($tipeKunjungan === 'mandiri' || $tipeKunjungan === 'rujukan_internal');
+                $asal = $isRawatJalan ? 'Poli Penyakit Dalam' : 'IGD';
+                $statusPuasa = !$isRawatJalan && rand(0, 10) > 8;
+                $waktuPerjanjian = $isRawatJalan ? $tanggal->copy()->addDays(rand(1, 14))->setTime(rand(8, 14), 0) : null;
                 $obats = ['Warfarin, Aspirin', 'Captopril, Metformin', 'Simvastatin', 'Insulin, Amlodipine', null, null, null];
                 $kunjunganId = DB::table('kunjungans')->insertGetId([
                     'pasien_id' => $pasienId,
@@ -311,6 +314,9 @@ class DatabaseSeeder extends Seeder
                     'diagnosis_medis_utama_id' => $utamaId,
                     'diagnosis_medis_penyerta' => json_encode($penyertas),
                     'obat_sedang_dikonsumsi' => $obats[array_rand($obats)],
+                    'status_puasa' => $statusPuasa,
+                    'alasan_puasa' => $statusPuasa ? 'Persiapan Operasi' : null,
+                    'waktu_perjanjian' => $waktuPerjanjian,
                     'dokumen_terkunci' => $v !== 0,
                     'dikunci_oleh' => $v !== 0 ? $pengguna['spgk'] : null,
                     'created_at' => $tanggal,

@@ -19,6 +19,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'session.timeout'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/scanner', function() {
+        return view('asesmen.scanner');
+    })->name('scanner');
     
     Route::middleware('role:perawat,nutrisionis,dietisien,spgk')->group(function() {
         Route::resource('pasien', PasienController::class);
