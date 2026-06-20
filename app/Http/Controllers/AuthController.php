@@ -75,7 +75,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('/')->with('swal_success', 'Anda telah berhasil keluar dari sistem.');
     }
 
     private function messages()

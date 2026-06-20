@@ -774,7 +774,7 @@
             <header class="topbar">
                 <div class="breadcrumb-text">@yield('breadcrumb', 'NCPMS')</div>
                 <div class="topbar-right">
-                    <form action="{{ route('logout') }}" method="POST" class="m-0">@csrf<button
+                    <form action="{{ route('logout') }}" method="POST" class="m-0" data-confirm-logout>@csrf<button
                             class="btn-logout"><i class="fas fa-sign-out-alt"></i> Keluar</button>
                     </form>
                 </div>
@@ -833,6 +833,20 @@
                     if (r.isConfirmed) form.submit();
                 });
             },
+            konfirmasiLogout: form => {
+                Swal.fire({
+                    title: 'Keluar dari Sistem?',
+                    text: 'Apakah Anda yakin ingin mengakhiri sesi saat ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Keluar',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#0f766e',
+                    reverseButtons: true
+                }).then(r => {
+                    if (r.isConfirmed) form.submit();
+                });
+            },
             peringatanKlinis: (judul, pesan) => Swal.fire({
                 icon: 'warning',
                 title: judul,
@@ -850,6 +864,10 @@
             if (e.target.matches('[data-confirm-lock]')) {
                 e.preventDefault();
                 NCPMS_SWAL.konfirmasiKunci(e.target);
+            }
+            if (e.target.matches('[data-confirm-logout]')) {
+                e.preventDefault();
+                NCPMS_SWAL.konfirmasiLogout(e.target);
             }
         });
         @if (session('swal_success'))
