@@ -119,7 +119,6 @@
         color: var(--color-text-primary);
         outline: none;
         transition: border-color 0.2s, box-shadow 0.2s;
-        margin-bottom: 1rem;
     }
 
     .login-input:focus {
@@ -205,12 +204,17 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <label class="login-label">Email / ID Pengguna</label>
-                <input type="email" name="email" class="login-input" required autofocus
+                <input type="email" name="email" class="login-input mb-3" required autofocus
                     value="andika.spgk@ncpms.local" placeholder="email@rumah-sakit.com">
 
                 <label class="login-label">Kata Sandi</label>
-                <input type="password" name="password" class="login-input" required
-                    value="password123" placeholder="••••••••">
+                <div class="position-relative mb-3">
+                    <input type="password" id="loginPassword" name="password" class="login-input" required
+                        value="password123" placeholder="••••••••">
+                    <span class="position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8;" onclick="togglePassword('loginPassword', this)">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
 
                 <button type="submit" class="btn-ncpms w-100 py-2" style="font-size: 0.92rem;">
                     <i class="fas fa-sign-in-alt me-1"></i> Masuk ke Sistem

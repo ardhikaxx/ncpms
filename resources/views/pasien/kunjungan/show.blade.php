@@ -611,7 +611,12 @@
                     </div>
                     <div class="mb-3 text-center">
                         <label class="form-label-ncpms d-block">Masukkan PIN TTE (6 Karakter) <span class="required-mark">*</span></label>
-                        <input type="password" name="pin_tte" class="form-control-ncpms text-center mx-auto d-inline-block" style="max-width: 200px; font-size: 1.5rem; letter-spacing: 0.5rem;" maxlength="6" minlength="6" placeholder="******" required>
+                        <div class="position-relative d-inline-block mx-auto" style="max-width: 200px;">
+                            <input type="password" id="pinTte" name="pin_tte" class="form-control-ncpms text-center w-100" style="font-size: 1.5rem; letter-spacing: 0.5rem;" maxlength="6" minlength="6" placeholder="******" required>
+                            <span class="position-absolute" style="right: -30px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8; font-size: 1.2rem;" onclick="togglePassword('pinTte', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
                         <small class="text-muted mt-2 d-block" style="font-size: 0.75rem;">Contoh Simulasi: 123456</small>
                     </div>
                 </div>

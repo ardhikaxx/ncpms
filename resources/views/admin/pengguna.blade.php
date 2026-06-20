@@ -38,7 +38,10 @@
                 <label class="form-label-ncpms">Password</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0" style="border-color: var(--color-border);"><i class="fas fa-lock text-muted"></i></span>
-                    <input type="password" name="password" class="form-control form-control-ncpms border-start-0 ps-1" placeholder="Minimal 8 karakter" required>
+                    <input type="password" id="userPassword" name="password" class="form-control form-control-ncpms border-start-0 ps-1" style="border-right: none;" placeholder="Minimal 8 karakter" required>
+                    <span class="input-group-text bg-white" style="border-color: var(--color-border); cursor: pointer;" onclick="togglePassword('userPassword', this)">
+                        <i class="fas fa-eye text-muted"></i>
+                    </span>
                 </div>
             </div>
             <div class="col-md-3">
