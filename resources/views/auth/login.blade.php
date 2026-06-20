@@ -140,24 +140,6 @@
         margin-bottom: 1rem;
     }
 
-    .demo-info {
-        margin-top: 1.25rem;
-        padding: 0.85rem 1rem;
-        background: var(--color-primary-subtle);
-        border-radius: var(--radius-sm);
-        border: 1px dashed var(--color-primary-border);
-        font-size: 0.8rem;
-        color: var(--color-primary-dark);
-        line-height: 1.7;
-    }
-
-    .demo-info code {
-        background: rgba(15, 118, 110, 0.1);
-        padding: 1px 5px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-    }
-
     @media (max-width: 860px) {
         .login-left { display: none; }
     }
@@ -220,11 +202,6 @@
                     <i class="fas fa-sign-in-alt me-1"></i> Masuk ke Sistem
                 </button>
             </form>
-
-            <div class="demo-info">
-                <strong>Mode Demo:</strong><br>
-                Email: <code>andika.spgk@ncpms.local</code> &bull; Password: <code>password123</code>
-            </div>
         </div>
     </div>
 </div>
