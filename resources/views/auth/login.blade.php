@@ -187,12 +187,12 @@
                 @csrf
                 <label class="login-label">Email / ID Pengguna</label>
                 <input type="email" name="email" class="login-input mb-3" required autofocus
-                    value="andika.spgk@ncpms.local" placeholder="email@rumah-sakit.com">
+                    placeholder="email@rumah-sakit.com">
 
                 <label class="login-label">Kata Sandi</label>
                 <div class="position-relative mb-3">
                     <input type="password" id="loginPassword" name="password" class="login-input" required
-                        value="password123" placeholder="••••••••">
+                        placeholder="••••••••">
                     <span class="position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8;" onclick="togglePassword('loginPassword', this)">
                         <i class="fas fa-eye"></i>
                     </span>
