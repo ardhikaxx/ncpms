@@ -52,6 +52,37 @@ NCPMS dibangun berlandaskan 3 pilar regulasi dan pedoman nasional:
 
 ---
 
+## 🔄 Alur Sistem Kerja (Workflow)
+
+NCPMS mengadopsi alur klinis interdisipliner yang menghubungkan Perawat, Dietisien, Dokter (SpGK), dan Instalasi Gizi (Dapur):
+
+1. **Admisi & Skrining (Oleh Perawat)**
+   * Pasien rawat inap/jalan didaftarkan ke dalam sistem.
+   * Perawat melakukan *Skrining Gizi Awal* (MST/NRS-2002/STRONGkids) dalam 1x24 jam pertama pasien masuk.
+   * Jika pasien terdeteksi *Risiko Tinggi*, sistem memberikan notifikasi otomatis (*flagging*) ke Dietisien ruangan.
+
+2. **Asesmen & Diagnosis Gizi (Oleh Dietisien/SpGK)**
+   * Dietisien melakukan Asesmen Gizi mendalam (mencatat data antropometri, biokimia dari LIS, riwayat makan, dll).
+   * Menetapkan Diagnosis Gizi (PES: Problem, Etiology, Sign/Symptom) standar internasional.
+
+3. **Intervensi & Preskripsi Diet (Oleh Dietisien/SpGK)**
+   * Menentukan jenis diet, rute pemberian (*Oral / Enteral / Parenteral*).
+   * Menghitung target kalori harian dan membagi jadwal makan.
+   * *Food-Drug Interaction Alert* akan menyala jika ada tabrakan dengan obat-obatan pasien.
+
+4. **Penyelenggaraan Makanan & Distribusi (Oleh Instalasi Gizi / Dapur)**
+   * Dapur melihat rekapan diet *real-time* dari ruangan pada *Dashboard Dapur*.
+   * Dapur mencetak *QR Code Etiket Makanan* dan menempelkannya di nampan makanan pasien.
+   * Pramusaji/Perawat menggunakan fitur **Pemindai Keselamatan (Scanner)** sebelum memberikan makanan ke pasien.
+   * *Emergency Lock:* Jika tiba-tiba perawat menyalakan alarm "Status Puasa NPO", order makanan untuk pasien tersebut langsung dibatalkan/diberi tanda bahaya di layar Dapur.
+
+5. **Monitoring & Evaluasi (Lintas Profesi / CPPT)**
+   * Perawat/Dietisien mencatat pemantauan sisa makanan (*Comstock Scale*) pasca penyajian.
+   * Dokter SpGK memberikan adendum/koreksi atas rekam medis yang dikunci.
+   * Semua pihak mengevaluasi luaran (berat badan, hasil lab) untuk penentuan tindak lanjut.
+
+---
+
 ## 🛠️ Stack Teknologi
 
 *   **Backend:** PHP 8.2, Laravel 12.x
